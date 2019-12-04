@@ -1,0 +1,22 @@
+{
+  "testBool": true,
+  "testString": "testString",
+  "testInt": 123,
+  "testFloat": 123.11,
+  "testSBool": [
+    true,
+    false
+  ],
+  "testSString": [
+    "testString1",
+    "testString2"
+  ],
+  "testSInt": [
+    123,
+    123
+  ],
+  "testSFloat": [
+    123.11,
+    "123.233"
+  ]
+}
