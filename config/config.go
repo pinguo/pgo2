@@ -35,7 +35,7 @@ type Config struct {
 
 // Initialize the
 func (c *Config) Init() {
-    confPath := filepath.Join(c.basePath, "conf")
+    confPath := filepath.Join(c.basePath, "configs")
     if f, _ := os.Stat(confPath); f != nil && f.IsDir() {
         c.paths = append(c.paths, confPath)
     }
@@ -50,9 +50,9 @@ func (c *Config) Init() {
 }
 
 func (c *Config) CheckPath() {
-    confPath := filepath.Join(c.basePath, "conf")
+    confPath := filepath.Join(c.basePath, "configs")
     if f, _ := os.Stat(confPath); f == nil || !f.IsDir() {
-        panic("Config: invalid conf path, " + confPath)
+        panic("Config: invalid configs path, " + confPath)
     }
 
     envPath := filepath.Join(confPath, c.env)
