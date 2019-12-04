@@ -1,5 +1,5 @@
-# PGO2
-PGO2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端团队基于PGO研发的一款简单、高性能、组件化的GO应用框架。受益于GO语言高性能与原生协程，使用PGO2可快速地开发出高性能的web应用程序。
+# pgo2
+pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端团队基于pgo2研发的一款简单、高性能、组件化的GO应用框架。受益于GO语言高性能与原生协程，使用pgo2可快速地开发出高性能的web应用程序。
 
 参考文档：[pgo2-docs](https://github.com/pinguo/pgo2-docs)
 
@@ -66,7 +66,7 @@ PGO2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
 
 3. 修改配置文件(conf/app.yaml)
     ```yaml
-    name: "pgo-demo"
+    name: "pgo2-demo"
     GOMAXPROCS: 2
     runtimePath: "@app/runtime"
     publicPath: "@app/web/static"
@@ -89,9 +89,9 @@ PGO2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
                     levels: "ALL"
     ```
 
-4. 安装PGO(以下两种方法均可)
-    - 在项目根目录执行`make pgo2`安装PGO2
-    - 在项目根目录执行`go get -u github.com/pinguo/pgo`
+4. 安装pgo2(以下两种方法均可)
+    - 在项目根目录执行`make pgo2`安装pgo2
+    - 在项目根目录执行`go get -u github.com/pinguo/pgo2`
 5. 创建service(pkg/service/Welcome.go)
     ```go
     package Service
@@ -123,7 +123,7 @@ PGO2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
         "service"
         "net/http"
      
-        "github.com/pinguo/pgo"
+        "github.com/pinguo/pgo2"
     )
 
     type WelcomeController struct {
@@ -141,7 +141,7 @@ PGO2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
     // 例如：/welcome/say-hello，控制器类名为
     // controller/welcomeController 动作方法名为ActionSayHello
     func (w *WelcomeController) ActionSayHello() {
-        ctx := w.Context() // 获取PGO请求上下文件
+        ctx := w.Context() // 获取pgo2请求上下文件
     
         // 验证参数，提供参数名和默认值，当不提供默认值时，表明该参数为必选参数。
         // 详细验证方法参见Validate.go
@@ -153,7 +153,7 @@ PGO2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
         ctx.Info("request from welcome, name:%s, age:%d, ip:%s", name, age, ip)
         ctx.PushLog("clientIp", ctx.GetClientIp()) // 生成clientIp=xxxxx在pushlog中
     
-        // 调用业务逻辑，一个请求生命周期内的对象都要通过GetObject()获取，
+        // 调用业务逻辑，一个请求生命周期内的对象都要通过GetObj()获取，
         // 这样可自动查找注册的类，并注入请求上下文(Context)到对象中。
         svc := w.GetObj(service.NewWelcome()).(*Service.Welcome)
     
@@ -162,7 +162,7 @@ PGO2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
         svc.SayHello(name, age, ip)
         ctx.ProfileStop("Welcome.SayHello")
     
-        data := pgo.Map{
+        data := pgo2.Map{
             "name": name,
             "age": age,
             "ip": ip,
@@ -176,14 +176,14 @@ PGO2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
     // 规则中捕获的参数通过动作函数参数传递，没有则为空字符串.
     // eg. "^/reg/eg/(\\w+)/(\\w+)$ => /welcome/regexp-example"
     func (w *WelcomeController) ActionRegexpExample(p1, p2 string) {
-        data := pgo.Map{"p1": p1, "p2": p2}
+        data := pgo2.Map{"p1": p1, "p2": p2}
         w.OutputJson(data, http.StatusOK)
     }
     
     // RESTFULL动作，url中没有指定动作名，使用请求方法作为动作的名称(需要大写)
     // 例如：GET方法请求ActionGET(), POST方法请求ActionPOST()
     func (w *WelcomeController) ActionGET() {
-        w.GetContext().End(http.StatusOK, []byte("call restfull GET"))
+        w.Context().End(http.StatusOK, []byte("call restfull GET"))
     }
     
     ```
@@ -198,7 +198,7 @@ PGO2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
     )
 
     func main() {
-        pgo.Run() // 运行程序
+        pgo2.Run() // 运行程序
     }
     ```
 10. 编译运行
