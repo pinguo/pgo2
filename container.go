@@ -125,9 +125,9 @@ func (c *Container) Get(name string, ctx iface.IContext) reflect.Value {
     // get new object from pool
     rv := item.pool.Get().(reflect.Value)
     if c.enablePool == EnablePoolOn {
-        // reset properties
-        rv.Elem().Set(item.zero)
-        ctx.Cache(name, rv)
+       // reset properties
+       rv.Elem().Set(item.zero)
+       ctx.Cache(name, rv)
     }
 
     if obj, ok := rv.Interface().(iface.IObject); ok {

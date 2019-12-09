@@ -105,6 +105,7 @@ type IRabbitMq interface {
 }
 
 type IDb interface {
+    SetMaster(v bool)
     GetDb(master bool) *sql.DB
     Begin(opts ...*sql.TxOptions) ITx
     BeginContext(ctx context.Context, opts *sql.TxOptions) ITx

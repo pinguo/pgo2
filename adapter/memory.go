@@ -27,8 +27,7 @@ func NewMemory(componentId ...string) *Memory {
 
     m := &Memory{}
 
-    client := pgo2.App().Component(id, memory.New)
-    m.client = client.(*memory.Client)
+    m.client = pgo2.App().Component(id, memory.New).(*memory.Client)
     m.panicRecover = true
 
     return m

@@ -1,6 +1,8 @@
 package pgo2
 
-import "github.com/pinguo/pgo2/iface"
+import (
+    "github.com/pinguo/pgo2/iface"
+)
 
 // Object base class of context based object
 type Object struct {
@@ -26,6 +28,14 @@ func (o *Object) GetObj(obj iface.IObject) iface.IObject {
 // GetObjPool Get Object from pool
 func (o *Object) GetObjPool(funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
     return funcName(o.Context(), params...)
+}
+
+// GetObjPool Get Object from pool
+func (o *Object) GetObjPool1(funcName iface.IObjPoolFunc1, params ...interface{}) iface.IObject {
+
+    obj :=funcName(params...)
+    obj.SetContext(o.Context())
+    return obj
 }
 
 // GetObject Get single object

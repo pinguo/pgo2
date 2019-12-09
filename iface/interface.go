@@ -136,5 +136,6 @@ type IContext interface {
 }
 
 type IObjPoolFunc func(ctr IContext, params ...interface{}) IObject
+type IObjPoolFunc1 func(params ...interface{}) IObject
 type IObjSingleFunc func(params ...interface{}) IObject
 type IComponentFunc func(config map[string]interface{}) (interface{}, error)
