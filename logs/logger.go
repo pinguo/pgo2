@@ -16,6 +16,10 @@ type Logger struct {
     log   *Log
 }
 
+func (l *Logger) SetLogId(v string){
+    l.logId = v
+}
+
 func (l *Logger) Init(name, logId string, log *Log) {
     l.name, l.logId, l.log = name, logId, log
 }

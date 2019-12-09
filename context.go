@@ -50,6 +50,17 @@ func (c *Context) HttpRW(enableAccessLog bool, r *http.Request, w http.ResponseW
     c.response.reset(w)
 }
 
+func (c *Context) reset() {
+    c.input = nil
+    c.output = nil
+    c.response.reset(nil)
+    c.controllerId = ""
+    c.actionId = ""
+    c.userData = nil
+    c.queryCache = nil
+    c.Profiler.Reset()
+}
+
 // start plugin chain process
 func (c *Context) Process(plugins []iface.IPlugin) {
     // generate request id
@@ -58,20 +69,17 @@ func (c *Context) Process(plugins []iface.IPlugin) {
         logId = util.GenUniqueId()
     }
 
-    // reset properties
+    // restart
     c.startTime = time.Now()
-    c.controllerId = ""
-    c.actionId = ""
-    c.userData = nil
-    c.plugins = plugins
     c.index = -1
-    c.queryCache = nil
-    c.Profiler.Reset()
-    c.Logger.Init(App().Name(), logId, App().Log())
-
+    if c.plugins != nil {
+        c.Logger.SetLogId(logId)
+    } else {
+        c.plugins = plugins
+        c.Logger.Init(App().Name(), logId, App().Log())
+    }
     // finish response
     defer c.finish(false)
-
     // process request
     c.Next()
 
@@ -111,6 +119,8 @@ func (c *Context) finish(goLog bool) {
     }
     // clean objects
     c.clean()
+    // reset properties
+    c.reset()
 }
 
 func (c *Context) Notice(format string, v ...interface{}) {
@@ -161,6 +171,7 @@ func (c *Context) clean() {
     if num > 0 {
         c.objects = c.objects[:0]
     }
+
 }
 
 // Next start running plugin chain

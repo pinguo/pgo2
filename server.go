@@ -282,6 +282,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     atomic.AddUint64(&s.numReq, 1)
 
     ctx := s.pool.Get().(iface.IContext)
+
     ctx.HttpRW(s.enableAccessLog, r, w)
     ctx.Process(s.plugins)
     s.pool.Put(ctx)
@@ -317,18 +318,17 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
     }
 
     defer func() {
-        if v := recover(); v != nil {
+       if v := recover(); v != nil {
 
-          controller.HandlePanic(v)
-        }
+         controller.HandlePanic(v)
+       }
 
-        // after action hook
-        controller.AfterAction(actionId)
+       // after action hook
+       controller.AfterAction(actionId)
     }()
 
     // before action hook
     controller.BeforeAction(actionId)
-
     // call action method
     action.Call(callParams)
 }
