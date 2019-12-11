@@ -57,7 +57,7 @@ init:
 	[ -d $(pkgDir)/lib ] || mkdir $(pkgDir)/lib
 	[ -d $(pkgDir)/model ] || mkdir $(pkgDir)/model
 	[ -d $(pkgDir)/service ] || mkdir $(pkgDir)/service
-	[ -d $(pkgDir)/struct ] || mkdir $(pkgDir)/struct
+	[ -d $(pkgDir)/structs ] || mkdir $(pkgDir)/structs
 	[ -d $(pkgDir)/test ] || mkdir $(pkgDir)/test
 	[ -f $(pkgDir)/go.mod ] || (cd $(baseDir) && $(goBin) mod init $(binName))
 

@@ -23,9 +23,9 @@ type IObject interface {
     GetObj(obj IObject) IObject
     GetObjPool(funcName IObjPoolFunc, params ...interface{}) IObject
     GetObjSingle(name string, funcName IObjSingleFunc, params ...interface{}) IObject
-    GetObjPoolCtr(ctr IContext, funcName IObjPoolFunc, params ...interface{}) IObject
-    GetObjCtr(ctr IContext, obj IObject) IObject
-    GetObjSingleCtr(ctr IContext, name string, funcName IObjSingleFunc, params ...interface{}) IObject
+    GetObjPoolCtx(ctr IContext, funcName IObjPoolFunc, params ...interface{}) IObject
+    GetObjCtx(ctx IContext, obj IObject) IObject
+    GetObjSingleCtx(ctx IContext, name string, funcName IObjSingleFunc, params ...interface{}) IObject
 }
 
 type IController interface {
@@ -136,6 +136,5 @@ type IContext interface {
 }
 
 type IObjPoolFunc func(ctr IContext, params ...interface{}) IObject
-type IObjPoolFunc1 func(params ...interface{}) IObject
 type IObjSingleFunc func(params ...interface{}) IObject
 type IComponentFunc func(config map[string]interface{}) (interface{}, error)

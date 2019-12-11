@@ -30,14 +30,6 @@ func (o *Object) GetObjPool(funcName iface.IObjPoolFunc, params ...interface{}) 
     return funcName(o.Context(), params...)
 }
 
-// GetObjPool Get Object from pool
-func (o *Object) GetObjPool1(funcName iface.IObjPoolFunc1, params ...interface{}) iface.IObject {
-
-    obj :=funcName(params...)
-    obj.SetContext(o.Context())
-    return obj
-}
-
 // GetObject Get single object
 func (o *Object) GetObjSingle(name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
     // obj := funcName(params...)
@@ -46,21 +38,21 @@ func (o *Object) GetObjSingle(name string, funcName iface.IObjSingleFunc, params
     return obj
 }
 
-// GetObjPool Get Object from pool and new Context
-func (o *Object) GetObjPoolCtr(ctr iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
-    return funcName(ctr, params...)
+// GetObjPoolCtx Get Object from pool and new Context
+func (o *Object) GetObjPoolCtx(ctx iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
+    return funcName(ctx, params...)
 }
 
 // GetObject create new object  and new Context
-func (o *Object) GetObjCtr(ctr iface.IContext, obj iface.IObject) iface.IObject {
-    obj.SetContext(ctr)
+func (o *Object) GetObjCtx(ctx iface.IContext, obj iface.IObject) iface.IObject {
+    obj.SetContext(ctx)
     return obj
 }
 
 // GetObject Get single object and new Context
-func (o *Object) GetObjSingleCtr(ctr iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
+func (o *Object) GetObjSingleCtx(ctx iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
     // obj := funcName(params...)
     obj := App().GetObjSingle(name, funcName, params...)
-    obj.SetContext(ctr)
+    obj.SetContext(ctx)
     return obj
 }

@@ -1,6 +1,8 @@
 package logs
 
-import "fmt"
+import (
+    "fmt"
+)
 
 // Target base class of output
 type Target struct {
