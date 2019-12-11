@@ -153,56 +153,56 @@ func (mr *MockIObjectMockRecorder) GetObjSingle(name, funcName interface{}, para
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingle", reflect.TypeOf((*MockIObject)(nil).GetObjSingle), varargs...)
 }
 
-// GetObjPoolCtr mocks base method
-func (m *MockIObject) GetObjPoolCtr(ctr iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
+// GetObjPoolCtx mocks base method
+func (m *MockIObject) GetObjPoolCtx(ctr iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctr, funcName}
 	for _, a := range params {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "GetObjPoolCtr", varargs...)
+	ret := m.ctrl.Call(m, "GetObjPoolCtx", varargs...)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjPoolCtr indicates an expected call of GetObjPoolCtr
-func (mr *MockIObjectMockRecorder) GetObjPoolCtr(ctr, funcName interface{}, params ...interface{}) *gomock.Call {
+// GetObjPoolCtx indicates an expected call of GetObjPoolCtx
+func (mr *MockIObjectMockRecorder) GetObjPoolCtx(ctr, funcName interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctr, funcName}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPoolCtr", reflect.TypeOf((*MockIObject)(nil).GetObjPoolCtr), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPoolCtx", reflect.TypeOf((*MockIObject)(nil).GetObjPoolCtx), varargs...)
 }
 
-// GetObjCtr mocks base method
-func (m *MockIObject) GetObjCtr(ctr iface.IContext, obj iface.IObject) iface.IObject {
+// GetObjCtx mocks base method
+func (m *MockIObject) GetObjCtx(ctx iface.IContext, obj iface.IObject) iface.IObject {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetObjCtr", ctr, obj)
+	ret := m.ctrl.Call(m, "GetObjCtx", ctx, obj)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjCtr indicates an expected call of GetObjCtr
-func (mr *MockIObjectMockRecorder) GetObjCtr(ctr, obj interface{}) *gomock.Call {
+// GetObjCtx indicates an expected call of GetObjCtx
+func (mr *MockIObjectMockRecorder) GetObjCtx(ctx, obj interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjCtr", reflect.TypeOf((*MockIObject)(nil).GetObjCtr), ctr, obj)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjCtx", reflect.TypeOf((*MockIObject)(nil).GetObjCtx), ctx, obj)
 }
 
-// GetObjSingleCtr mocks base method
-func (m *MockIObject) GetObjSingleCtr(ctr iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
+// GetObjSingleCtx mocks base method
+func (m *MockIObject) GetObjSingleCtx(ctx iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctr, name, funcName}
+	varargs := []interface{}{ctx, name, funcName}
 	for _, a := range params {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "GetObjSingleCtr", varargs...)
+	ret := m.ctrl.Call(m, "GetObjSingleCtx", varargs...)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjSingleCtr indicates an expected call of GetObjSingleCtr
-func (mr *MockIObjectMockRecorder) GetObjSingleCtr(ctr, name, funcName interface{}, params ...interface{}) *gomock.Call {
+// GetObjSingleCtx indicates an expected call of GetObjSingleCtx
+func (mr *MockIObjectMockRecorder) GetObjSingleCtx(ctx, name, funcName interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctr, name, funcName}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingleCtr", reflect.TypeOf((*MockIObject)(nil).GetObjSingleCtr), varargs...)
+	varargs := append([]interface{}{ctx, name, funcName}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingleCtx", reflect.TypeOf((*MockIObject)(nil).GetObjSingleCtx), varargs...)
 }
 
 // MockIController is a mock of IController interface

@@ -1255,6 +1255,18 @@ func (m *MockIDb) EXPECT() *MockIDbMockRecorder {
 	return m.recorder
 }
 
+// SetMaster mocks base method
+func (m *MockIDb) SetMaster(v bool) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetMaster", v)
+}
+
+// SetMaster indicates an expected call of SetMaster
+func (mr *MockIDbMockRecorder) SetMaster(v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetMaster", reflect.TypeOf((*MockIDb)(nil).SetMaster), v)
+}
+
 // GetDb mocks base method
 func (m *MockIDb) GetDb(master bool) *sql.DB {
 	m.ctrl.T.Helper()
@@ -1544,56 +1556,56 @@ func (mr *MockITxMockRecorder) GetObjSingle(name, funcName interface{}, params .
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingle", reflect.TypeOf((*MockITx)(nil).GetObjSingle), varargs...)
 }
 
-// GetObjPoolCtr mocks base method
-func (m *MockITx) GetObjPoolCtr(ctr iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
+// GetObjPoolCtx mocks base method
+func (m *MockITx) GetObjPoolCtx(ctr iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctr, funcName}
 	for _, a := range params {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "GetObjPoolCtr", varargs...)
+	ret := m.ctrl.Call(m, "GetObjPoolCtx", varargs...)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjPoolCtr indicates an expected call of GetObjPoolCtr
-func (mr *MockITxMockRecorder) GetObjPoolCtr(ctr, funcName interface{}, params ...interface{}) *gomock.Call {
+// GetObjPoolCtx indicates an expected call of GetObjPoolCtx
+func (mr *MockITxMockRecorder) GetObjPoolCtx(ctr, funcName interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctr, funcName}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPoolCtr", reflect.TypeOf((*MockITx)(nil).GetObjPoolCtr), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPoolCtx", reflect.TypeOf((*MockITx)(nil).GetObjPoolCtx), varargs...)
 }
 
-// GetObjCtr mocks base method
-func (m *MockITx) GetObjCtr(ctr iface.IContext, obj iface.IObject) iface.IObject {
+// GetObjCtx mocks base method
+func (m *MockITx) GetObjCtx(ctx iface.IContext, obj iface.IObject) iface.IObject {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetObjCtr", ctr, obj)
+	ret := m.ctrl.Call(m, "GetObjCtx", ctx, obj)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjCtr indicates an expected call of GetObjCtr
-func (mr *MockITxMockRecorder) GetObjCtr(ctr, obj interface{}) *gomock.Call {
+// GetObjCtx indicates an expected call of GetObjCtx
+func (mr *MockITxMockRecorder) GetObjCtx(ctx, obj interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjCtr", reflect.TypeOf((*MockITx)(nil).GetObjCtr), ctr, obj)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjCtx", reflect.TypeOf((*MockITx)(nil).GetObjCtx), ctx, obj)
 }
 
-// GetObjSingleCtr mocks base method
-func (m *MockITx) GetObjSingleCtr(ctr iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
+// GetObjSingleCtx mocks base method
+func (m *MockITx) GetObjSingleCtx(ctx iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctr, name, funcName}
+	varargs := []interface{}{ctx, name, funcName}
 	for _, a := range params {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "GetObjSingleCtr", varargs...)
+	ret := m.ctrl.Call(m, "GetObjSingleCtx", varargs...)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjSingleCtr indicates an expected call of GetObjSingleCtr
-func (mr *MockITxMockRecorder) GetObjSingleCtr(ctr, name, funcName interface{}, params ...interface{}) *gomock.Call {
+// GetObjSingleCtx indicates an expected call of GetObjSingleCtx
+func (mr *MockITxMockRecorder) GetObjSingleCtx(ctx, name, funcName interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctr, name, funcName}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingleCtr", reflect.TypeOf((*MockITx)(nil).GetObjSingleCtr), varargs...)
+	varargs := append([]interface{}{ctx, name, funcName}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingleCtx", reflect.TypeOf((*MockITx)(nil).GetObjSingleCtx), varargs...)
 }
 
 // Commit mocks base method
@@ -1867,56 +1879,56 @@ func (mr *MockIRowMockRecorder) GetObjSingle(name, funcName interface{}, params 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingle", reflect.TypeOf((*MockIRow)(nil).GetObjSingle), varargs...)
 }
 
-// GetObjPoolCtr mocks base method
-func (m *MockIRow) GetObjPoolCtr(ctr iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
+// GetObjPoolCtx mocks base method
+func (m *MockIRow) GetObjPoolCtx(ctr iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctr, funcName}
 	for _, a := range params {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "GetObjPoolCtr", varargs...)
+	ret := m.ctrl.Call(m, "GetObjPoolCtx", varargs...)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjPoolCtr indicates an expected call of GetObjPoolCtr
-func (mr *MockIRowMockRecorder) GetObjPoolCtr(ctr, funcName interface{}, params ...interface{}) *gomock.Call {
+// GetObjPoolCtx indicates an expected call of GetObjPoolCtx
+func (mr *MockIRowMockRecorder) GetObjPoolCtx(ctr, funcName interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctr, funcName}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPoolCtr", reflect.TypeOf((*MockIRow)(nil).GetObjPoolCtr), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPoolCtx", reflect.TypeOf((*MockIRow)(nil).GetObjPoolCtx), varargs...)
 }
 
-// GetObjCtr mocks base method
-func (m *MockIRow) GetObjCtr(ctr iface.IContext, obj iface.IObject) iface.IObject {
+// GetObjCtx mocks base method
+func (m *MockIRow) GetObjCtx(ctx iface.IContext, obj iface.IObject) iface.IObject {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetObjCtr", ctr, obj)
+	ret := m.ctrl.Call(m, "GetObjCtx", ctx, obj)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjCtr indicates an expected call of GetObjCtr
-func (mr *MockIRowMockRecorder) GetObjCtr(ctr, obj interface{}) *gomock.Call {
+// GetObjCtx indicates an expected call of GetObjCtx
+func (mr *MockIRowMockRecorder) GetObjCtx(ctx, obj interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjCtr", reflect.TypeOf((*MockIRow)(nil).GetObjCtr), ctr, obj)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjCtx", reflect.TypeOf((*MockIRow)(nil).GetObjCtx), ctx, obj)
 }
 
-// GetObjSingleCtr mocks base method
-func (m *MockIRow) GetObjSingleCtr(ctr iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
+// GetObjSingleCtx mocks base method
+func (m *MockIRow) GetObjSingleCtx(ctx iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctr, name, funcName}
+	varargs := []interface{}{ctx, name, funcName}
 	for _, a := range params {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "GetObjSingleCtr", varargs...)
+	ret := m.ctrl.Call(m, "GetObjSingleCtx", varargs...)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjSingleCtr indicates an expected call of GetObjSingleCtr
-func (mr *MockIRowMockRecorder) GetObjSingleCtr(ctr, name, funcName interface{}, params ...interface{}) *gomock.Call {
+// GetObjSingleCtx indicates an expected call of GetObjSingleCtx
+func (mr *MockIRowMockRecorder) GetObjSingleCtx(ctx, name, funcName interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctr, name, funcName}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingleCtr", reflect.TypeOf((*MockIRow)(nil).GetObjSingleCtr), varargs...)
+	varargs := append([]interface{}{ctx, name, funcName}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingleCtx", reflect.TypeOf((*MockIRow)(nil).GetObjSingleCtx), varargs...)
 }
 
 // Scan mocks base method
@@ -2038,56 +2050,56 @@ func (mr *MockIStmtMockRecorder) GetObjSingle(name, funcName interface{}, params
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingle", reflect.TypeOf((*MockIStmt)(nil).GetObjSingle), varargs...)
 }
 
-// GetObjPoolCtr mocks base method
-func (m *MockIStmt) GetObjPoolCtr(ctr iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
+// GetObjPoolCtx mocks base method
+func (m *MockIStmt) GetObjPoolCtx(ctr iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctr, funcName}
 	for _, a := range params {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "GetObjPoolCtr", varargs...)
+	ret := m.ctrl.Call(m, "GetObjPoolCtx", varargs...)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjPoolCtr indicates an expected call of GetObjPoolCtr
-func (mr *MockIStmtMockRecorder) GetObjPoolCtr(ctr, funcName interface{}, params ...interface{}) *gomock.Call {
+// GetObjPoolCtx indicates an expected call of GetObjPoolCtx
+func (mr *MockIStmtMockRecorder) GetObjPoolCtx(ctr, funcName interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctr, funcName}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPoolCtr", reflect.TypeOf((*MockIStmt)(nil).GetObjPoolCtr), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPoolCtx", reflect.TypeOf((*MockIStmt)(nil).GetObjPoolCtx), varargs...)
 }
 
-// GetObjCtr mocks base method
-func (m *MockIStmt) GetObjCtr(ctr iface.IContext, obj iface.IObject) iface.IObject {
+// GetObjCtx mocks base method
+func (m *MockIStmt) GetObjCtx(ctx iface.IContext, obj iface.IObject) iface.IObject {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetObjCtr", ctr, obj)
+	ret := m.ctrl.Call(m, "GetObjCtx", ctx, obj)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjCtr indicates an expected call of GetObjCtr
-func (mr *MockIStmtMockRecorder) GetObjCtr(ctr, obj interface{}) *gomock.Call {
+// GetObjCtx indicates an expected call of GetObjCtx
+func (mr *MockIStmtMockRecorder) GetObjCtx(ctx, obj interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjCtr", reflect.TypeOf((*MockIStmt)(nil).GetObjCtr), ctr, obj)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjCtx", reflect.TypeOf((*MockIStmt)(nil).GetObjCtx), ctx, obj)
 }
 
-// GetObjSingleCtr mocks base method
-func (m *MockIStmt) GetObjSingleCtr(ctr iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
+// GetObjSingleCtx mocks base method
+func (m *MockIStmt) GetObjSingleCtx(ctx iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctr, name, funcName}
+	varargs := []interface{}{ctx, name, funcName}
 	for _, a := range params {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "GetObjSingleCtr", varargs...)
+	ret := m.ctrl.Call(m, "GetObjSingleCtx", varargs...)
 	ret0, _ := ret[0].(iface.IObject)
 	return ret0
 }
 
-// GetObjSingleCtr indicates an expected call of GetObjSingleCtr
-func (mr *MockIStmtMockRecorder) GetObjSingleCtr(ctr, name, funcName interface{}, params ...interface{}) *gomock.Call {
+// GetObjSingleCtx indicates an expected call of GetObjSingleCtx
+func (mr *MockIStmtMockRecorder) GetObjSingleCtx(ctx, name, funcName interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctr, name, funcName}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingleCtr", reflect.TypeOf((*MockIStmt)(nil).GetObjSingleCtr), varargs...)
+	varargs := append([]interface{}{ctx, name, funcName}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingleCtx", reflect.TypeOf((*MockIStmt)(nil).GetObjSingleCtx), varargs...)
 }
 
 // Close mocks base method

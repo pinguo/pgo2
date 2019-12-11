@@ -86,7 +86,7 @@ func TestObject_GetObjCtr(t *testing.T) {
     obj.SetContext(ctr)
     ctr1 := &Context{}
     ctr1.actionId = "test1"
-    m := obj.GetObjCtr(ctr1, newMockObjectTest())
+    m := obj.GetObjCtx(ctr1, newMockObjectTest())
     mm := m.(*mockObjectTest)
     if _, ok := m.(iface.IObject); ok == false {
         t.Fatal(`_,ok:=m.(iface.IObject);ok==false`)
@@ -97,7 +97,7 @@ func TestObject_GetObjCtr(t *testing.T) {
     }
 }
 
-func TestObject_GetObjSingleCtr(t *testing.T) {
+func TestObject_GetObjSingleCtx(t *testing.T) {
     obj := &Object{}
     ctr := &Context{}
     ctr.actionId = "test"
@@ -105,7 +105,7 @@ func TestObject_GetObjSingleCtr(t *testing.T) {
 
     ctr1 := &Context{}
     ctr1.actionId = "test1"
-    m := obj.GetObjSingleCtr(ctr1, "mocktestobj", newMockObjectTest)
+    m := obj.GetObjSingleCtx(ctr1, "mocktestobj", newMockObjectTest)
     if _, ok := m.(iface.IObject); ok == false {
         t.Fatal(`m.(iface.IObject) == false `)
     }
@@ -113,7 +113,7 @@ func TestObject_GetObjSingleCtr(t *testing.T) {
     data := "data111"
     mm := m.(*mockObjectTest)
     mm.Data = data
-    m = obj.GetObjSingleCtr(ctr1, "mocktestobj", newMockObjectTest)
+    m = obj.GetObjSingleCtx(ctr1, "mocktestobj", newMockObjectTest)
     mm = m.(*mockObjectTest)
     if mm.Data != data {
         t.Fatal(`mm.Data != `, data)
@@ -125,7 +125,7 @@ func TestObject_GetObjSingleCtr(t *testing.T) {
 
 }
 
-func TestObject_GetObjPoolCtr(t *testing.T) {
+func TestObject_GetObjPoolCtx(t *testing.T) {
     App().Container().Bind(&mockObjectTest{})
     obj := &Object{}
     ctr := &Context{}
@@ -135,7 +135,7 @@ func TestObject_GetObjPoolCtr(t *testing.T) {
     ctr1 := &Context{}
     ctr1.actionId = "test1"
 
-    m := obj.GetObjPoolCtr(ctr1, newMockObjectTestPool)
+    m := obj.GetObjPoolCtx(ctr1, newMockObjectTestPool)
     if _, ok := m.(iface.IObject); ok == false {
         t.FailNow()
     }
@@ -143,7 +143,7 @@ func TestObject_GetObjPoolCtr(t *testing.T) {
     data := "data111"
     mm := m.(*mockObjectTest)
     mm.Data = data
-    m = obj.GetObjPoolCtr(ctr1, newMockObjectTestPool)
+    m = obj.GetObjPoolCtx(ctr1, newMockObjectTestPool)
     mm = m.(*mockObjectTest)
     if mm.Data == data {
         t.Fatal(`mm.Data == `, data)
