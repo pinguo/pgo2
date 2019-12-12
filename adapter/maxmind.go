@@ -7,8 +7,7 @@ import (
 )
 
 func init() {
-    container := pgo2.App().Container()
-    container.Bind(&MaxMind{})
+    pgo2.App().Container().Bind(&MaxMind{})
 }
 
 // NewMaxMind of MaxMind Client, add context support.
@@ -29,7 +28,7 @@ func NewMaxMind(componentId ...string) *MaxMind {
 // NewMaxMindPool of MaxMind Client from pool, add context support.
 // usage: mmd := this.GetObjPool(adapter.NewMaxMindPool).(adapter.IMaxMind)/(*adapter.MaxMind)
 func NewMaxMindPool(ctr iface.IContext, componentId ...interface{}) iface.IObject {
-    id := DefaultMemoryId
+    id := DefaultMaxMindId
     if len(componentId) > 0 {
         id = componentId[0].(string)
     }
