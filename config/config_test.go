@@ -31,25 +31,17 @@ func TestNew(t *testing.T) {
 
 func TestConfig_CheckPath(t *testing.T) {
 	t.Run("invalidPath", func(t *testing.T) {
-		defer func() {
-			if err := recover(); err != nil {
-				return
-			}
-			t.FailNow()
-		}()
 		config := New(mockTestBasePath+"fffggggg", mockTestEnv)
-		config.CheckPath()
+		if err :=config.CheckPath();err==nil{
+			t.FailNow()
+		}
 	})
 
 	t.Run("invalidEnv", func(t *testing.T) {
-		defer func() {
-			if err := recover(); err != nil {
-				return
-			}
-			t.FailNow()
-		}()
 		config := New(mockTestBasePath, mockTestEnv+"fffffggg")
-		config.CheckPath()
+		if err :=config.CheckPath();err==nil{
+			t.FailNow()
+		}
 	})
 
 	t.Run("normal", func(t *testing.T) {
@@ -60,16 +52,15 @@ func TestConfig_CheckPath(t *testing.T) {
 
 func TestConfig_AddPath(t *testing.T) {
 	config := New(mockTestBasePath, mockTestEnv)
-	config.AddPath(mockTestBasePath + "/conf")
-
-	if len(config.paths) != 2 {
-		t.Fatal(`len(config.paths) != 2`)
+	config.AddPath(mockTestBasePath + "/configs1")
+	if len(config.paths) < 2 {
+		t.Fatal(`len(config.paths) < 2`)
 	}
 
-	config.AddPath(mockTestBasePath + "/conf/testing")
+	config.AddPath(mockTestBasePath + "/configs/testing")
 
-	if len(config.paths) != 3 {
-		t.Fatal(`len(config.paths) != 3`)
+	if len(config.paths) < 3 {
+		t.Fatal(`len(config.paths) < 3`)
 	}
 }
 

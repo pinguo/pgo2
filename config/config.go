@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -49,16 +50,18 @@ func (c *Config) Init() {
 	c.AddParser("yaml", &YamlParser{})
 }
 
-func (c *Config) CheckPath() {
+func (c *Config) CheckPath() error {
 	confPath := filepath.Join(c.basePath, "configs")
 	if f, _ := os.Stat(confPath); f == nil || !f.IsDir() {
-		panic("Config: invalid configs path, " + confPath)
+		return errors.New("Config: invalid configs path, " + confPath)
 	}
 
 	envPath := filepath.Join(confPath, c.env)
 	if f, _ := os.Stat(envPath); f == nil || !f.IsDir() {
-		panic("Config: invalid env path, " + envPath)
+		return errors.New("Config: invalid env path, " + envPath)
 	}
+
+	return nil
 }
 
 // AddParser add parser for file with ext extension
