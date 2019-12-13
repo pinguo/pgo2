@@ -17,5 +17,5 @@ type IConfig interface {
 	GetSliceString(key string) []string
 	Get(key string) interface{}
 	Set(key string, val interface{})
-	CheckPath()
+	CheckPath() error
 }

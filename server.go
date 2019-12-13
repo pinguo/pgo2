@@ -227,7 +227,7 @@ func (s *Server) Serve() {
 	s.addServerPlugin()
 
 	if App().cmdList() {
-		s.cmdList()
+		cmdList()
 		return
 	}
 
@@ -251,21 +251,7 @@ func (s *Server) Serve() {
 	wg.Wait()
 }
 
-func (s *Server) cmdList() {
-	list := App().Router().CmdHandlers()
-	fmt.Println("System parameters:")
-	fmt.Println("set running env (requested), eg. --env=online")
-	fmt.Println("set running cmd (optional), eg. --cmd=/foo/bar")
-	fmt.Println("set base path (optional), eg. --base=/base/path")
-	fmt.Println("Displays a list of CMD controllers used (optional), eg. --cmdList")
-	fmt.Println("")
-	fmt.Println("The path list:")
-	for uri, _ := range list {
-		fmt.Println("--cmd=" + uri)
-	}
-	fmt.Println("")
-	fmt.Println("")
-}
+
 
 // ServeCMD serve command request
 func (s *Server) ServeCMD() {
