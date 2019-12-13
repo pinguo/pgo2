@@ -36,6 +36,8 @@ func NewFile(runtimePath string, dftConfig ...map[string]interface{}) ITarget {
     config := dftConfig[0]
     core.Configure(file, config)
 
+    file.Init()
+
     return file
 
 }
@@ -114,7 +116,7 @@ func (f *File) completePath() string {
         return strings.Replace(f.filePath, "@runtime", f.runtimePath, 1)
     }
 
-    return f.filePath
+    return f.runtimePath + "/" +  f.filePath
 }
 
 // Process check and rotate log file if rotate is enable,
