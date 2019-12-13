@@ -1,89 +1,89 @@
 package memcache
 
 import (
-    "testing"
+	"testing"
 
-    "github.com/pinguo/pgo2/util"
+	"github.com/pinguo/pgo2/util"
 )
 
-func initPool() *Pool{
-    p := &Pool{}
-    p.hashRing = util.NewHashRing()
-    p.connLists = make(map[string]*connList)
-    p.servers = make(map[string]*serverInfo)
-    p.initServers()
-    p.prefix = "pgp2_"
-    return p
+func initPool() *Pool {
+	p := &Pool{}
+	p.hashRing = util.NewHashRing()
+	p.connLists = make(map[string]*connList)
+	p.servers = make(map[string]*serverInfo)
+	p.initServers()
+	p.prefix = "pgp2_"
+	return p
 }
 
 func TestPool_initServers(t *testing.T) {
-    p := initPool()
-    if p.hashRing.GetNode("test") != defaultServer {
-        t.FailNow()
-    }
+	p := initPool()
+	if p.hashRing.GetNode("test") != defaultServer {
+		t.FailNow()
+	}
 
 }
 
 func TestPool_AddrNewKeys(t *testing.T) {
-    p := initPool()
+	p := initPool()
 
-    testKey := "testKey"
+	testKey := "testKey"
 
-    t.Run("[]string", func(t *testing.T) {
-        keys,newKeys,err:=p.AddrNewKeys([]string{testKey})
-        if keys[defaultServer][0]!=p.prefix + testKey{
-            t.Fatal(`keys[defaultServer][0]!=p.prefix + testKey`)
-        }
+	t.Run("[]string", func(t *testing.T) {
+		keys, newKeys, err := p.AddrNewKeys([]string{testKey})
+		if keys[defaultServer][0] != p.prefix+testKey {
+			t.Fatal(`keys[defaultServer][0]!=p.prefix + testKey`)
+		}
 
-        if v,has:=newKeys[p.prefix + testKey];has==false || v!=testKey{
-            t.Fatal( `v,has:=newKeys[p.prefix + testKey];has==false || v!=testKey`)
-        }
+		if v, has := newKeys[p.prefix+testKey]; has == false || v != testKey {
+			t.Fatal(`v,has:=newKeys[p.prefix + testKey];has==false || v!=testKey`)
+		}
 
-        if err !=nil{
-            t.Fatal(`err !=nil`)
-        }
-    })
+		if err != nil {
+			t.Fatal(`err !=nil`)
+		}
+	})
 
-    t.Run("map[string]interface{}", func(t *testing.T) {
-        keys,newKeys,err:=p.AddrNewKeys(map[string]interface{}{testKey:""})
-        if keys[defaultServer][0]!=p.prefix + testKey{
-            t.Fatal(`keys[defaultServer][0]!=p.prefix + testKey`)
-        }
+	t.Run("map[string]interface{}", func(t *testing.T) {
+		keys, newKeys, err := p.AddrNewKeys(map[string]interface{}{testKey: ""})
+		if keys[defaultServer][0] != p.prefix+testKey {
+			t.Fatal(`keys[defaultServer][0]!=p.prefix + testKey`)
+		}
 
-        if v,has:=newKeys[p.prefix + testKey];has==false || v!=testKey{
-            t.Fatal( `v,has:=newKeys[p.prefix + testKey];has==false || v!=testKey`)
-        }
+		if v, has := newKeys[p.prefix+testKey]; has == false || v != testKey {
+			t.Fatal(`v,has:=newKeys[p.prefix + testKey];has==false || v!=testKey`)
+		}
 
-        if err !=nil{
-            t.Fatal(`err !=nil`)
-        }
-    })
+		if err != nil {
+			t.Fatal(`err !=nil`)
+		}
+	})
 
-    t.Run("invalid", func(t *testing.T) {
-        _,_,err:=p.AddrNewKeys(map[string]string{testKey:""})
-        if err == nil{
-            t.FailNow()
-        }
-    })
+	t.Run("invalid", func(t *testing.T) {
+		_, _, err := p.AddrNewKeys(map[string]string{testKey: ""})
+		if err == nil {
+			t.FailNow()
+		}
+	})
 
 }
 
 func TestPool_BuildKey(t *testing.T) {
-    p := initPool()
-    testKey := "testKey"
-    if p.BuildKey(testKey) != p.prefix + testKey{
-        t.FailNow()
-    }
+	p := initPool()
+	testKey := "testKey"
+	if p.BuildKey(testKey) != p.prefix+testKey {
+		t.FailNow()
+	}
 }
 
 func TestPool_GetAddrByKey(t *testing.T) {
-    p := initPool()
+	p := initPool()
 
-    testKey := "testKey"
+	testKey := "testKey"
 
-    if p.GetAddrByKey(testKey) != defaultServer {
-        t.FailNow()
-    }
+	if p.GetAddrByKey(testKey) != defaultServer {
+		t.FailNow()
+	}
 }
 
 func TestPool_GetConnByAddr(t *testing.T) {

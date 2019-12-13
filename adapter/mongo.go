@@ -1,79 +1,77 @@
 package adapter
 
 import (
-    "github.com/globalsign/mgo"
-    "github.com/globalsign/mgo/bson"
-    "github.com/pinguo/pgo2"
-    "github.com/pinguo/pgo2/client/mongo"
-    "github.com/pinguo/pgo2/iface"
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
+	"github.com/pinguo/pgo2"
+	"github.com/pinguo/pgo2/client/mongo"
+	"github.com/pinguo/pgo2/iface"
 )
 
 func init() {
-    container := pgo2.App().Container()
-    container.Bind(&Mongo{})
+	container := pgo2.App().Container()
+	container.Bind(&Mongo{})
 }
 
 // NewMongo of Mongo Client, add context support.
 // usage: mongo := this.GetObject(Mongo.New(db, coll)).(adapter.IMongo)/(*adapter.Mongo)
-func NewMongo(db, coll string, componentId ...string) *Mongo{
-    id := DefaultMongoId
-    if len(componentId) > 0 {
-        id = componentId[0]
-    }
+func NewMongo(db, coll string, componentId ...string) *Mongo {
+	id := DefaultMongoId
+	if len(componentId) > 0 {
+		id = componentId[0]
+	}
 
-    m := &Mongo{}
+	m := &Mongo{}
 
-    m.client = pgo2.App().Component(id, mongo.New).(*mongo.Client)
-    m.db = db
-    m.coll = coll
+	m.client = pgo2.App().Component(id, mongo.New).(*mongo.Client)
+	m.db = db
+	m.coll = coll
 
-    return m
-    
+	return m
+
 }
 
 // NewMongoPool of Mongo Client from pool, add context support.
 // usage: mongo := this.GetObjectPool(Mongo.New,db, coll)).(adapter.IMongo)/(*adapter.Mongo)
-func NewMongoPool(ctr iface.IContext, args ...interface{}) iface.IObject{
-    if len(args) <2 {
-        panic("need db and coll")
-    }
+func NewMongoPool(ctr iface.IContext, args ...interface{}) iface.IObject {
+	if len(args) < 2 {
+		panic("need db and coll")
+	}
 
-    id := DefaultMongoId
-    if len(args) > 2 {
-        id = args[2].(string)
-        if id == "" {
-            panic("id must string")
-        }
-    }
+	id := DefaultMongoId
+	if len(args) > 2 {
+		id = args[2].(string)
+		if id == "" {
+			panic("id must string")
+		}
+	}
 
-    db := args[0].(string)
-    coll := args[1].(string)
+	db := args[0].(string)
+	coll := args[1].(string)
 
-    if db == "" || coll == "" {
-        panic("db and coll must string")
-    }
+	if db == "" || coll == "" {
+		panic("db and coll must string")
+	}
 
-    m := pgo2.App().GetObjPool(MongoClass, ctr).(*Mongo)
+	m := pgo2.App().GetObjPool(MongoClass, ctr).(*Mongo)
 
-    m.client = pgo2.App().Component(id, mongo.New).(*mongo.Client)
-    m.db = db
-    m.coll = coll
+	m.client = pgo2.App().Component(id, mongo.New).(*mongo.Client)
+	m.db = db
+	m.coll = coll
 
-    return m
+	return m
 
 }
 
 type Mongo struct {
-    pgo2.Object
-    client *mongo.Client
-    db     string
-    coll   string
+	pgo2.Object
+	client *mongo.Client
+	db     string
+	coll   string
 }
 
-
-
 func (m *Mongo) GetClient() *mongo.Client {
-    return m.client
+	return m.client
 }
 
 // FindOne retrieve the first document that match the query,
@@ -99,88 +97,88 @@ func (m *Mongo) GetClient() *mongo.Client {
 //      }
 //      m.FindOne(bson.M{"_id": "k1"}, &v2)
 func (m *Mongo) FindOne(query interface{}, result interface{}, options ...bson.M) error {
-    profile := "Mongo.FindOne"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.FindOne"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    q := session.DB(m.db).C(m.coll).Find(query)
-    m.applyQueryOptions(q, options)
+	q := session.DB(m.db).C(m.coll).Find(query)
+	m.applyQueryOptions(q, options)
 
-    e := q.One(result)
-    if e == nil || e == mgo.ErrNotFound {
-        return nil
-    }
+	e := q.One(result)
+	if e == nil || e == mgo.ErrNotFound {
+		return nil
+	}
 
-    return e
+	return e
 }
 
 // FindAll retrieve all documents that match the query,
 // param result must be a slice(interface{}, map, bson.M or bson compatible struct)
 // other params see FindOne()
 func (m *Mongo) FindAll(query interface{}, result interface{}, options ...bson.M) error {
-    profile := "Mongo.FindAll"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.FindAll"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    q := session.DB(m.db).C(m.coll).Find(query)
-    m.applyQueryOptions(q, options)
+	q := session.DB(m.db).C(m.coll).Find(query)
+	m.applyQueryOptions(q, options)
 
-    e := q.All(result)
-    if e == nil || e == mgo.ErrNotFound {
-        return nil
-    }
+	e := q.All(result)
+	if e == nil || e == mgo.ErrNotFound {
+		return nil
+	}
 
-    return e
+	return e
 }
 
 // FindAndModify execute findAndModify command, which allows atomically update or remove one document,
 // param change specify the change operation, eg. mgo.Change{Update:bson.M{"$inc": bson.M{"n":1}}, ReturnNew:true},
 // other params see FindOne()
 func (m *Mongo) FindAndModify(query interface{}, change mgo.Change, result interface{}, options ...bson.M) error {
-    profile := "Mongo.FindAndModify"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.FindAndModify"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    q := session.DB(m.db).C(m.coll).Find(query)
-    m.applyQueryOptions(q, options)
+	q := session.DB(m.db).C(m.coll).Find(query)
+	m.applyQueryOptions(q, options)
 
-    _, e := q.Apply(change, result)
-    if e == nil || e == mgo.ErrNotFound {
-        return nil
-    }
+	_, e := q.Apply(change, result)
+	if e == nil || e == mgo.ErrNotFound {
+		return nil
+	}
 
-    return e
+	return e
 }
 
 // FindDistinct retrieve distinct values for the param key,
 // param result must be a slice,
 // other params see FindOne()
 func (m *Mongo) FindDistinct(query interface{}, key string, result interface{}, options ...bson.M) error {
-    profile := "Mongo.FindDistinct"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.FindDistinct"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    q := session.DB(m.db).C(m.coll).Find(query)
-    m.applyQueryOptions(q, options)
+	q := session.DB(m.db).C(m.coll).Find(query)
+	m.applyQueryOptions(q, options)
 
-    e := q.Distinct(key, result)
-    if e == nil || e == mgo.ErrNotFound {
-        return nil
-    }
+	e := q.Distinct(key, result)
+	if e == nil || e == mgo.ErrNotFound {
+		return nil
+	}
 
-    return e
+	return e
 }
 
 // InsertOne insert one document into collection,
@@ -194,16 +192,16 @@ func (m *Mongo) FindDistinct(query interface{}, key string, result interface{}, 
 //      } {"value1", "value2"}
 //      m.InsertOne(doc)
 func (m *Mongo) InsertOne(doc interface{}) error {
-    profile := "Mongo.InsertOne"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.InsertOne"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    e := session.DB(m.db).C(m.coll).Insert(doc)
+	e := session.DB(m.db).C(m.coll).Insert(doc)
 
-    return e
+	return e
 }
 
 // InsertAll insert all documents provided by params docs into collection,
@@ -214,126 +212,126 @@ func (m *Mongo) InsertOne(doc interface{}) error {
 //      }
 //      m.InsertAll(docs)
 func (m *Mongo) InsertAll(docs []interface{}) error {
-    profile := "Mongo.InsertAll"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.InsertAll"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    e := session.DB(m.db).C(m.coll).Insert(docs...)
+	e := session.DB(m.db).C(m.coll).Insert(docs...)
 
-    return e
+	return e
 }
 
 // UpdateOne update one document that match the query,
 // mgo.ErrNotFound is returned if a document not found,
 // a value of *LastError is returned if other error occurred.
 func (m *Mongo) UpdateOne(query interface{}, update interface{}) error {
-    profile := "Mongo.UpdateOne"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.UpdateOne"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    e := session.DB(m.db).C(m.coll).Update(query, update)
-    if e != nil && e != mgo.ErrNotFound {
-        m.Context().Error(profile + " error, " + e.Error())
-    }
+	e := session.DB(m.db).C(m.coll).Update(query, update)
+	if e != nil && e != mgo.ErrNotFound {
+		m.Context().Error(profile + " error, " + e.Error())
+	}
 
-    return e
+	return e
 }
 
 // UpdateAll update all documents that match the query,
 // see UpdateOne()
 func (m *Mongo) UpdateAll(query interface{}, update interface{}) error {
-    profile := "Mongo.UpdateAll"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.UpdateAll"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    _, e := session.DB(m.db).C(m.coll).UpdateAll(query, update)
-    if e != nil && e != mgo.ErrNotFound {
-        m.Context().Error(profile + " error, " + e.Error())
-    }
+	_, e := session.DB(m.db).C(m.coll).UpdateAll(query, update)
+	if e != nil && e != mgo.ErrNotFound {
+		m.Context().Error(profile + " error, " + e.Error())
+	}
 
-    return e
+	return e
 }
 
 // UpdateOrInsert update a existing document that match the query,
 // or insert a new document base on the update document if no document match,
 // an error of *LastError is returned if error is detected.
 func (m *Mongo) UpdateOrInsert(query interface{}, update interface{}) error {
-    profile := "Mongo.UpdateOrInsert"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.UpdateOrInsert"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    _, e := session.DB(m.db).C(m.coll).Upsert(query, update)
-    if e != nil {
-        m.Context().Error(profile + " error, " + e.Error())
-    }
+	_, e := session.DB(m.db).C(m.coll).Upsert(query, update)
+	if e != nil {
+		m.Context().Error(profile + " error, " + e.Error())
+	}
 
-    return e
+	return e
 }
 
 // DeleteOne delete one document that match the query.
 func (m *Mongo) DeleteOne(query interface{}) error {
-    profile := "Mongo.DeleteOne"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.DeleteOne"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    e := session.DB(m.db).C(m.coll).Remove(query)
-    if e != nil && e != mgo.ErrNotFound {
-        m.Context().Error(profile + " error, " + e.Error())
-    }
+	e := session.DB(m.db).C(m.coll).Remove(query)
+	if e != nil && e != mgo.ErrNotFound {
+		m.Context().Error(profile + " error, " + e.Error())
+	}
 
-    return e
+	return e
 }
 
 // DeleteAll delete all documents that match the query.
 func (m *Mongo) DeleteAll(query interface{}) error {
-    profile := "Mongo.DeleteAll"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.DeleteAll"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    _, e := session.DB(m.db).C(m.coll).RemoveAll(query)
-    if e != nil && e != mgo.ErrNotFound {
-        m.Context().Error(profile + " error, " + e.Error())
-    }
+	_, e := session.DB(m.db).C(m.coll).RemoveAll(query)
+	if e != nil && e != mgo.ErrNotFound {
+		m.Context().Error(profile + " error, " + e.Error())
+	}
 
-    return e
+	return e
 }
 
 // Count return the count of documents match the query.
 func (m *Mongo) Count(query interface{}, options ...bson.M) (int, error) {
-    profile := "Mongo.Count"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.Count"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    q := session.DB(m.db).C(m.coll).Find(query)
-    m.applyQueryOptions(q, options)
+	q := session.DB(m.db).C(m.coll).Find(query)
+	m.applyQueryOptions(q, options)
 
-    n, e := q.Count()
-    if e != nil {
-        m.Context().Error(profile + " error, " + e.Error())
-    }
+	n, e := q.Count()
+	if e != nil {
+		m.Context().Error(profile + " error, " + e.Error())
+	}
 
-    return n, e
+	return n, e
 }
 
 // PipeOne execute aggregation queries and get the first item from result set.
@@ -346,38 +344,38 @@ func (m *Mongo) Count(query interface{}, options ...bson.M) (int, error) {
 //      }
 //      m.PipeOne(pipeline, &result)
 func (m *Mongo) PipeOne(pipeline interface{}, result interface{}) error {
-    profile := "Mongo.PipeOne"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.PipeOne"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    e := session.DB(m.db).C(m.coll).Pipe(pipeline).One(result)
-    if e != nil && e != mgo.ErrNotFound {
-        m.Context().Error(profile + " error, " + e.Error())
-    }
+	e := session.DB(m.db).C(m.coll).Pipe(pipeline).One(result)
+	if e != nil && e != mgo.ErrNotFound {
+		m.Context().Error(profile + " error, " + e.Error())
+	}
 
-    return e
+	return e
 }
 
 // PipeAll execute aggregation queries and get all item from result set.
 // param result must be slice(interface{}, map, bson.M or bson compatible struct).
 // see PipeOne().
 func (m *Mongo) PipeAll(pipeline interface{}, result interface{}) error {
-    profile := "Mongo.PipeAll"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.PipeAll"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    e := session.DB(m.db).C(m.coll).Pipe(pipeline).All(result)
-    if e != nil && e != mgo.ErrNotFound {
-        m.Context().Error(profile + " error, " + e.Error())
-    }
+	e := session.DB(m.db).C(m.coll).Pipe(pipeline).All(result)
+	if e != nil && e != mgo.ErrNotFound {
+		m.Context().Error(profile + " error, " + e.Error())
+	}
 
-    return e
+	return e
 }
 
 // MapReduce execute map/reduce job that match the query.
@@ -391,62 +389,62 @@ func (m *Mongo) PipeAll(pipeline interface{}, result interface{}) error {
 //      result := []bson.M{}
 //      m.MapReduce(query, job, &result)
 func (m *Mongo) MapReduce(query interface{}, job *mgo.MapReduce, result interface{}, options ...bson.M) error {
-    profile := "Mongo.MapReduce"
-    m.Context().ProfileStart(profile)
-    defer m.Context().ProfileStop(profile)
+	profile := "Mongo.MapReduce"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
 
-    session := m.client.GetSession()
-    defer session.Close()
+	session := m.client.GetSession()
+	defer session.Close()
 
-    q := session.DB(m.db).C(m.coll).Find(query)
-    m.applyQueryOptions(q, options)
+	q := session.DB(m.db).C(m.coll).Find(query)
+	m.applyQueryOptions(q, options)
 
-    _, e := q.MapReduce(job, result)
-    if e != nil && e != mgo.ErrNotFound {
-        m.Context().Error(profile + " error, " + e.Error())
-    }
+	_, e := q.MapReduce(job, result)
+	if e != nil && e != mgo.ErrNotFound {
+		m.Context().Error(profile + " error, " + e.Error())
+	}
 
-    return e
+	return e
 }
 
 func (m *Mongo) applyQueryOptions(q *mgo.Query, options []bson.M) {
-    if len(options) == 0 {
-        return
-    }
+	if len(options) == 0 {
+		return
+	}
 
-    for key, opt := range options[0] {
-        switch key {
-        case "fields":
-            if fields, ok := opt.(bson.M); ok {
-                q.Select(fields)
-            }
+	for key, opt := range options[0] {
+		switch key {
+		case "fields":
+			if fields, ok := opt.(bson.M); ok {
+				q.Select(fields)
+			}
 
-        case "sort":
-            if arr, ok := opt.([]string); ok {
-                q.Sort(arr...)
-            } else if str, ok := opt.(string); ok {
-                q.Sort(str)
-            }
+		case "sort":
+			if arr, ok := opt.([]string); ok {
+				q.Sort(arr...)
+			} else if str, ok := opt.(string); ok {
+				q.Sort(str)
+			}
 
-        case "skip":
-            if skip, ok := opt.(int); ok {
-                q.Skip(skip)
-            }
+		case "skip":
+			if skip, ok := opt.(int); ok {
+				q.Skip(skip)
+			}
 
-        case "limit":
-            if limit, ok := opt.(int); ok {
-                q.Limit(limit)
-            }
+		case "limit":
+			if limit, ok := opt.(int); ok {
+				q.Limit(limit)
+			}
 
-        case "hint":
-            if arr, ok := opt.([]string); ok {
-                q.Hint(arr...)
-            } else if str, ok := opt.(string); ok {
-                q.Hint(str)
-            }
+		case "hint":
+			if arr, ok := opt.([]string); ok {
+				q.Hint(arr...)
+			} else if str, ok := opt.(string); ok {
+				q.Hint(str)
+			}
 
-        default:
-            panic(ErrInvalidOpt + key)
-        }
-    }
+		default:
+			panic(ErrInvalidOpt + key)
+		}
+	}
 }

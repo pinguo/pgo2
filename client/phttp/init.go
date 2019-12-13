@@ -1,10 +1,10 @@
 package phttp
 
 import (
-    "time"
+	"time"
 )
 
 const (
-    defaultUserAgent = "PGO2 Framework"
-    defaultTimeout   = 10 * time.Second
+	defaultUserAgent = "PGO2 Framework"
+	defaultTimeout   = 10 * time.Second
 )

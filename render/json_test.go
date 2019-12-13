@@ -1,57 +1,57 @@
 package render
 
 import (
-    "testing"
+	"testing"
 )
 
 func TestNewJson(t *testing.T) {
-    var obj interface{}
-    obj = NewJson("aa")
-    if _, ok := obj.(*Json); ok == false {
-        t.FailNow()
-    }
+	var obj interface{}
+	obj = NewJson("aa")
+	if _, ok := obj.(*Json); ok == false {
+		t.FailNow()
+	}
 }
 
 func TestJson_Content(t *testing.T) {
-    t.Run("panic", func(t *testing.T) {
-        defer func() {
-            if err := recover(); err != nil {
-                return
-            }
-            t.FailNow()
-        }()
+	t.Run("panic", func(t *testing.T) {
+		defer func() {
+			if err := recover(); err != nil {
+				return
+			}
+			t.FailNow()
+		}()
 
-        j := NewJson(TestJson_Content)
-        j.Content()
-    })
+		j := NewJson(TestJson_Content)
+		j.Content()
+	})
 
-    t.Run("normal", func(t *testing.T) {
-        j := NewJson("aa")
-        if j.Content() == nil {
-            t.FailNow()
-        }
-    })
+	t.Run("normal", func(t *testing.T) {
+		j := NewJson("aa")
+		if j.Content() == nil {
+			t.FailNow()
+		}
+	})
 
 }
 
 func TestJson_ContentType(t *testing.T) {
-    j := NewJson("aa")
-    if j.ContentType() != "application/json; charset=utf-8" {
-        t.FailNow()
-    }
+	j := NewJson("aa")
+	if j.ContentType() != "application/json; charset=utf-8" {
+		t.FailNow()
+	}
 }
 
 func TestJson_HttpCode(t *testing.T) {
-    j := NewJson("aa")
-    if j.HttpCode() != 200 {
-        t.FailNow()
-    }
+	j := NewJson("aa")
+	if j.HttpCode() != 200 {
+		t.FailNow()
+	}
 }
 
 func TestJson_SetHttpCode(t *testing.T) {
-    j := NewJson("aa")
-    j.SetHttpCode(100)
-    if j.HttpCode() != 100 {
-        t.FailNow()
-    }
+	j := NewJson("aa")
+	j.SetHttpCode(100)
+	if j.HttpCode() != 100 {
+		t.FailNow()
+	}
 }
