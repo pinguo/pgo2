@@ -1,11 +1,11 @@
 package pgo2
 
 import (
-    "fmt"
-    "strings"
+	"fmt"
+	"strings"
 
-    "github.com/pinguo/pgo2/core"
-    "github.com/pinguo/pgo2/util"
+	"github.com/pinguo/pgo2/core"
+	"github.com/pinguo/pgo2/util"
 )
 
 // I18n the internationalization component,
@@ -17,32 +17,32 @@ import (
 //     sourceLang: "en"
 //     targetLang: [ "en", "zh-CN", "zh-TW"]
 func NewI18n(config map[string]interface{}) *I18n {
-    i18n := &I18n{
-        sourceLang: "en",
-        targetLang: make(map[string]bool),
-    }
+	i18n := &I18n{
+		sourceLang: "en",
+		targetLang: make(map[string]bool),
+	}
 
-    core.Configure(i18n, config)
+	core.Configure(i18n, config)
 
-    return i18n
+	return i18n
 }
 
 type I18n struct {
-    sourceLang string
-    targetLang map[string]bool
+	sourceLang string
+	targetLang map[string]bool
 }
 
 // SetSourceLang set language of source
 func (i *I18n) SetSourceLang(lang string) {
-    i.sourceLang = lang
+	i.sourceLang = lang
 }
 
 // SetTargetLang set language of target
 func (i *I18n) SetTargetLang(targets []interface{}) {
-    for _, v := range targets {
-        lang := util.ToString(v)
-        i.targetLang[lang] = true
-    }
+	for _, v := range targets {
+		lang := util.ToString(v)
+		i.targetLang[lang] = true
+	}
 }
 
 // Translate message to target lang, lang format is one of the following:
@@ -50,48 +50,48 @@ func (i *I18n) SetTargetLang(targets []interface{}) {
 // 2. ll-CC: lower case lang code and upper case area code, zh-CN
 // 3. ll: lower case of lang code without area code, zh
 func (i *I18n) Translate(message, lang string, params ...interface{}) string {
-    translation := i.loadMessage(message, i.detectLang(lang))
-    if len(params) > 0 {
-        return fmt.Sprintf(translation, params...)
-    }
+	translation := i.loadMessage(message, i.detectLang(lang))
+	if len(params) > 0 {
+		return fmt.Sprintf(translation, params...)
+	}
 
-    return translation
+	return translation
 }
 
 // detect support lang, lang can be accept-language header
 func (i *I18n) detectLang(lang string) string {
-    // use first part of accept-language
-    if pos := strings.IndexByte(lang, ','); pos > 0 {
-        lang = lang[:pos]
-    }
+	// use first part of accept-language
+	if pos := strings.IndexByte(lang, ','); pos > 0 {
+		lang = lang[:pos]
+	}
 
-    // omit q weight
-    if pos := strings.IndexByte(lang, ';'); pos > 0 {
-        lang = lang[:pos]
-    }
+	// omit q weight
+	if pos := strings.IndexByte(lang, ';'); pos > 0 {
+		lang = lang[:pos]
+	}
 
-    // format lang to ll-CC format
-    lang = util.FormatLanguage(lang)
+	// format lang to ll-CC format
+	lang = util.FormatLanguage(lang)
 
-    if i.targetLang[lang] {
-        return lang
-    }
+	if i.targetLang[lang] {
+		return lang
+	}
 
-    if pos := strings.IndexByte(lang, '-'); pos > 0 {
-        if lang = lang[:pos]; i.targetLang[lang] {
-            return lang
-        }
-    }
+	if pos := strings.IndexByte(lang, '-'); pos > 0 {
+		if lang = lang[:pos]; i.targetLang[lang] {
+			return lang
+		}
+	}
 
-    return i.sourceLang
+	return i.sourceLang
 }
 
 // load message from lang file i18n_{lang}.json
 func (i *I18n) loadMessage(message, lang string) string {
-    if !i.targetLang[lang] {
-        return message
-    }
+	if !i.targetLang[lang] {
+		return message
+	}
 
-    key := fmt.Sprintf("i18n_%s.%s", lang, message)
-    return App().Config().GetString(key, message)
+	key := fmt.Sprintf("i18n_%s.%s", lang, message)
+	return App().Config().GetString(key, message)
 }

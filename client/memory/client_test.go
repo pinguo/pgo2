@@ -3,15 +3,15 @@ package memory
 import "testing"
 
 func TestNew(t *testing.T) {
-    var obj interface{}
-    obj, err := New(nil)
-    if _, ok := obj.(*Client); ok == false {
-        t.FailNow()
-    }
+	var obj interface{}
+	obj, err := New(nil)
+	if _, ok := obj.(*Client); ok == false {
+		t.FailNow()
+	}
 
-    if err != nil {
-        t.FailNow()
-    }
+	if err != nil {
+		t.FailNow()
+	}
 }
 
 func TestClient_Add(t *testing.T) {

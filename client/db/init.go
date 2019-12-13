@@ -1,10 +1,9 @@
 package db
 
 import (
-    "time"
+	"time"
 )
 
 const (
-
-    defaultTimeout     = 10 * time.Second
+	defaultTimeout = 10 * time.Second
 )

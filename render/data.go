@@ -1,30 +1,30 @@
 package render
 
 import (
-    "net/http"
+	"net/http"
 )
 
 func NewData(data []byte) Render {
-    return &Data{data: data, httpCode: http.StatusOK}
+	return &Data{data: data, httpCode: http.StatusOK}
 }
 
 type Data struct {
-    data     []byte
-    httpCode int
+	data     []byte
+	httpCode int
 }
 
 func (d *Data) SetHttpCode(code int) {
-    d.httpCode = code
+	d.httpCode = code
 }
 
 func (d *Data) Content() []byte {
-    return d.data
+	return d.data
 }
 
 func (d *Data) HttpCode() int {
-    return d.httpCode
+	return d.httpCode
 }
 
 func (d *Data) ContentType() string {
-    return ""
+	return ""
 }
