@@ -75,8 +75,8 @@ func TestMd5String(t *testing.T) {
 	})
 
 	t.Run("other", func(t *testing.T) {
-		aa := func() {}
-		if Md5String(aa) != "0aa68bb7d22c92f23dcce05ae16dc6b0" {
+		aa := 11111
+		if Md5String(aa) != "b0baee9d279d34fa1dfd71aadb908c3f" {
 			t.FailNow()
 		}
 	})

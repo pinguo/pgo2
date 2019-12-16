@@ -63,6 +63,16 @@ func (c *Context) reset() {
 
 // start plugin chain process
 func (c *Context) Process(plugins []iface.IPlugin) {
+	// Start init info
+	c.Start(plugins)
+	// finish response
+	defer c.finish(false)
+	// process request
+	c.Next()
+
+}
+
+func (c *Context) Start(plugins []iface.IPlugin){
 	// generate request id
 	logId := c.Header("X-Log-Id", "")
 	if logId == "" {
@@ -78,11 +88,6 @@ func (c *Context) Process(plugins []iface.IPlugin) {
 		c.plugins = plugins
 		c.Logger.Init(App().Name(), logId, App().Log())
 	}
-	// finish response
-	defer c.finish(false)
-	// process request
-	c.Next()
-
 }
 
 // finish process request
