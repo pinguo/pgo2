@@ -16,7 +16,7 @@ func init() {
 }
 
 // NewMemCache of MemCache Client, add context support.
-// usage: mc := this.GetObj(adapter.New()).(adapter.IMemCache)/(*adapter.MemCache)
+// usage: mc := this.GetObj(adapter.NewMemCache()).(adapter.IMemCache)/(*adapter.MemCache)
 func NewMemCache(componentId ...string) *MemCache {
 	id := DefaultMemCacheId
 	if len(componentId) > 0 {
@@ -31,7 +31,7 @@ func NewMemCache(componentId ...string) *MemCache {
 }
 
 // NewMemCachePool of MemCache Client from pool, add context support.
-// usage: memory := this.GetObjPool(adapter.NewMaxMindPool).(adapter.IMemCache)/(*adapter.MemCache)
+// usage: mc := this.GetObjPool(adapter.NewMemCachePool).(adapter.IMemCache)/(*adapter.MemCache)
 func NewMemCachePool(ctr iface.IContext, componentId ...interface{}) iface.IObject {
 	id := DefaultMemCacheId
 	if len(componentId) > 0 {
