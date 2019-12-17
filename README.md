@@ -40,7 +40,7 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
     ├── lib/            # 项目基础库目录
     ├── model/          # 模型目录(数据交互)
     ├── service/        # 服务目录(业务逻辑)
-    ├── struct/         # 结构目录(数据定义)
+    ├── structs/         # 结构目录(数据定义)
 
 ```
 
