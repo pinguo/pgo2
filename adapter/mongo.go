@@ -14,7 +14,7 @@ func init() {
 }
 
 // NewMongo of Mongo Client, add context support.
-// usage: mongo := this.GetObject(Mongo.New(db, coll)).(adapter.IMongo)/(*adapter.Mongo)
+// usage: mongo := this.GetObject(adapter.NewMongo(db, coll)).(adapter.IMongo)/(*adapter.Mongo)
 func NewMongo(db, coll string, componentId ...string) *Mongo {
 	id := DefaultMongoId
 	if len(componentId) > 0 {
@@ -32,7 +32,7 @@ func NewMongo(db, coll string, componentId ...string) *Mongo {
 }
 
 // NewMongoPool of Mongo Client from pool, add context support.
-// usage: mongo := this.GetObjectPool(Mongo.New,db, coll)).(adapter.IMongo)/(*adapter.Mongo)
+// usage: mongo := this.GetObjectPool(adapter.NewMongoPool,db, coll)).(adapter.IMongo)/(*adapter.Mongo)
 func NewMongoPool(ctr iface.IContext, args ...interface{}) iface.IObject {
 	if len(args) < 2 {
 		panic("need db and coll")
