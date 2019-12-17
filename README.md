@@ -47,7 +47,7 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
 ## 快速开始
 1. 拷贝makefile
     
-    非IDE环境(命令行)下，推荐使用make做为编译打包的控制工具，从[pgo2](https://github.com/pinguo/pgo2)或[pgo2-demo](https://github.com/pinguo/pgo2-demo)将makefile复制到项目目录下。
+    非IDE环境(命令行)下，推荐使用make做为编译打包的控制工具，从[pgo2](https://github.com/pinguo/pgo-docs/tree/pgo2)或[pgo2-demo](https://github.com/pinguo/pgo2-demo)将makefile复制到项目目录下。
     ```sh
     make start      # 编译并运行当前工程
     make stop       # 停止当前工程的进程
@@ -209,4 +209,4 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
     ```
 
 ### 其它
-参见[pgo2-docs](https://github.com/pinguo/pgo2-docs)
+参见[pgo2-docs](https://github.com/pinguo/pgo-docs/tree/pgo2)
