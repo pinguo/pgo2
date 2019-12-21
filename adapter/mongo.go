@@ -109,7 +109,7 @@ func (m *Mongo) FindOne(query interface{}, result interface{}, options ...bson.M
 
 	e := q.One(result)
 	if e == nil || e == mgo.ErrNotFound {
-		return nil
+		// return nil
 	}
 
 	return e
@@ -131,7 +131,7 @@ func (m *Mongo) FindAll(query interface{}, result interface{}, options ...bson.M
 
 	e := q.All(result)
 	if e == nil || e == mgo.ErrNotFound {
-		return nil
+		// return nil
 	}
 
 	return e
@@ -153,7 +153,7 @@ func (m *Mongo) FindAndModify(query interface{}, change mgo.Change, result inter
 
 	_, e := q.Apply(change, result)
 	if e == nil || e == mgo.ErrNotFound {
-		return nil
+		// return nil
 	}
 
 	return e
@@ -175,7 +175,7 @@ func (m *Mongo) FindDistinct(query interface{}, key string, result interface{}, 
 
 	e := q.Distinct(key, result)
 	if e == nil || e == mgo.ErrNotFound {
-		return nil
+		// return nil
 	}
 
 	return e
