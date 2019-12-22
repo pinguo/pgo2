@@ -11,8 +11,7 @@ type containerTestCommand struct {
 
 func TestContainer(t *testing.T) {
 	container := NewContainer("on")
-	container.Bind(&containerTestCommand{})
-	className := "github.com/pinguo/pgo2/containerTestCommand"
+	className := container.Bind(&containerTestCommand{})
 	t.Run("Bind&Has", func(t *testing.T) {
 		if container.Has(className) == false {
 			t.FailNow()

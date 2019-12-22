@@ -42,7 +42,7 @@ type Container struct {
 
 // Bind bind template object to class,
 // param i must be a pointer of struct.
-func (c *Container) Bind(i interface{}) {
+func (c *Container) Bind(i interface{}) string{
 	iv := reflect.ValueOf(i)
 	if iv.Kind() != reflect.Ptr {
 		panic("Container: invalid type, need pointer")
@@ -88,6 +88,8 @@ func (c *Container) Bind(i interface{}) {
 	}
 
 	c.items[name] = &item
+
+	return name
 }
 
 // Has check if the class exists in container
