@@ -15,5 +15,4 @@ require (
 	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271
 	golang.org/x/sys v0.0.0-20191120155948-bd437916bb0e // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gopkg.in/yaml.v2 v2.2.4 // indirect
 )
