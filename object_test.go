@@ -6,10 +6,14 @@ import (
 	"github.com/pinguo/pgo2/iface"
 )
 
-func newMockObjectTestPool(ctr iface.IContext, params ...interface{}) iface.IObject {
-	className := "github.com/pinguo/pgo2/mockObjectTest"
-	return App().GetObjPool(className, ctr)
+var initData = "initData"
+func newMockObjectTestPool(iObj iface.IObject, params ...interface{}) iface.IObject {
+	obj := iObj.(*mockObjectTest)
+	obj.Data = initData
+	return obj
 }
+
+var MockObjectTestClass = "github.com/pinguo/pgo2/mockObjectTest"
 
 func newMockObjectTest(params ...interface{}) iface.IObject {
 	return &mockObjectTest{}
@@ -64,7 +68,8 @@ func TestObject_GetObjPool(t *testing.T) {
 	obj := &Object{}
 	ctr := &Context{}
 	obj.SetContext(ctr)
-	m := obj.GetObjPool(newMockObjectTestPool)
+
+	m := obj.GetObjPool(MockObjectTestClass, newMockObjectTestPool)
 	if _, ok := m.(iface.IObject); ok == false {
 		t.FailNow()
 	}
@@ -72,10 +77,10 @@ func TestObject_GetObjPool(t *testing.T) {
 	data := "data111"
 	mm := m.(*mockObjectTest)
 	mm.Data = data
-	m = obj.GetObjPool(newMockObjectTestPool)
+	m = obj.GetObjPool(MockObjectTestClass, newMockObjectTestPool)
 	mm = m.(*mockObjectTest)
-	if mm.Data == data {
-		t.Fatal(`mm.Data == `, data)
+	if mm.Data != initData {
+		t.Fatal(`mm.Data == `, initData)
 	}
 }
 
@@ -135,18 +140,20 @@ func TestObject_GetObjPoolCtx(t *testing.T) {
 	ctr1 := &Context{}
 	ctr1.actionId = "test1"
 
-	m := obj.GetObjPoolCtx(ctr1, newMockObjectTestPool)
+	m := obj.GetObjPoolCtx(ctr1,MockObjectTestClass, newMockObjectTestPool)
 	if _, ok := m.(iface.IObject); ok == false {
 		t.FailNow()
 	}
 
+	ctr2 := &Context{}
+	ctr2.actionId = "test1"
 	data := "data111"
 	mm := m.(*mockObjectTest)
 	mm.Data = data
-	m = obj.GetObjPoolCtx(ctr1, newMockObjectTestPool)
+	m = obj.GetObjPoolCtx(ctr2, MockObjectTestClass, newMockObjectTestPool)
 	mm = m.(*mockObjectTest)
-	if mm.Data == data {
-		t.Fatal(`mm.Data == `, data)
+	if mm.Data != initData {
+		t.Fatal(`mm.Data == `, initData)
 	}
 
 	if mm.Context().ActionId() != "test1" {

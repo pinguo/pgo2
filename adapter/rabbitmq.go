@@ -8,9 +8,10 @@ import (
 	"github.com/streadway/amqp"
 )
 
+var RabbitMqClass string
 func init() {
 	container := pgo2.App().Container()
-	container.Bind(&RabbitMq{})
+	RabbitMqClass = container.Bind(&RabbitMq{})
 }
 
 type RabbitMq struct {
@@ -36,15 +37,15 @@ func NewRabbitMq(componentId ...string) *RabbitMq {
 }
 
 // NewRabbitMqPool of RabbitMq Client from pool, add context support.
-// usage: rabbitMq := this.GetObjPool(adapter.NewRabbitMqPool).(adapter.IRabbitMq)/(*adapter.RabbitMq)
-func NewRabbitMqPool(ctr iface.IContext, componentId ...interface{}) iface.IObject {
+// usage: rabbitMq := this.GetObjPool(adapter.RabbitMqClass,adapter.NewRabbitMqPool).(adapter.IRabbitMq)/(*adapter.RabbitMq)
+func NewRabbitMqPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
 
 	id := DefaultRabbitId
 	if len(componentId) > 0 {
 		id = componentId[0].(string)
 	}
 
-	r := pgo2.App().GetObjPool(RabbitMqClass, ctr).(*RabbitMq)
+	r := iObj.(*RabbitMq)
 	r.client = pgo2.App().Component(id, rabbitmq.New).(*rabbitmq.Client)
 	r.panicRecover = true
 

@@ -1,7 +1,6 @@
 package adapter
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/pinguo/pgo2"
@@ -11,9 +10,10 @@ import (
 	"github.com/pinguo/pgo2/value"
 )
 
+var MemoryClass string
 func init() {
 	container := pgo2.App().Container()
-	container.Bind(&Memory{})
+	MemoryClass = container.Bind(&Memory{})
 }
 
 // NewMemory of Memory Client, add context support.
@@ -34,18 +34,16 @@ func NewMemory(componentId ...string) *Memory {
 }
 
 // NewMemoryPool of Memory Client from object pool, add context support.
-// usage: memory := this.GetObjPool(adapter.NewMemoryPool).(adapter.IMemory)/(*adapter.Memory)
-func NewMemoryPool(ctr iface.IContext, componentId ...interface{}) iface.IObject {
+// usage: memory := this.GetObjPool(adapter.MemoryClass, adapter.NewMemoryPool).(adapter.IMemory)/(*adapter.Memory)
+func NewMemoryPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
 	id := DefaultMemoryId
 	if len(componentId) > 0 {
-		fmt.Println(componentId[0])
 		id = componentId[0].(string)
 	}
 
-	m := pgo2.App().GetObjPool(MemoryClass, ctr).(*Memory)
+	m := iObj.(*Memory)
 
-	client := pgo2.App().Component(id, memory.New)
-	m.client = client.(*memory.Client)
+	m.client = pgo2.App().Component(id, memory.New).(*memory.Client)
 	m.panicRecover = true
 
 	return m

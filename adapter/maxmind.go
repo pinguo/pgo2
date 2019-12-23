@@ -6,8 +6,9 @@ import (
 	"github.com/pinguo/pgo2/iface"
 )
 
+var MaxMindClass string
 func init() {
-	pgo2.App().Container().Bind(&MaxMind{})
+	MaxMindClass = pgo2.App().Container().Bind(&MaxMind{})
 }
 
 // NewMaxMind of MaxMind Client, add context support.
@@ -26,14 +27,14 @@ func NewMaxMind(componentId ...string) *MaxMind {
 }
 
 // NewMaxMindPool of MaxMind Client from pool, add context support.
-// usage: mmd := this.GetObjPool(adapter.NewMaxMindPool).(adapter.IMaxMind)/(*adapter.MaxMind)
-func NewMaxMindPool(ctr iface.IContext, componentId ...interface{}) iface.IObject {
+// usage: mmd := this.GetObjPool(adapter.MaxMindClass, adapter.NewMaxMindPool).(adapter.IMaxMind)/(*adapter.MaxMind)
+func NewMaxMindPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
 	id := DefaultMaxMindId
 	if len(componentId) > 0 {
 		id = componentId[0].(string)
 	}
 
-	m := pgo2.App().GetObjPool(MaxMindClass, ctr).(*MaxMind)
+	m := iObj.(*MaxMind)
 
 	m.client = pgo2.App().Component(id, maxmind.New).(*maxmind.Client)
 

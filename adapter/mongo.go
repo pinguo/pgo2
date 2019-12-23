@@ -8,9 +8,10 @@ import (
 	"github.com/pinguo/pgo2/iface"
 )
 
+var MongoClass string
 func init() {
 	container := pgo2.App().Container()
-	container.Bind(&Mongo{})
+	MongoClass = container.Bind(&Mongo{})
 }
 
 // NewMongo of Mongo Client, add context support.
@@ -32,8 +33,8 @@ func NewMongo(db, coll string, componentId ...string) *Mongo {
 }
 
 // NewMongoPool of Mongo Client from pool, add context support.
-// usage: mongo := this.GetObjectPool(adapter.NewMongoPool,db, coll)).(adapter.IMongo)/(*adapter.Mongo)
-func NewMongoPool(ctr iface.IContext, args ...interface{}) iface.IObject {
+// usage: mongo := this.GetObjectPool(adapter.MongoClass, adapter.NewMongoPool,db, coll)).(adapter.IMongo)/(*adapter.Mongo)
+func NewMongoPool(iObj iface.IObject, args ...interface{}) iface.IObject {
 	if len(args) < 2 {
 		panic("need db and coll")
 	}
@@ -53,7 +54,7 @@ func NewMongoPool(ctr iface.IContext, args ...interface{}) iface.IObject {
 		panic("db and coll must string")
 	}
 
-	m := pgo2.App().GetObjPool(MongoClass, ctr).(*Mongo)
+	m := iObj.(*Mongo)
 
 	m.client = pgo2.App().Component(id, mongo.New).(*mongo.Client)
 	m.db = db

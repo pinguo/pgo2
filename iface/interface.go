@@ -21,9 +21,9 @@ type IObject interface {
 	SetContext(ctx IContext)
 	Context() IContext
 	GetObj(obj IObject) IObject
-	GetObjPool(funcName IObjPoolFunc, params ...interface{}) IObject
+	GetObjPool(className string, funcName IObjPoolFunc, params ...interface{}) IObject
 	GetObjSingle(name string, funcName IObjSingleFunc, params ...interface{}) IObject
-	GetObjPoolCtx(ctr IContext, funcName IObjPoolFunc, params ...interface{}) IObject
+	GetObjPoolCtx(ctr IContext, className string, funcName IObjPoolFunc, params ...interface{}) IObject
 	GetObjCtx(ctx IContext, obj IObject) IObject
 	GetObjSingleCtx(ctx IContext, name string, funcName IObjSingleFunc, params ...interface{}) IObject
 }
@@ -135,6 +135,6 @@ type IContext interface {
 	ProfileString() string
 }
 
-type IObjPoolFunc func(ctr IContext, params ...interface{}) IObject
+type IObjPoolFunc func(obj IObject, params ...interface{}) IObject
 type IObjSingleFunc func(params ...interface{}) IObject
 type IComponentFunc func(config map[string]interface{}) (interface{}, error)

@@ -26,8 +26,13 @@ func (o *Object) GetObj(obj iface.IObject) iface.IObject {
 }
 
 // GetObjPool Get Object from pool
-func (o *Object) GetObjPool(funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
-	return funcName(o.Context(), params...)
+func (o *Object) GetObjPool(className string, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
+	obj := App().GetObjPool(className, o.Context())
+
+	if funcName != nil {
+		return funcName(obj, params...)
+	}
+	return obj
 }
 
 // GetObject Get single object
@@ -39,8 +44,13 @@ func (o *Object) GetObjSingle(name string, funcName iface.IObjSingleFunc, params
 }
 
 // GetObjPoolCtx Get Object from pool and new Context
-func (o *Object) GetObjPoolCtx(ctx iface.IContext, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
-	return funcName(ctx, params...)
+func (o *Object) GetObjPoolCtx(ctx iface.IContext, className string, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
+	obj := App().GetObjPool(className, ctx)
+
+	if funcName != nil {
+		return funcName(obj, params...)
+	}
+	return obj
 }
 
 // GetObject create new object  and new Context
