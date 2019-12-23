@@ -10,9 +10,10 @@ import (
 	"github.com/pinguo/pgo2/value"
 )
 
+var RedisClass string
 func init() {
 	container := pgo2.App().Container()
-	container.Bind(&Redis{})
+	RedisClass = container.Bind(&Redis{})
 }
 
 // NewRedis of Redis Client, add context support.
@@ -31,14 +32,14 @@ func NewRedis(componentId ...string) *Redis {
 }
 
 // NewRedisPool of Redis Client from pool, add context support.
-// usage: redis := this.GetObjPool(adapter.NewRedisPool).(*adapter.Redis)
-func NewRedisPool(ctr iface.IContext, componentId ...interface{}) iface.IObject {
+// usage: redis := this.GetObjPool(adapter.RedisClass, adapter.NewRedisPool).(*adapter.Redis)
+func NewRedisPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
 	id := DefaultRedisId
 	if len(componentId) > 0 {
 		id = componentId[0].(string)
 	}
 
-	c := pgo2.App().GetObjPool(RedisClass, ctr).(*Redis)
+	c := iObj.(*Redis)
 
 	c.client = pgo2.App().Component(id, redis.New).(*redis.Client)
 	c.panicRecover = true

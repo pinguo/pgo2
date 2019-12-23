@@ -10,9 +10,10 @@ import (
 	"github.com/pinguo/pgo2/value"
 )
 
+var MemCacheClass string
 func init() {
 	container := pgo2.App().Container()
-	container.Bind(&MemCache{})
+	MemCacheClass = container.Bind(&MemCache{})
 }
 
 // NewMemCache of MemCache Client, add context support.
@@ -31,14 +32,14 @@ func NewMemCache(componentId ...string) *MemCache {
 }
 
 // NewMemCachePool of MemCache Client from pool, add context support.
-// usage: mc := this.GetObjPool(adapter.NewMemCachePool).(adapter.IMemCache)/(*adapter.MemCache)
-func NewMemCachePool(ctr iface.IContext, componentId ...interface{}) iface.IObject {
+// usage: mc := this.GetObjPool(adapter.MemCacheClass, adapter.NewMemCachePool).(adapter.IMemCache)/(*adapter.MemCache)
+func NewMemCachePool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
 	id := DefaultMemCacheId
 	if len(componentId) > 0 {
 		id = componentId[0].(string)
 	}
 
-	m := pgo2.App().GetObjPool(MemCacheClass, ctr).(*MemCache)
+	m := iObj.(*MemCache)
 
 	m.client = pgo2.App().Component(id, memcache.New).(*memcache.Client)
 

@@ -19,12 +19,13 @@ var (
 	txPool   sync.Pool
 )
 
+var DbClass string
 func init() {
 	stmtPool.New = func() interface{} { return &Stmt{} }
 	rowPool.New = func() interface{} { return &Row{} }
 	txPool.New = func() interface{} { return &Tx{} }
 	container := pgo2.App().Container()
-	container.Bind(&Db{})
+	DbClass = container.Bind(&Db{})
 }
 
 type Db struct {
@@ -48,14 +49,14 @@ func NewDb(componentId ...string) *Db {
 }
 
 // NewDbPool of db Client from pool, add context support.
-// usage: db := this.GetObjPool(adapter.NewDbPool).(adapter.IDb)/(*adapter.Db)
-func NewDbPool(ctr iface.IContext, componentId ...interface{}) iface.IObject {
+// usage: db := this.GetObjPool(adapter.DbClass, adapter.NewDbPool).(adapter.IDb)/(*adapter.Db)
+func NewDbPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
 	id := DefaultDbId
 	if len(componentId) > 0 {
 		id = componentId[0].(string)
 	}
 
-	d := pgo2.App().GetObjPool(DbClass, ctr).(*Db)
+	d := iObj.(*Db)
 
 	d.client = pgo2.App().Component(id, db.New).(*db.Client)
 

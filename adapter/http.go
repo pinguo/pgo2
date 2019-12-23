@@ -11,9 +11,10 @@ import (
 	"github.com/pinguo/pgo2/util"
 )
 
+var HttpClass string
 func init() {
 	container := pgo2.App().Container()
-	container.Bind(&Http{})
+	HttpClass = container.Bind(&Http{})
 }
 
 // Http of Http Client, add context support.
@@ -34,17 +35,16 @@ func NewHttp(componentId ...string) *Http {
 }
 
 // Http of Http Client from pool, add context support.
-// usage: http := this.GetObjPool(adapter.NewHttpPool).(adapter.IHttp)/(*adapter.Http)
-func NewHttpPool(ctr *pgo2.Context, componentId ...interface{}) iface.IObject {
+// usage: http := this.GetObjPool(adapter.HttpClass, adapter.NewHttpPool).(adapter.IHttp)/(*adapter.Http)
+func NewHttpPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
 	id := DefaultHttpId
 	if len(componentId) > 0 {
 		id = componentId[0].(string)
 	}
 
-	h := pgo2.App().GetObjPool(HttpClass, ctr).(*Http)
+	h := iObj.(*Http)
 
-	client := pgo2.App().Component(id, phttp.New)
-	h.client = client.(*phttp.Client)
+	h.client = pgo2.App().Component(id, phttp.New).(*phttp.Client)
 	h.panicRecover = true
 
 	return h
