@@ -41,9 +41,11 @@ func (c *Config) Init() {
 		c.paths = append(c.paths, confPath)
 	}
 
-	envPath := filepath.Join(confPath, c.env)
-	if f, _ := os.Stat(envPath); f != nil && f.IsDir() {
-		c.paths = append(c.paths, envPath)
+	if c.env != "" {
+		envPath := filepath.Join(confPath, c.env)
+		if f, _ := os.Stat(envPath); f != nil && f.IsDir() {
+			c.paths = append(c.paths, envPath)
+		}
 	}
 
 	c.AddParser("json", &JsonParser{})
@@ -56,9 +58,11 @@ func (c *Config) CheckPath() error {
 		return errors.New("Config: invalid configs path, " + confPath)
 	}
 
-	envPath := filepath.Join(confPath, c.env)
-	if f, _ := os.Stat(envPath); f == nil || !f.IsDir() {
-		return errors.New("Config: invalid env path, " + envPath)
+	if c.env != "" {
+		envPath := filepath.Join(confPath, c.env)
+		if f, _ := os.Stat(envPath); f == nil || !f.IsDir() {
+			return errors.New("Config: invalid env path, " + envPath)
+		}
 	}
 
 	return nil
