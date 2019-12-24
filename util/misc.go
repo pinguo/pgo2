@@ -119,7 +119,7 @@ func PanicTrace(maxDepth int, multiLine, debug bool) string {
 	}
 
 	stack := bytes.NewBuffer(buf)
-	if debug{
+	if debug {
 		return stack.String()
 	}
 
@@ -134,7 +134,7 @@ func PanicTrace(maxDepth int, multiLine, debug bool) string {
 		}
 
 		// skip until first panic
-		if strings.Index(line, "runtime/panic.go") !=-1 {
+		if strings.Index(line, "runtime/panic.go") != -1 {
 			meetPanic = true
 			continue
 		}

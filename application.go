@@ -29,7 +29,7 @@ func NewApp() *Application {
 
 	app := &Application{
 		mode:       ModeWeb,
-		env:        DefaultEnv,
+		env:        "",
 		name:       strings.TrimSuffix(exeBase, exeExt),
 		components: make(map[string]interface{}),
 		objects:    make(map[string]iface.IObject),
