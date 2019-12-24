@@ -76,6 +76,9 @@ func GLogger() *logs.Logger {
 	return logger
 }
 
+// Map alias for map[string]interface{}
+type Map map[string]interface{}
+
 // SetAlias set path alias, eg. @app => /path/to/base
 func SetAlias(alias, path string) {
 	if len(alias) > 0 && alias[0] != '@' {
