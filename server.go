@@ -49,6 +49,7 @@ type ServerConfig struct {
 //     statsInterval: "60s"
 //     enableAccessLog: true
 //     maxPostBodySize: 1048576
+//     debug:true
 func NewServer(config map[string]interface{}) *Server {
 	server := &Server{
 		maxHeaderBytes:  DefaultHeaderBytes,
@@ -86,6 +87,7 @@ type Server struct {
 	servers         []*http.Server  // http server list
 	pool            sync.Pool       // Context pool
 	maxPostBodySize int64           // max post body size
+	debug           bool            // debug=true not recover panic
 }
 
 // SetHttpAddr set http addr, if both httpAddr and httpsAddr
@@ -154,6 +156,11 @@ func (s *Server) SetStatsInterval(v string) {
 // SetEnableAccessLog set access log enable or not
 func (s *Server) SetEnableAccessLog(v bool) {
 	s.enableAccessLog = v
+}
+
+// SetDebug set debug
+func (s *Server) SetDebug(v bool) {
+	s.debug = v
 }
 
 // SetPlugins set plugin by names
@@ -251,11 +258,9 @@ func (s *Server) Serve() {
 	wg.Wait()
 }
 
-
-
 // ServeCMD serve command request
 func (s *Server) ServeCMD() {
-	ctx := Context{enableAccessLog: s.enableAccessLog}
+	ctx := Context{debug: s.debug, enableAccessLog: s.enableAccessLog}
 	// only apply the last plugin for command
 	ctx.Process(s.plugins[len(s.plugins)-1:])
 }
@@ -271,7 +276,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	ctx := s.pool.Get().(iface.IContext)
 
-	ctx.HttpRW(s.enableAccessLog, r, w)
+	ctx.HttpRW(s.debug, s.enableAccessLog, r, w)
 	ctx.Process(s.plugins)
 	s.pool.Put(ctx)
 }
@@ -308,7 +313,7 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
 	defer func() {
 		if v := recover(); v != nil {
 
-			controller.HandlePanic(v)
+			controller.HandlePanic(v, s.debug)
 		}
 
 		// after action hook

@@ -31,7 +31,7 @@ type IObject interface {
 type IController interface {
 	BeforeAction(action string)
 	AfterAction(action string)
-	HandlePanic(v interface{})
+	HandlePanic(v interface{}, debug bool)
 }
 
 type IPlugin interface {
@@ -73,7 +73,7 @@ type IView interface {
 }
 
 type IContext interface {
-	HttpRW(enableAccessLog bool, r *http.Request, w http.ResponseWriter)
+	HttpRW(debug, enableAccessLog bool, r *http.Request, w http.ResponseWriter)
 	Process(plugins []IPlugin)
 	Notice(format string, v ...interface{})
 	Debug(format string, v ...interface{})

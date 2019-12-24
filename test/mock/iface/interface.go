@@ -253,15 +253,15 @@ func (mr *MockIControllerMockRecorder) AfterAction(action interface{}) *gomock.C
 }
 
 // HandlePanic mocks base method
-func (m *MockIController) HandlePanic(v interface{}) {
+func (m *MockIController) HandlePanic(v interface{}, debug bool) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "HandlePanic", v)
+	m.ctrl.Call(m, "HandlePanic", v, debug)
 }
 
 // HandlePanic indicates an expected call of HandlePanic
-func (mr *MockIControllerMockRecorder) HandlePanic(v interface{}) *gomock.Call {
+func (mr *MockIControllerMockRecorder) HandlePanic(v, debug interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HandlePanic", reflect.TypeOf((*MockIController)(nil).HandlePanic), v)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HandlePanic", reflect.TypeOf((*MockIController)(nil).HandlePanic), v, debug)
 }
 
 // MockIPlugin is a mock of IPlugin interface
@@ -508,15 +508,15 @@ func (m *MockIContext) EXPECT() *MockIContextMockRecorder {
 }
 
 // HttpRW mocks base method
-func (m *MockIContext) HttpRW(enableAccessLog bool, r *http.Request, w http.ResponseWriter) {
+func (m *MockIContext) HttpRW(debug, enableAccessLog bool, r *http.Request, w http.ResponseWriter) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "HttpRW", enableAccessLog, r, w)
+	m.ctrl.Call(m, "HttpRW", debug, enableAccessLog, r, w)
 }
 
 // HttpRW indicates an expected call of HttpRW
-func (mr *MockIContextMockRecorder) HttpRW(enableAccessLog, r, w interface{}) *gomock.Call {
+func (mr *MockIContextMockRecorder) HttpRW(debug, enableAccessLog, r, w interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HttpRW", reflect.TypeOf((*MockIContext)(nil).HttpRW), enableAccessLog, r, w)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HttpRW", reflect.TypeOf((*MockIContext)(nil).HttpRW), debug, enableAccessLog, r, w)
 }
 
 // Process mocks base method

@@ -25,6 +25,7 @@ type objectItem struct {
 // safe, copy context to use in other goroutines
 type Context struct {
 	enableAccessLog bool
+	debug           bool
 	response        Response
 	input           *http.Request
 	output          http.ResponseWriter
@@ -43,7 +44,8 @@ type Context struct {
 	logs.Logger
 }
 
-func (c *Context) HttpRW(enableAccessLog bool, r *http.Request, w http.ResponseWriter) {
+func (c *Context) HttpRW(debug, enableAccessLog bool, r *http.Request, w http.ResponseWriter) {
+	c.debug = debug
 	c.enableAccessLog = enableAccessLog
 	c.input = r
 	c.output = &c.response
@@ -72,7 +74,7 @@ func (c *Context) Process(plugins []iface.IPlugin) {
 
 }
 
-func (c *Context) Start(plugins []iface.IPlugin){
+func (c *Context) Start(plugins []iface.IPlugin) {
 	// generate request id
 	logId := c.Header("X-Log-Id", "")
 	if logId == "" {
@@ -103,7 +105,7 @@ func (c *Context) finish(goLog bool) {
 			c.End(status, []byte(http.StatusText(status)))
 		}
 
-		c.Error("%s, trace[%s]", util.ToString(v), util.PanicTrace(TraceMaxDepth, false))
+		c.Error("%s, trace[%s]", util.ToString(v), util.PanicTrace(TraceMaxDepth, false, c.debug))
 	}
 
 	if !goLog {

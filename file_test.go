@@ -43,7 +43,7 @@ func TestFile_HandleRequest(t *testing.T) {
 		r := httptest.NewRequest(method, "/view", body)
 		w := httptest.NewRecorder()
 		context := &Context{}
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 
 		file := NewFile(nil)
 		file.HandleRequest(context)
@@ -61,7 +61,7 @@ func TestFile_HandleRequest(t *testing.T) {
 		r := httptest.NewRequest(method, "/view.html", body)
 		w := httptest.NewRecorder()
 		context := &Context{}
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 		file := NewFile(nil)
 		file.SetExcludeExtensions([]interface{}{".html"})
 		file.HandleRequest(context)
@@ -79,7 +79,7 @@ func TestFile_HandleRequest(t *testing.T) {
 		r := httptest.NewRequest("POST", "/view.html", body)
 		w := httptest.NewRecorder()
 		context := &Context{}
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 		file := NewFile(nil)
 		file.HandleRequest(context)
 
@@ -93,7 +93,7 @@ func TestFile_HandleRequest(t *testing.T) {
 		r := httptest.NewRequest(method, "/viewNotExists.html", body)
 		w := httptest.NewRecorder()
 		context := &Context{}
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 
 		file := NewFile(nil)
 		file.HandleRequest(context)
@@ -108,7 +108,7 @@ func TestFile_HandleRequest(t *testing.T) {
 		r := httptest.NewRequest(method, "/view.html", body)
 		w := httptest.NewRecorder()
 		context := &Context{}
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 
 		file := NewFile(nil)
 		file.HandleRequest(context)

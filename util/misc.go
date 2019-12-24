@@ -26,7 +26,7 @@ var (
 	langRe = regexp.MustCompile(`(?i)([a-z]+)(?:[_-]([a-z]+))?`)
 
 	// stack trace regexp: <table>/path/to/src/file.go:line<space>
-	traceRe = regexp.MustCompile(`^\t(.*)/src/(.*:\d+)\s`)
+	traceRe = regexp.MustCompile(`^\t(.*)/pkg/(.*:\d+)\s`)
 
 	// version format regexp: v10.1.0
 	verFmtRe = regexp.MustCompile(`(?i)^v?(\d+\.*)+`)
@@ -112,20 +112,31 @@ func FormatLanguage(lang string) string {
 }
 
 // PanicTrace get panic trace
-func PanicTrace(maxDepth int, multiLine bool) string {
+func PanicTrace(maxDepth int, multiLine, debug bool) string {
 	buf := make([]byte, 1024)
 	if n := runtime.Stack(buf, false); n < len(buf) {
 		buf = buf[:n]
 	}
 
 	stack := bytes.NewBuffer(buf)
+	if debug{
+		return stack.String()
+	}
+
 	sources := make([]string, 0, maxDepth)
 	meetPanic := false
 
 	for {
 		line, err := stack.ReadString('\n')
-		if err != nil || len(sources) >= maxDepth {
+
+		if line == "" || err != nil || len(sources) >= maxDepth {
 			break
+		}
+
+		// skip until first panic
+		if strings.Index(line, "runtime/panic.go") !=-1 {
+			meetPanic = true
+			continue
 		}
 
 		mat := traceRe.FindStringSubmatch(line)
@@ -133,14 +144,9 @@ func PanicTrace(maxDepth int, multiLine bool) string {
 			continue
 		}
 
-		// skip until first panic
-		if strings.HasPrefix(mat[2], "runtime/panic.go") {
-			meetPanic = true
-			continue
-		}
-
 		// skip system file
 		if strings.HasPrefix(mat[1], runtime.GOROOT()) {
+
 			continue
 		}
 
@@ -152,7 +158,6 @@ func PanicTrace(maxDepth int, multiLine bool) string {
 	if multiLine {
 		return strings.Join(sources, "\n")
 	}
-
 	return strings.Join(sources, ",")
 }
 

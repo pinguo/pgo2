@@ -121,7 +121,7 @@ func TestContext_Getter(t *testing.T) {
 	rb := bytes.NewBuffer([]byte(str))
 	w.Body = rb
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	context.Output().WriteHeader(rICode)
 	context.Output().Write([]byte(str))
@@ -189,7 +189,7 @@ func TestContext_ClientIp(t *testing.T) {
 		r := httptest.NewRequest(method, path, body)
 		ip := "129.1.1.1"
 		r.Header.Set("X-Forwarded-For", ip+",")
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 		if context.ClientIp() != ip {
 			t.FailNow()
 		}
@@ -199,7 +199,7 @@ func TestContext_ClientIp(t *testing.T) {
 		r := httptest.NewRequest(method, path, body)
 		ip := "129.1.1.1"
 		r.Header.Set("X-Forwarded-For", ip)
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 		if context.ClientIp() != ip {
 			t.FailNow()
 		}
@@ -209,7 +209,7 @@ func TestContext_ClientIp(t *testing.T) {
 		r := httptest.NewRequest(method, path, body)
 		ip := "129.1.1.1"
 		r.Header.Set("X-Client-Ip", ip)
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 		if context.ClientIp() != ip {
 			t.FailNow()
 		}
@@ -219,7 +219,7 @@ func TestContext_ClientIp(t *testing.T) {
 		r := httptest.NewRequest(method, path, body)
 		ip := "129.1.1.1"
 		r.Header.Set("X-Real-Ip", ip)
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 		if context.ClientIp() != ip {
 			t.FailNow()
 		}
@@ -229,7 +229,7 @@ func TestContext_ClientIp(t *testing.T) {
 		r := httptest.NewRequest(method, path, body)
 		ip := "129.1.1.1"
 		r.RemoteAddr = ip
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 		if context.ClientIp() != ip {
 			t.FailNow()
 		}
@@ -255,7 +255,7 @@ func TestContext_Cookie(t *testing.T) {
 	cookieUser1 := &http.Cookie{Name: cName + "1", Value: cNameV + "1", Path: "/"}
 	r.AddCookie(cookieUser1)
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 	t.Run("GetCookie", func(t *testing.T) {
 		if context.Cookie(cName, "") != cNameV {
 			t.FailNow()
@@ -296,7 +296,7 @@ func TestContext_Header(t *testing.T) {
 	r.Header.Set(cName, cNameV)
 	r.Header.Set(cName+"1", cNameV+"1")
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 	t.Run("GetHeader", func(t *testing.T) {
 		if context.Header(cName, "") != cNameV {
 			t.FailNow()
@@ -337,7 +337,7 @@ func TestContext_Query(t *testing.T) {
 	body := bytes.NewReader([]byte(str))
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(method, path, body)
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 	t.Run("Query", func(t *testing.T) {
 		if context.Query(param1, "") != paramV1 {
 			t.FailNow()
@@ -370,7 +370,7 @@ func TestContext_QueryArray(t *testing.T) {
 	body := bytes.NewReader([]byte(str))
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(method, path, body)
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 	if len(context.QueryArray(param1)) != 2 {
 		t.FailNow()
 	}
@@ -397,7 +397,7 @@ func TestContext_Post(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	r.Header.Set("Content-type", "application/x-www-form-urlencoded")
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	t.Run("Post", func(t *testing.T) {
 		if context.Post(param1, "") != paramV1 {
@@ -434,7 +434,7 @@ func TestContext_PostArray(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	r.Header.Set("Content-type", "application/x-www-form-urlencoded")
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	if len(context.PostArray(param1)) != 2 {
 		t.FailNow()
@@ -472,7 +472,7 @@ func TestContext_Param(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	r.Header.Set("Content-type", "application/x-www-form-urlencoded")
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	if context.Param(param1, "") != paramV1 {
 		t.Fatal("context.Param(param1, \"\") != ", paramV1)
@@ -518,7 +518,7 @@ func TestContext_ParamArray(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	r.Header.Set("Content-type", "application/x-www-form-urlencoded")
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	if len(context.ParamArray(param1)) != 2 {
 		t.Fatal("len(context.ParamArray(param1)) !=", 2)

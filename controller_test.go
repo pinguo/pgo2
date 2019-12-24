@@ -49,7 +49,7 @@ func TestController_HandlePanic(t *testing.T) {
 	})
 	defer patchesController.Reset()
 
-	mockC.HandlePanic("testerr")
+	mockC.HandlePanic("testerr", false)
 
 }
 
@@ -64,7 +64,7 @@ func TestController_Json(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	w := httptest.NewRecorder()
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	mockC := &Controller{}
 	mockC.SetContext(context)
@@ -100,7 +100,7 @@ func TestController_Jsonp(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	w := httptest.NewRecorder()
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	mockC := &Controller{}
 	mockC.SetContext(context)
@@ -141,7 +141,7 @@ func TestController_Data(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	w := httptest.NewRecorder()
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	mockC := &Controller{}
 	mockC.SetContext(context)
@@ -171,7 +171,7 @@ func TestController_Xml(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	w := httptest.NewRecorder()
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	mockC := &Controller{}
 	mockC.SetContext(context)
@@ -208,7 +208,7 @@ func TestController_Xml(t *testing.T) {
 //    r := httptest.NewRequest(method, path, body)
 //    w := httptest.NewRecorder()
 //
-//    context.HttpRW(true, r, w)
+//    context.HttpRW(false,true, r, w)
 //
 //    mockC := &Controller{}
 //    mockC.SetContext(context)
@@ -243,7 +243,7 @@ func TestController_Render(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	w := httptest.NewRecorder()
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	mockC := &Controller{}
 	mockC.SetContext(context)
@@ -275,7 +275,7 @@ func TestController_View(t *testing.T) {
 	r := httptest.NewRequest(method, path, body)
 	w := httptest.NewRecorder()
 
-	context.HttpRW(true, r, w)
+	context.HttpRW(false,true, r, w)
 
 	mockC := &Controller{}
 	mockC.SetContext(context)
