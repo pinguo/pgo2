@@ -44,7 +44,7 @@ func (c *Controller) AfterAction(action string) {
 }
 
 // HandlePanic process unhandled action panic
-func (c *Controller) HandlePanic(v interface{}) {
+func (c *Controller) HandlePanic(v interface{}, debug bool) {
 	status := http.StatusInternalServerError
 	switch e := v.(type) {
 	case *perror.Error:
@@ -54,7 +54,7 @@ func (c *Controller) HandlePanic(v interface{}) {
 		c.Json(EmptyObject, status)
 	}
 
-	c.Context().Error("%s, trace[%s]", util.ToString(v), util.PanicTrace(TraceMaxDepth, false))
+	c.Context().Error("%s, trace[%s]", util.ToString(v), util.PanicTrace(TraceMaxDepth, false, debug))
 }
 
 // Redirect output redirect response

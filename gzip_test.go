@@ -22,7 +22,7 @@ func TestGzip_HandleRequest(t *testing.T) {
 		r := httptest.NewRequest("GET", "/view", body)
 		w := httptest.NewRecorder()
 		context := &Context{}
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 
 		gzip := NewGzip()
 		gzip.HandleRequest(context)
@@ -37,7 +37,7 @@ func TestGzip_HandleRequest(t *testing.T) {
 		r.Header.Set("Accept-Encoding", "gzip")
 		w := httptest.NewRecorder()
 		context := &Context{}
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 
 		gzip := NewGzip()
 		gzip.HandleRequest(context)
@@ -52,7 +52,7 @@ func TestGzip_HandleRequest(t *testing.T) {
 		r.Header.Set("Accept-Encoding", "gzip")
 		w := httptest.NewRecorder()
 		context := &Context{}
-		context.HttpRW(true, r, w)
+		context.HttpRW(false,true, r, w)
 
 		gzip := NewGzip()
 		gzip.HandleRequest(context)
