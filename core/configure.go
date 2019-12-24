@@ -10,7 +10,7 @@ import (
 // obj is a pointer or reflect.Value of a pointer,
 // config is the configuration map for properties.
 func Configure(obj interface{}, config map[string]interface{}) {
-	err := ClientConfigure(obj, config)
+	err := configure(obj, config)
 	if err != nil{
 		panic(err)
 	}
@@ -22,6 +22,10 @@ func Configure(obj interface{}, config map[string]interface{}) {
 // obj is a pointer or reflect.Value of a pointer,
 // config is the configuration map for properties.
 func ClientConfigure(obj interface{}, config map[string]interface{}) error {
+	return configure(obj, config)
+}
+
+func configure(obj interface{}, config map[string]interface{}) error {
 	// skip empty configuration
 	if config == nil || len(config) == 0 {
 		return nil
