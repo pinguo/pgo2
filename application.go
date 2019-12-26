@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	_ = flag.String("env", "", "set running env (requested), eg. --env=online")
+	_ = flag.String("env", "", "set running env (optional), eg. --env=online")
 	_ = flag.String("cmd", "", "set running cmd (optional), eg. --cmd=/foo/bar")
 	_ = flag.String("base", "", "set base path (optional), eg. --base=/base/path")
 	_ = flag.String("cmdList", "", "Displays a list of CMD controllers used (optional), eg. --cmdList")
