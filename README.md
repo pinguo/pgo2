@@ -47,7 +47,7 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
 ## 快速开始
 1. 拷贝makefile
     
-    非IDE环境(命令行)下，推荐使用make做为编译打包的控制工具，从[pgo2](https://github.com/pinguo/pgo-docs/tree/pgo2)或[pgo2-demo](https://github.com/pinguo/pgo2-demo)将makefile复制到项目目录下。
+    非IDE环境(命令行)下，推荐使用make做为编译打包的控制工具，从[pgo2](https://github.com/pinguo/pgo2-docs)或[pgo2-demo](https://github.com/pinguo/pgo2-demo)将makefile复制到项目目录下。
     ```sh
     make start      # 编译并运行当前工程
     make stop       # 停止当前工程的进程
@@ -80,9 +80,11 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
             levels: "ALL"
             targets:
                 info:
+                    name: "file"
                     levels: "DEBUG,INFO,NOTICE"
                     filePath: "@runtime/info.log"
                 error:
+                    name: "file"
                     levels: "WARN,ERROR,FATAL"
                     filePath: "@runtime/error.log"
                 console: 
@@ -94,14 +96,8 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
     - 在项目根目录执行`go get -u github.com/pinguo/pgo2`
 5. 创建service(pkg/service/Welcome.go)
     ```go
-    package Service
-
-    import (
-        "fmt"
-
-        "github.com/pinguo/pgo2"
-    )
-
+    package service
+   
     func NewWelcome() *Welcome{
        return &Welcome{}
     }
@@ -119,25 +115,15 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
     ```go
     package controller
 
-    import (
-        "service"
-        "net/http"
-     
-        "github.com/pinguo/pgo2"
-    )
-
     type WelcomeController struct {
         pgo2.Controller
     }
 
-    // 默认动作为index, 通过/welcome或/welcome/index调用
     func (w *WelcomeController) ActionIndex() {
-        w.OutputJson("hello world", http.StatusOK)
+        w.Json("hello world", http.StatusOK)
     }
     
     // URL路由动作，根据url自动映射控制器及方法，不需要配置.
-    // url的最后一段为动作名称，不存在则为index,
-    // url的其余部分为控制器名称，不存在则为index,
     // 例如：/welcome/say-hello，控制器类名为
     // controller/welcomeController 动作方法名为ActionSayHello
     func (w *WelcomeController) ActionSayHello() {
@@ -151,7 +137,7 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
     
         // 打印日志
         ctx.Info("request from welcome, name:%s, age:%d, ip:%s", name, age, ip)
-        ctx.PushLog("clientIp", ctx.GetClientIp()) // 生成clientIp=xxxxx在pushlog中
+        ctx.PushLog("clientIp", ctx.ClientIp()) // 生成clientIp=xxxxx在pushlog中
     
         // 调用业务逻辑，一个请求生命周期内的对象都要通过GetObj()获取，
         // 这样可自动查找注册的类，并注入请求上下文(Context)到对象中。
@@ -162,37 +148,30 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
         svc.SayHello(name, age, ip)
         ctx.ProfileStop("Welcome.SayHello")
     
-        data := pgo2.Map{
+        data := map[string]interface{}{
             "name": name,
             "age": age,
             "ip": ip,
         }
     
         // 输出json数据
-        w.OutputJson(data, http.StatusOK)
+        w.Json(data, http.StatusOK)
     }
     
     // 正则路由动作，需要配置Router组件(components.router.rules)
     // 规则中捕获的参数通过动作函数参数传递，没有则为空字符串.
     // eg. "^/reg/eg/(\\w+)/(\\w+)$ => /welcome/regexp-example"
     func (w *WelcomeController) ActionRegexpExample(p1, p2 string) {
-        data := pgo2.Map{"p1": p1, "p2": p2}
-        w.OutputJson(data, http.StatusOK)
+        data := map[string]interface{}{"p1": p1, "p2": p2}
+        w.Json(data, http.StatusOK)
     }
-    
-    // RESTFULL动作，url中没有指定动作名，使用请求方法作为动作的名称(需要大写)
-    // 例如：GET方法请求ActionGET(), POST方法请求ActionPOST()
-    func (w *WelcomeController) ActionGET() {
-        w.Context().End(http.StatusOK, []byte("call restfull GET"))
-    }
-    
     ```
-9. 创建程序入口(src/Main/main.go)
+9. 创建程序入口(pkg/cmd/main.go)
     ```go
     package main
 
     import (
-        _ "controller" // 导入控制器
+        _ "pgo2-demo/pkg/controller" // 导入控制器
 
         "github.com/pinguo/pgo2"
     )
@@ -209,4 +188,4 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
     ```
 
 ### 其它
-参见[pgo2-docs](https://github.com/pinguo/pgo-docs/tree/pgo2)
+参见[pgo2-docs](https://github.com/pinguo/pgo2-docs)

@@ -7,7 +7,7 @@ const (
 
 	defaultComponentId = "memcache"
 	defaultServer      = "127.0.0.1:11211"
-	defaultPrefix      = "pgo_"
+	defaultPrefix      = "pgo2_"
 	defaultProbe       = 0
 	defaultIdleConn    = 10
 	defaultIdleTime    = 60 * time.Second

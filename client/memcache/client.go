@@ -13,8 +13,7 @@ import (
 // Memcache Client component, configuration:
 // components:
 //      memcache:
-//          class: "@pgo/Client/Memcache/Client"
-//          prefix: "pgo_"
+//          prefix: "pgo2_"
 //          maxIdleConn: 10
 //          maxIdleTime: "60s"
 //          netTimeout: "1s"

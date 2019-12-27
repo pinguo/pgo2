@@ -4,7 +4,7 @@ import "time"
 
 const (
 	dftExchangeType       = "direct"
-	dftExchangeName       = "direct_pgo_dft"
+	dftExchangeName       = "direct_pgo2_dft"
 	dftMaxChannelNum      = 2000
 	dftMaxIdleChannel     = 200
 	dftMaxIdleChannelTime = 60 * time.Second
