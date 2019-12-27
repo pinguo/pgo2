@@ -7,7 +7,7 @@ const (
 
 	defaultComponentId = "redis"
 	defaultServer      = "127.0.0.1:6379"
-	defaultPrefix      = "pgo_"
+	defaultPrefix      = "pgo2_"
 	defaultPassword    = ""
 	defaultDb          = 0
 	defaultProbe       = 0

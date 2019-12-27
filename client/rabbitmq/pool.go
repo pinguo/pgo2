@@ -158,11 +158,11 @@ func (c *Pool) SetProbeInterval(v string) error {
 }
 
 func (c *Pool) getExchangeName() string {
-	return "pgo." + c.exchangeName
+	return "pgo2." + c.exchangeName
 }
 
 func (c *Pool) getRouteKey(opCode string) string {
-	return "pgo." + c.exchangeName + "." + opCode
+	return "pgo2." + c.exchangeName + "." + opCode
 }
 
 // 获取channel链接

@@ -16,7 +16,7 @@ import (
 // configuration:
 // components:
 //      redis:
-//          prefix: "pgo_"
+//          prefix: "pgo2_"
 //          password: ""
 //          db: 0
 //          maxIdleConn: 10
