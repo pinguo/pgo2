@@ -27,6 +27,11 @@ func (c *Controller) GetBindInfo(v interface{}) interface{} {
 
 	for i := 0; i < num; i++ {
 		name := rt.Method(i).Name
+		if _, ok := restFulActions[name]; ok {
+			actions[name] = i
+			continue
+		}
+
 		if len(name) > ActionLength && name[:ActionLength] == ActionPrefix {
 			actions[name[ActionLength:]] = i
 		}

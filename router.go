@@ -122,9 +122,14 @@ func (r *Router) SetHandlers(cmdType string, list map[string]interface{}) {
 
 		for oAName, aNum := range actions {
 			aNames := make([]string, 0, 2)
-			aName := r.firstToLower(oAName)
+			aName := oAName
+			restFul, _ := restFulActions[oAName]
+			if restFul != 1 {
+				aName = r.firstToLower(oAName)
+			}
+
 			aNames = append(aNames, aName)
-			if r.web(cmdType) {
+			if restFul != 1 && r.web(cmdType) {
 				fmtAName := r.rePathFmt.ReplaceAllStringFunc(aName, pathFormatFunc)
 				if aName != fmtAName {
 					aNames = append(aNames, fmtAName)
@@ -169,20 +174,24 @@ func (r *Router) AddRoute(pattern, route string) {
 }
 
 // Resolve path to route and action params, then format route to CamelCase
-func (r *Router) Resolve(path string) (handler *Handler, params []string) {
+func (r *Router) Resolve(path, method string) (handler *Handler, params []string) {
 	// The first mapping
 	handler = r.Handler(path)
 	if handler != nil {
 		return
 	}
 
+	restFulSuffix := ""
 	// format path
 	if path == "/" {
 		path += DefaultControllerPath + "/" + DefaultActionPath
 	} else {
-		if r.modules != nil && util.SliceSearchString(r.modules, path) > 0 {
-			path += "/" + DefaultControllerPath + "/" + DefaultActionPath
-		}
+		restFulSuffix = "/" + method
+		path += restFulSuffix
+
+		//if r.modules != nil && util.SliceSearchString(r.modules, path) > 0 {
+		//	path += "/" + DefaultControllerPath + "/" + DefaultActionPath
+		//}
 	}
 
 	path = util.CleanPath(path)
@@ -190,6 +199,10 @@ func (r *Router) Resolve(path string) (handler *Handler, params []string) {
 	handler = r.Handler(path)
 	if handler != nil {
 		return
+	}
+
+	if restFulSuffix != "" {
+		path = strings.Replace(path, restFulSuffix, "", 1)
 	}
 
 	// Custom route
@@ -227,10 +240,9 @@ func (r *Router) CmdHandlers() map[string]*Handler {
 
 // CreateController Create the controller and parameters
 func (r *Router) CreateController(path string, ctx iface.IContext) (reflect.Value, reflect.Value, []string) {
-
 	container := App().Container()
 
-	handler, params := r.Resolve(path)
+	handler, params := r.Resolve(path, ctx.Method())
 	if handler == nil {
 		return reflect.Value{}, reflect.Value{}, nil
 	}
