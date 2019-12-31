@@ -172,7 +172,7 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
        w.Context().End(http.StatusOK, []byte("call restfull GET"))
    }
     ```
-9. 创建程序入口(pkg/cmd/main.go)
+9. 创建程序入口(cmd/projectName/main.go)
     ```go
     package main
 
