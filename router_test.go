@@ -122,13 +122,13 @@ func TestRouter_Resolve(t *testing.T) {
 	router.SetHandlers(ControllerCmdPkg, list)
 
 	t.Run("inHandlers", func(t *testing.T) {
-		if h, _ := router.Resolve("/index/index"); h == nil {
+		if h, _ := router.Resolve("/index/index", "GET"); h == nil {
 			t.FailNow()
 		}
 	})
 
 	t.Run("path=/", func(t *testing.T) {
-		if h, _ := router.Resolve("/"); h == nil {
+		if h, _ := router.Resolve("/", "GET"); h == nil {
 			t.FailNow()
 		}
 	})
@@ -137,9 +137,22 @@ func TestRouter_Resolve(t *testing.T) {
 		t.Skip()
 	})
 
-	t.Run("path=/api/user/(\\d)", func(t *testing.T) {
+	t.Run("path=/api/user/123", func(t *testing.T) {
 		router.AddRoute(`^/api/user/(\d+)$`, "/index/index")
-		h, p := router.Resolve("/api/user/123")
+		h, p := router.Resolve("/api/user/123", "GET")
+		if h == nil {
+			t.Fatal("handler is valid")
+		}
+
+		if p[0] != "123" {
+			t.Fatal("param is valid")
+		}
+
+	})
+
+	t.Run("path=/api/user/123/", func(t *testing.T) {
+		router.AddRoute(`^/api/user/(\d+)$`, "/index/index")
+		h, p := router.Resolve("/api/user/123/", "GET")
 		if h == nil {
 			t.Fatal("handler is valid")
 		}

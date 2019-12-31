@@ -152,7 +152,6 @@ func (c *Container) Put(name string, rv reflect.Value) {
 
 // PathList Gets a list of paths with the specified path prefix
 func (c *Container) PathList(prefix, suffix string) map[string]interface{} {
-
 	list := make(map[string]interface{})
 	for k, item := range c.items {
 		if strings.Index(k, prefix) == 0 && strings.Index(k, suffix) > 0 {

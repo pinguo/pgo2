@@ -35,12 +35,13 @@ const (
 )
 
 var (
-	application *Application
-	appTime     = time.Now()
-	aliasMap    = make(map[string]string)
-	aliasRe     = regexp.MustCompile(`^@[^\\/]+`)
-	logger      *logs.Logger
-	EmptyObject struct{}
+	application    *Application
+	appTime        = time.Now()
+	aliasMap       = make(map[string]string)
+	aliasRe        = regexp.MustCompile(`^@[^\\/]+`)
+	logger         *logs.Logger
+	EmptyObject    struct{}
+	restFulActions = map[string]int{"GET": 1, "POST": 1, "PUT": 1, "DELETE": 1, "PATCH": 1, "OPTIONS": 1, "HEAD": 1}
 )
 
 func App(newApp ...bool) *Application {
