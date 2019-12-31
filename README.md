@@ -165,6 +165,12 @@ pgo2应用框架即"Pinguo GO application framework 2.0"，是Camera360服务端
         data := map[string]interface{}{"p1": p1, "p2": p2}
         w.Json(data, http.StatusOK)
     }
+   
+   // RESTful动作，url中没有指定动作名，使用请求方法作为动作的名称(需要大写)
+   // 例如：GET方法请求GET(), POST方法请求POST()
+   func (w *WelcomeController) GET() {
+       w.Context().End(http.StatusOK, []byte("call restfull GET"))
+   }
     ```
 9. 创建程序入口(pkg/cmd/main.go)
     ```go
