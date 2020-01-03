@@ -264,6 +264,41 @@ func (mr *MockIControllerMockRecorder) HandlePanic(v, debug interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HandlePanic", reflect.TypeOf((*MockIController)(nil).HandlePanic), v, debug)
 }
 
+// MockIErrorController is a mock of IErrorController interface
+type MockIErrorController struct {
+	ctrl     *gomock.Controller
+	recorder *MockIErrorControllerMockRecorder
+}
+
+// MockIErrorControllerMockRecorder is the mock recorder for MockIErrorController
+type MockIErrorControllerMockRecorder struct {
+	mock *MockIErrorController
+}
+
+// NewMockIErrorController creates a new mock instance
+func NewMockIErrorController(ctrl *gomock.Controller) *MockIErrorController {
+	mock := &MockIErrorController{ctrl: ctrl}
+	mock.recorder = &MockIErrorControllerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockIErrorController) EXPECT() *MockIErrorControllerMockRecorder {
+	return m.recorder
+}
+
+// Error mocks base method
+func (m *MockIErrorController) Error(status int, message string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Error", status, message)
+}
+
+// Error indicates an expected call of Error
+func (mr *MockIErrorControllerMockRecorder) Error(status, message interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Error", reflect.TypeOf((*MockIErrorController)(nil).Error), status, message)
+}
+
 // MockIPlugin is a mock of IPlugin interface
 type MockIPlugin struct {
 	ctrl     *gomock.Controller

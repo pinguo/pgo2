@@ -1,6 +1,7 @@
 package pgo2
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
 
@@ -9,6 +10,11 @@ import (
 	"github.com/pinguo/pgo2/render"
 	"github.com/pinguo/pgo2/util"
 )
+
+func init() {
+	container := App().Container()
+	App().Router().SetErrorController(container.Bind(&Controller{}))
+}
 
 // Controller the base class of web and cmd controller
 type Controller struct {
@@ -51,12 +57,27 @@ func (c *Controller) AfterAction(action string) {
 // HandlePanic process unhandled action panic
 func (c *Controller) HandlePanic(v interface{}, debug bool) {
 	status := http.StatusInternalServerError
+
 	switch e := v.(type) {
 	case *perror.Error:
-		status = e.Status()
-		c.Json(EmptyObject, status, e.Message())
+		status := e.Status()
+		defer func() {
+			if err := recover(); err != nil {
+				c.Json(EmptyObject, status, e.Message())
+				c.Context().Error("%s, trace[%s]", util.ToString(err), util.PanicTrace(TraceMaxDepth, false, debug))
+			}
+		}()
+
+		App().Router().ErrorController(c.Context(), status).(iface.IErrorController).Error(status, e.Message())
 	default:
-		c.Json(EmptyObject, status)
+		defer func() {
+			if err := recover(); err != nil {
+				c.Json(EmptyObject, status)
+				c.Context().Error("%s, trace[%s]", util.ToString(err), util.PanicTrace(TraceMaxDepth, false, debug))
+			}
+		}()
+
+		App().Router().ErrorController(c.Context(), status).(iface.IErrorController).Error(status, "")
 	}
 
 	c.Context().Error("%s, trace[%s]", util.ToString(v), util.PanicTrace(TraceMaxDepth, false, debug))
@@ -85,7 +106,11 @@ func (c *Controller) Json(data interface{}, status int, msg ...string) {
 
 	ctx.PushLog("status", status)
 	ctx.SetHeader("Content-Type", r.ContentType())
-	ctx.End(r.HttpCode(), r.Content())
+	httpStatus := r.HttpCode()
+	if ctx.Status() > 0 && ctx.Status() != httpStatus {
+		httpStatus = ctx.Status()
+	}
+	ctx.End(httpStatus, r.Content())
 }
 
 // Jsonp output jsonp response
@@ -100,55 +125,104 @@ func (c *Controller) Jsonp(callback string, data interface{}, status int, msg ..
 
 	ctx.PushLog("status", status)
 	ctx.SetHeader("Content-Type", r.ContentType())
-	ctx.End(r.HttpCode(), r.Content())
+	httpStatus := r.HttpCode()
+	if ctx.Status() > 0 && ctx.Status() != httpStatus {
+		httpStatus = ctx.Status()
+	}
+
+	ctx.End(httpStatus, r.Content())
 }
 
 // Data output data response
 func (c *Controller) Data(data []byte) {
 	ctx := c.Context()
 	r := render.NewData(data)
+	httpStatus := r.HttpCode()
+	if ctx.Status() > 0 && ctx.Status() != httpStatus {
+		httpStatus = ctx.Status()
+	}
 
-	ctx.PushLog("status", http.StatusOK)
+	ctx.PushLog("status", httpStatus)
 	ctx.SetHeader("Content-Type", r.ContentType())
-	ctx.End(r.HttpCode(), r.Content())
+	ctx.End(httpStatus, r.Content())
 }
 
 // Xml output xml response
-func (c *Controller) Xml(data interface{}, status ...int) {
-	status = append(status, http.StatusOK)
+func (c *Controller) Xml(data interface{}, statuses ...int) {
+	status := http.StatusOK
+	if len(statuses) > 0 {
+		status = statuses[0]
+	}
+
 	ctx := c.Context()
 	r := render.NewXml(data)
 
-	ctx.PushLog("status", status[0])
+	ctx.PushLog("status", status)
 	ctx.SetHeader("Content-Type", r.ContentType())
-	ctx.End(r.HttpCode(), r.Content())
+	httpStatus := r.HttpCode()
+	if ctx.Status() > 0 && ctx.Status() != httpStatus {
+		httpStatus = ctx.Status()
+	}
+
+	ctx.End(httpStatus, r.Content())
 }
 
 // ProtoBuf output proto buf response
-func (c *Controller) ProtoBuf(data interface{}, status ...int) {
-	status = append(status, http.StatusOK)
+func (c *Controller) ProtoBuf(data interface{}, statuses ...int) {
+	status := http.StatusOK
+	if len(statuses) > 0 {
+		status = statuses[0]
+	}
+
 	ctx := c.Context()
 	r := render.NewProtoBuf(data)
 
-	ctx.PushLog("status", status[0])
+	ctx.PushLog("status", status)
 	ctx.SetHeader("Content-Type", r.ContentType())
-	ctx.End(r.HttpCode(), r.Content())
+	httpStatus := r.HttpCode()
+	if ctx.Status() > 0 && ctx.Status() != httpStatus {
+		httpStatus = ctx.Status()
+	}
+
+	ctx.End(httpStatus, r.Content())
 }
 
 // Render Custom renderer
-func (c *Controller) Render(r render.Render, status ...int) {
-	status = append(status, http.StatusOK)
+func (c *Controller) Render(r render.Render, statuses ...int) {
+	status := http.StatusOK
+	if len(statuses) > 0 {
+		status = statuses[0]
+	}
+
 	ctx := c.Context()
-	ctx.PushLog("status", status[0])
+	ctx.PushLog("status", status)
 	ctx.SetHeader("Content-Type", r.ContentType())
-	ctx.End(r.HttpCode(), r.Content())
+	httpStatus := r.HttpCode()
+	if ctx.Status() > 0 && ctx.Status() != httpStatus {
+		httpStatus = ctx.Status()
+	}
+
+	ctx.End(httpStatus, r.Content())
 }
 
 // View output rendered view
-func (c *Controller) View(view string, data interface{}, contentType ...string) {
+func (c *Controller) View(view string, data interface{}, contentTypes ...string) {
 	ctx := c.Context()
-	contentType = append(contentType, "text/html; charset=utf-8")
-	ctx.PushLog("status", http.StatusOK)
-	ctx.SetHeader("Content-Type", contentType[0])
-	ctx.End(http.StatusOK, App().View().Render(view, data))
+	contentType := "text/html; charset=utf-8"
+	if len(contentTypes) > 0 {
+		contentType = contentTypes[0]
+	}
+	httpStatus := http.StatusOK
+	ctx.PushLog("status", httpStatus)
+	ctx.SetHeader("Content-Type", contentType)
+
+	if ctx.Status() > 0 && ctx.Status() != httpStatus {
+		httpStatus = ctx.Status()
+	}
+	ctx.End(httpStatus, App().View().Render(view, data))
+}
+
+// Error
+func (c *Controller) Error(status int, message string) {
+	c.Json(EmptyObject, status, message)
 }

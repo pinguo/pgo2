@@ -35,6 +35,7 @@ type routeRule struct {
 
 // Router the router component, configuration:
 // router:
+//     httpStatus:true // Whether to override the HTTP status code
 //     rules:
 //         - "^/foo/all$ => /foo/index"
 //         - "^/api/user/(\d+)$ => /api/user"
@@ -43,6 +44,7 @@ func NewRouter(config map[string]interface{}) *Router {
 	router.reFmt = regexp.MustCompile(`([/-][a-z])`)
 	router.rePathFmt = regexp.MustCompile(`([A-Z])`)
 	router.rules = make([]routeRule, 0, 10)
+
 
 	core.Configure(router, config)
 
@@ -65,9 +67,20 @@ type Router struct {
 	webHandlers map[string]*Handler
 	cmdHandlers map[string]*Handler
 	modules     []string
+
+	errorController string
+	httpStatus   bool  // Whether to override the HTTP status code
 }
 
 var rePath = strings.NewReplacer("/"+ControllerCmdPkg+"/", "/", "/"+ControllerWebPkg+"/", "/", ControllerCmdType, "", ControllerWebType, "")
+
+func (r *Router) SetHttpStatus(v bool){
+	r.httpStatus =  v
+}
+
+func (r *Router) SetErrorController(v string) {
+	r.errorController = v
+}
 
 // SetRules set rule list, format: `^/api/user/(\d+)$ => /api/user`
 func (r *Router) SetRules(rules []interface{}) {
@@ -258,4 +271,14 @@ func (r *Router) CreateController(path string, ctx iface.IContext) (reflect.Valu
 	controller := container.Get(controllerName, ctx)
 	action := controller.Method(handler.aId)
 	return controller, action, params
+}
+
+func  (r *Router) ErrorController( ctx iface.IContext, statuses ...int) iface.IController{
+	if r.httpStatus && len(statuses) > 0 && statuses[0]>0{
+		ctx.Output().WriteHeader(statuses[0])
+	}
+	container := App().Container()
+	controllerName := GetAlias(r.errorController)
+	controller := container.Get(controllerName, ctx)
+	return controller.Interface().(iface.IController)
 }

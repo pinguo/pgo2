@@ -34,6 +34,10 @@ type IController interface {
 	HandlePanic(v interface{}, debug bool)
 }
 
+type IErrorController interface {
+	Error (status int, message string)
+}
+
 type IPlugin interface {
 	HandleRequest(ctx IContext)
 }
