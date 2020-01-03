@@ -18,6 +18,7 @@ import (
 
 	"github.com/pinguo/pgo2/core"
 	"github.com/pinguo/pgo2/iface"
+	"github.com/pinguo/pgo2/util"
 )
 
 type ServerConfig struct {
@@ -34,6 +35,7 @@ type ServerConfig struct {
 	enableAccessLog bool
 	pluginNames     []string
 	maxPostBodySize int64 // max post body size
+
 }
 
 // Server the server component, configuration:
@@ -290,7 +292,17 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
 	// get new controller bind to this route
 	rv, action, params := App().Router().CreateController(path, ctx)
 	if !rv.IsValid() {
-		ctx.End(http.StatusNotFound, []byte("route not found"))
+		func() {
+			defer func() {
+				if err := recover(); err != nil {
+					ctx.End(http.StatusNotFound, []byte("route not found"))
+					ctx.Error("%s, trace[%s]", util.ToString(err), util.PanicTrace(TraceMaxDepth, false, s.debug))
+				}
+
+			}()
+
+			App().Router().ErrorController(ctx, http.StatusNotFound).(iface.IErrorController).Error(http.StatusNotFound, "route not found")
+		}()
 		return
 	}
 
