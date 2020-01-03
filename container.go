@@ -13,7 +13,7 @@ type bindItem struct {
 	info  interface{}   // binding info
 	zero  reflect.Value // zero value
 	cmIdx int           // construct index
-	imIdx int           // init index
+	pmIdx int           // prepare index
 }
 
 const (
@@ -50,7 +50,7 @@ func (c *Container) Bind(i interface{}) string{
 
 	// initialize binding
 	rt := iv.Elem().Type()
-	item := bindItem{zero: reflect.Zero(rt), cmIdx: -1, imIdx: -1}
+	item := bindItem{zero: reflect.Zero(rt), cmIdx: -1, pmIdx: -1}
 	item.pool.New = func() interface{} { return reflect.New(rt) }
 
 	// get binding info
@@ -65,8 +65,8 @@ func (c *Container) Bind(i interface{}) string{
 		switch it.Method(i).Name {
 		case ConstructMethod:
 			item.cmIdx = i
-		case InitMethod:
-			item.imIdx = i
+		case PrepareMethod:
+			item.pmIdx = i
 		}
 	}
 
@@ -135,6 +135,14 @@ func (c *Container) Get(name string, ctx iface.IContext) reflect.Value {
 	if obj, ok := rv.Interface().(iface.IObject); ok {
 		// inject context
 		obj.SetContext(ctx)
+	}
+
+	// call Init()
+	if item.pmIdx != -1 {
+		if im := rv.Method(item.pmIdx); im.IsValid() {
+			in := make([]reflect.Value, 0)
+			im.Call(in)
+		}
 	}
 
 	return rv
