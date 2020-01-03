@@ -24,7 +24,7 @@ const (
 	ControllerWebType     = "Controller"
 	ControllerCmdType     = "Command"
 	ConstructMethod       = "Construct"
-	InitMethod            = "Init"
+	PrepareMethod         = "Prepare"
 	VendorPrefix          = "vendor/"
 	VendorLength          = 7
 	ActionPrefix          = "Action"
