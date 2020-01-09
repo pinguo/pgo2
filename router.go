@@ -274,7 +274,7 @@ func (r *Router) CreateController(path string, ctx iface.IContext) (reflect.Valu
 }
 
 func  (r *Router) ErrorController( ctx iface.IContext, statuses ...int) iface.IController{
-	if r.httpStatus && len(statuses) > 0 && statuses[0]>0{
+	if r.httpStatus && len(statuses) > 0 && statuses[0]>0 && ModeWeb == App().mode{
 		ctx.Output().WriteHeader(statuses[0])
 	}
 	container := App().Container()

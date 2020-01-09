@@ -214,7 +214,7 @@ func (c *Client) MultiRetrieve(cmd string, keys []string) ([]*Item, error) {
 	return result, err
 }
 
-func (c *Client) Store(cmd string, item *Item, expire ...time.Duration) (bool, error) {
+func (c *Client) Store(cmd string, item *Item, expires ...time.Duration) (bool, error) {
 	item.Key = c.BuildKey(item.Key)
 	conn, err := c.GetConnByKey(item.Key)
 	if err != nil {
@@ -222,12 +222,20 @@ func (c *Client) Store(cmd string, item *Item, expire ...time.Duration) (bool, e
 	}
 	defer conn.Close(false)
 
-	expire = append(expire, defaultExpire)
-	return conn.Store(cmd, item, int(expire[0]/time.Second))
+	expire:= defaultExpire
+	if len(expires) > 0 {
+		expire = expires[0]
+	}
+
+	return conn.Store(cmd, item, int(expire/time.Second))
 }
 
-func (c *Client) MultiStore(cmd string, items []*Item, expire ...time.Duration) (bool, error) {
-	expire = append(expire, defaultExpire)
+func (c *Client) MultiStore(cmd string, items []*Item, expires ...time.Duration) (bool, error) {
+	expire:= defaultExpire
+	if len(expires) > 0 {
+		expire = expires[0]
+	}
+
 	addrItems := make(map[string][]*Item)
 	wg, success := new(sync.WaitGroup), uint32(0)
 
@@ -243,7 +251,7 @@ func (c *Client) MultiStore(cmd string, items []*Item, expire ...time.Duration) 
 		go c.RunAddrFunc(addr, nil, wg, func(conn *Conn, keys []string) {
 			for _, item := range addrItems[addr] {
 				conn.ExtendDeadLine() // extend deadline for every store
-				ok, err := conn.Store(cmd, item, int(expire[0]/time.Second))
+				ok, err := conn.Store(cmd, item, int(expire/time.Second))
 				if err != nil {
 					return
 				}

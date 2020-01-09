@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/pinguo/pgo2"
 	"github.com/pinguo/pgo2/core"
 	"github.com/pinguo/pgo2/util"
 	"github.com/pinguo/pgo2/value"
@@ -94,58 +95,79 @@ func (c *Client) MGet(keys []string) map[string]*value.Value {
 	return result
 }
 
-func (c *Client) Set(key string, value interface{}, expire ...time.Duration) bool {
+func (c *Client) Set(key string, value interface{}, expires ...time.Duration) bool {
+	expire := defaultExpire
+	if len(expires) > 0 {
+		expire = expires[0]
+	}
+
+	now := time.Now()
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	expire, now := append(expire, defaultExpire), time.Now()
 	c.items[key] = &item{
 		value:  value,
-		expire: now.Add(expire[0]),
+		expire: now.Add(expire),
 	}
 
 	return true
 }
 
-func (c *Client) MSet(items map[string]interface{}, expire ...time.Duration) bool {
+func (c *Client) MSet(items map[string]interface{}, expires ...time.Duration) bool {
+	expire := defaultExpire
+	if len(expires) > 0 {
+		expire = expires[0]
+	}
+
+	now := time.Now()
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	expire, now := append(expire, defaultExpire), time.Now()
 	for key, value := range items {
 		c.items[key] = &item{
 			value:  value,
-			expire: now.Add(expire[0]),
+			expire: now.Add(expire),
 		}
 	}
 	return true
 }
 
-func (c *Client) Add(key string, value interface{}, expire ...time.Duration) bool {
+func (c *Client) Add(key string, value interface{}, expires ...time.Duration) bool {
+	expire := defaultExpire
+	if len(expires) > 0 {
+		expire = expires[0]
+	}
+
+	now := time.Now()
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	expire, now := append(expire, defaultExpire), time.Now()
 	if old := c.items[key]; old == nil || old.isExpired() {
 		c.items[key] = &item{
 			value:  value,
-			expire: now.Add(expire[0]),
+			expire: now.Add(expire),
 		}
 		return true
 	}
 	return false
 }
 
-func (c *Client) MAdd(items map[string]interface{}, expire ...time.Duration) bool {
+func (c *Client) MAdd(items map[string]interface{}, expires ...time.Duration) bool {
+	expire := defaultExpire
+	if len(expires) > 0 {
+		expire = expires[0]
+	}
+
+	now := time.Now()
+	success := 0
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	expire, now, success := append(expire, defaultExpire), time.Now(), 0
 	for key, value := range items {
 		if old := c.items[key]; old == nil || old.isExpired() {
 			c.items[key] = &item{
 				value:  value,
-				expire: now.Add(expire[0]),
+				expire: now.Add(expire),
 			}
 			success++
 		}
@@ -204,15 +226,30 @@ func (c *Client) Incr(key string, delta int) int {
 }
 
 func (c *Client) gcLoop() {
+	defer func() {
+		if err := recover(); err != nil {
+			pgo2.GLogger().Error("memory.gcLoop err:%s", util.ToString(err))
+		}
+	}()
+
 	if c.gcInterval < minGcInterval || c.gcInterval > maxGcInterval {
 		c.gcInterval = defaultGcInterval
 	}
 
 	for {
 		<-time.After(c.gcInterval)
-		if expiredKeys := c.getExpireKeys(); len(expiredKeys) > 0 {
-			c.clearExpiredKeys(expiredKeys)
-		}
+		func() {
+			defer func() {
+				if err := recover(); err != nil {
+					pgo2.GLogger().Error("memory.clearExpired  err:%s", util.ToString(err))
+				}
+			}()
+
+			if expiredKeys := c.getExpireKeys(); len(expiredKeys) > 0 {
+				c.clearExpiredKeys(expiredKeys)
+			}
+		}()
+
 	}
 }
 
