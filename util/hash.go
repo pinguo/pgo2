@@ -125,3 +125,30 @@ func (h *HashRing) init() {
 
 	sort.Slice(h.items, func(i, j int) bool { return h.items[i].value < h.items[j].value })
 }
+
+
+// newHash returns a new 64-bit FNV-1a hash which makes no memory allocations.
+// See https://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function
+func NewHashFnv64a() *HashFnv64a {
+	return &HashFnv64a{}
+}
+
+type HashFnv64a struct{}
+
+const (
+	// fnvOffset FNVa offset basis. See https://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function#FNV-1a_hash
+	fnvOffset = 14695981039346656037
+	// fnvPrime FNVa prime value. See https://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function#FNV-1a_hash
+	fnvPrime = 1099511628211
+)
+
+// Value gets the string and returns its uint64 hash value.
+func (h *HashFnv64a) Value(key string) uint64 {
+	var hash uint64 = fnvOffset
+	for i := 0; i < len(key); i++ {
+		hash ^= uint64(key[i])
+		hash *= fnvPrime
+	}
+
+	return hash
+}

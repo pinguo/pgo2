@@ -2,6 +2,7 @@ package redis
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -262,17 +263,17 @@ func (c *Client) mset(items map[string]interface{}, expire time.Duration, flag s
 // args = [0:"key"]
 func (c *Client) Do(cmd string, args ...interface{}) (interface{}, error) {
 	if len(args) == 0 {
-		panic("The length of args has to be greater than 1")
+		return nil,fmt.Errorf("The length of args has to be greater than 1")
 	}
 
 	key, ok := args[0].(string)
 	if ok == false {
-		panic("Invalid key string:" + util.ToString(args[0]))
+		return nil,fmt.Errorf("Invalid key string:%s", args[0])
 	}
 
 	cmd = strings.ToUpper(cmd)
 	if util.SliceSearchString(allRedisCmd, cmd) == -1 {
-		panic("Undefined command:" + cmd)
+		return nil,fmt.Errorf("Undefined command:%s" , cmd)
 	}
 
 	newKey := c.BuildKey(key)
