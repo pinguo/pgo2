@@ -171,9 +171,9 @@ func (s *Server) SetPlugins(v []interface{}) {
 		name := vv.(string)
 		switch name {
 		case "gzip":
-			s.plugins = append(s.plugins, NewGzip())
+			s.AddPlugin(NewGzip())
 		case "file":
-			s.plugins = append(s.plugins, NewFile(App().componentConf("file")))
+			s.AddPlugin(NewFile(nil))
 		default:
 			panic("For the defined plug-in:" + name)
 		}
