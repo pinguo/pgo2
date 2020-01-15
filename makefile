@@ -30,7 +30,7 @@ build:
 	$(goBin) build -o $(binDir)/$(binName) $(baseDir)/cmd/$(binName)/main.go
 
 update:
-	cd $(baseDir) && $(goBin) mod get
+	cd $(baseDir) && $(goBin) get
 
 install:
 	cd $(baseDir) && $(goBin) mod download
