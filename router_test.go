@@ -56,9 +56,8 @@ func TestRouter_SetHandlers(t *testing.T) {
 	list["controller/testController"] = map[string]int{"Index": 0}
 	list["controller/testAaController"] = map[string]int{"IndexAaa": 0, "Index": 1}
 	router.SetHandlers(ControllerWebPkg, list)
-
-	if len(router.webHandlers) != 7 {
-		t.FailNow()
+	if len(router.webHandlers) != 10 {
+		t.Fatal(`len(router.webHandlers) != 11`)
 	}
 
 	cmdList := make(map[string]interface{})
@@ -67,7 +66,7 @@ func TestRouter_SetHandlers(t *testing.T) {
 
 	router.SetHandlers(ControllerCmdPkg, list)
 	if len(router.CmdHandlers()) != 3 {
-		t.FailNow()
+		t.Fatal(`len(router.CmdHandlers()) != 3`)
 	}
 }
 

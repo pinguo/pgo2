@@ -39,6 +39,11 @@ func (c *Controller) GetBindInfo(v interface{}) interface{} {
 
 		if len(name) > ActionLength && name[:ActionLength] == ActionPrefix {
 			actions[name[ActionLength:]] = i
+		}else{
+			//runeArr :=  []rune( name[0:1])
+			//if unicode.IsUpper(runeArr[0]) {
+			//	actions[name] = i
+			//}
 		}
 	}
 

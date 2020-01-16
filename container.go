@@ -162,7 +162,10 @@ func (c *Container) Put(name string, rv reflect.Value) {
 func (c *Container) PathList(prefix, suffix string) map[string]interface{} {
 	list := make(map[string]interface{})
 	for k, item := range c.items {
-		if strings.Index(k, prefix) == 0 && strings.Index(k, suffix) > 0 {
+		//if strings.Index(k, prefix) == 0 && strings.Index(k, suffix) > 0 {
+		//	list[k] = item.info
+		//}
+		if strings.Index(k, prefix) == 0 {
 			list[k] = item.info
 		}
 	}
