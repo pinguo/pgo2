@@ -45,7 +45,6 @@ func NewRouter(config map[string]interface{}) *Router {
 	router.rePathFmt = regexp.MustCompile(`([A-Z])`)
 	router.rules = make([]routeRule, 0, 10)
 
-
 	core.Configure(router, config)
 
 	return router
@@ -69,13 +68,13 @@ type Router struct {
 	modules     []string
 
 	errorController string
-	httpStatus   bool  // Whether to override the HTTP status code
+	httpStatus      bool // Whether to override the HTTP status code
 }
 
 var rePath = strings.NewReplacer("/"+ControllerCmdPkg+"/", "/", "/"+ControllerWebPkg+"/", "/", ControllerCmdType, "", ControllerWebType, "")
 
-func (r *Router) SetHttpStatus(v bool){
-	r.httpStatus =  v
+func (r *Router) SetHttpStatus(v bool) {
+	r.httpStatus = v
 }
 
 func (r *Router) SetErrorController(v string) {
@@ -153,8 +152,15 @@ func (r *Router) SetHandlers(cmdType string, list map[string]interface{}) {
 				for _, aPath := range aNames {
 					uri := baseUrl + cPath + "/" + aPath
 					r.setHandler(cmdType, uri, controllerOPath, baseUrl+cPath, oAName, aNum)
+
+					if aName == DefaultActionPath && r.web(cmdType) {
+						uri := baseUrl + cPath
+						r.setHandler(cmdType, uri, controllerOPath, baseUrl+cPath, oAName, aNum)
+					}
 				}
+
 			}
+
 		}
 	}
 }
@@ -273,8 +279,8 @@ func (r *Router) CreateController(path string, ctx iface.IContext) (reflect.Valu
 	return controller, action, params
 }
 
-func  (r *Router) ErrorController( ctx iface.IContext, statuses ...int) iface.IController{
-	if r.httpStatus && len(statuses) > 0 && statuses[0]>0 && ModeWeb == App().mode{
+func (r *Router) ErrorController(ctx iface.IContext, statuses ...int) iface.IController {
+	if r.httpStatus && len(statuses) > 0 && statuses[0] > 0 && ModeWeb == App().mode {
 		ctx.Output().WriteHeader(statuses[0])
 	}
 	container := App().Container()
