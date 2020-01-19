@@ -1,12 +1,13 @@
 package memory
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 	"time"
 
-	"github.com/pinguo/pgo2"
 	"github.com/pinguo/pgo2/core"
+	"github.com/pinguo/pgo2/logs"
 	"github.com/pinguo/pgo2/util"
 	"github.com/pinguo/pgo2/value"
 )
@@ -36,7 +37,11 @@ func New(config map[string]interface{}) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	memory.Init()
+
+	err = memory.Init()
+	if err != nil {
+		return nil, err
+	}
 
 	return memory, nil
 }
@@ -46,10 +51,21 @@ type Client struct {
 	items      map[string]*item
 	gcInterval time.Duration
 	gcMaxItems int
+	logger logs.ILogger
 }
 
-func (c *Client) Init() {
+func (c *Client) Init() error{
+	if c.logger == nil{
+		return errors.New("miss logger")
+	}
+
 	go c.gcLoop()
+
+	return nil
+}
+
+func (c *Client) SetLogger(logger logs.ILogger){
+	c.logger = logger
 }
 
 func (c *Client) SetGcInterval(v string) error {
@@ -228,7 +244,7 @@ func (c *Client) Incr(key string, delta int) int {
 func (c *Client) gcLoop() {
 	defer func() {
 		if err := recover(); err != nil {
-			pgo2.GLogger().Error("memory.gcLoop err:%s", util.ToString(err))
+			c.logger.Error("memory.gcLoop err:%s", util.ToString(err))
 		}
 	}()
 
@@ -241,7 +257,7 @@ func (c *Client) gcLoop() {
 		func() {
 			defer func() {
 				if err := recover(); err != nil {
-					pgo2.GLogger().Error("memory.clearExpired  err:%s", util.ToString(err))
+					c.logger.Error("memory.clearExpired  err:%s", util.ToString(err))
 				}
 			}()
 
