@@ -231,14 +231,13 @@ func (d *Log) Flush() {
 }
 
 func (d *Log) isHandling(level int) bool {
-	return true
 	return level&d.levels != 0
 }
 
 func (d *Log) addItem(item *LogItem) {
 	if d.traceLevels&item.Level != 0 {
-		if _, file, line, ok := runtime.Caller(3); ok {
-			if pos := strings.LastIndex(file, "src/"); pos > 0 {
+		if _, file, line, ok := runtime.Caller(4); ok {
+			if pos := strings.LastIndex(file, "/pkg/"); pos > 0 {
 				file = file[pos+4:]
 			}
 

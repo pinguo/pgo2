@@ -30,7 +30,7 @@ func NewRabbitMq(componentId ...string) *RabbitMq {
 	}
 
 	r := &RabbitMq{}
-	r.client = pgo2.App().Component(id, rabbitmq.New).(*rabbitmq.Client)
+	r.client = pgo2.App().Component(id, rabbitmq.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*rabbitmq.Client)
 	r.panicRecover = true
 
 	return r
@@ -46,7 +46,7 @@ func NewRabbitMqPool(iObj iface.IObject, componentId ...interface{}) iface.IObje
 	}
 
 	r := iObj.(*RabbitMq)
-	r.client = pgo2.App().Component(id, rabbitmq.New).(*rabbitmq.Client)
+	r.client = pgo2.App().Component(id, rabbitmq.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*rabbitmq.Client)
 	r.panicRecover = true
 
 	return r

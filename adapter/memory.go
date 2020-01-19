@@ -27,7 +27,7 @@ func NewMemory(componentId ...string) *Memory {
 
 	m := &Memory{}
 
-	m.client = pgo2.App().Component(id, memory.New).(*memory.Client)
+	m.client = pgo2.App().Component(id, memory.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*memory.Client)
 	m.panicRecover = true
 
 	return m
@@ -43,7 +43,7 @@ func NewMemoryPool(iObj iface.IObject, componentId ...interface{}) iface.IObject
 
 	m := iObj.(*Memory)
 
-	m.client = pgo2.App().Component(id, memory.New).(*memory.Client)
+	m.client = pgo2.App().Component(id, memory.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*memory.Client)
 	m.panicRecover = true
 
 	return m

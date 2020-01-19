@@ -13,6 +13,7 @@ import (
 	"github.com/pinguo/pgo2/config"
 	"github.com/pinguo/pgo2/iface"
 	"github.com/pinguo/pgo2/logs"
+	"github.com/pinguo/pgo2/util"
 )
 
 func init() {
@@ -338,21 +339,22 @@ func (app *Application) componentConf(id string) map[string]interface{} {
 // Get get component by id
 func (app *Application) Component(id string, funcName iface.IComponentFunc, params ...map[string]interface{}) interface{} {
 	if _, ok := app.components[id]; !ok {
+
+		confConfig := app.componentConf(id)
 		if len(params) > 0 {
-			obj, err := funcName(params[0])
-			if err != nil {
-				panic("Component " + id + " err:" + err.Error())
+			if confConfig == nil {
+				confConfig = make(map[string]interface{})
 			}
 
-			app.setComponent(id, obj)
-		} else {
-			obj, err := funcName(app.componentConf(id))
-			if err != nil {
-				panic("Component " + id + " err:" + err.Error())
-			}
-
-			app.setComponent(id, obj)
+			util.MapMerge(confConfig, params...)
 		}
+
+		obj, err := funcName(confConfig)
+		if err != nil {
+			panic("Component " + id + " err:" + err.Error())
+		}
+
+		app.setComponent(id, obj)
 
 	}
 
