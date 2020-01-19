@@ -70,6 +70,58 @@ func (m *MockITarget) EXPECT() *MockITargetMockRecorder {
 	return m.recorder
 }
 
+// SetLevels mocks base method
+func (m *MockITarget) SetLevels(v interface{}) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetLevels", v)
+}
+
+// SetLevels indicates an expected call of SetLevels
+func (mr *MockITargetMockRecorder) SetLevels(v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetLevels", reflect.TypeOf((*MockITarget)(nil).SetLevels), v)
+}
+
+// SetFormatter mocks base method
+func (m *MockITarget) SetFormatter(v interface{}) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetFormatter", v)
+}
+
+// SetFormatter indicates an expected call of SetFormatter
+func (mr *MockITargetMockRecorder) SetFormatter(v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetFormatter", reflect.TypeOf((*MockITarget)(nil).SetFormatter), v)
+}
+
+// IsHandling mocks base method
+func (m *MockITarget) IsHandling(level int) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsHandling", level)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsHandling indicates an expected call of IsHandling
+func (mr *MockITargetMockRecorder) IsHandling(level interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsHandling", reflect.TypeOf((*MockITarget)(nil).IsHandling), level)
+}
+
+// Format mocks base method
+func (m *MockITarget) Format(item *logs.LogItem) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Format", item)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Format indicates an expected call of Format
+func (mr *MockITargetMockRecorder) Format(item interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Format", reflect.TypeOf((*MockITarget)(nil).Format), item)
+}
+
 // Process mocks base method
 func (m *MockITarget) Process(item *logs.LogItem) {
 	m.ctrl.T.Helper()
