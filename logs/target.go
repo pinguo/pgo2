@@ -25,10 +25,6 @@ func (t *Target) SetLevels(v interface{}) {
 func (t *Target) SetFormatter(v interface{}) {
 	if ptr, ok := v.(IFormatter); ok {
 		t.formatter = ptr
-		//} else if class, ok := v.(string); ok {
-		//    t.formatter = CreateObject(class).(IFormatter)
-		//} else if config, ok := v.(map[string]interface{}); ok {
-		//    t.formatter = CreateObject(config).(IFormatter)
 	} else {
 		panic(fmt.Sprintf("Target: invalid formatter: %v", v))
 	}

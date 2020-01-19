@@ -5,6 +5,10 @@ type IFormatter interface {
 }
 
 type ITarget interface {
+	SetLevels(v interface{})
+	SetFormatter(v interface{})
+	IsHandling(level int) bool
+	Format(item *LogItem) string
 	Process(item *LogItem)
 	Flush(final bool)
 }
