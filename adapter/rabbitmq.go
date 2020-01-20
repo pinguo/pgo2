@@ -46,11 +46,7 @@ func NewRabbitMqPool(iObj iface.IObject, componentId ...interface{}) iface.IObje
 	}
 
 	r := iObj.(*RabbitMq)
-<<<<<<< HEAD
-	r.client = pgo2.App().Component(id, rabbitmq.New).(*rabbitmq.Client)
-=======
 	r.client = pgo2.App().Component(id, rabbitmq.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*rabbitmq.Client)
->>>>>>> f8553b87581acdd51456c9ef640b9d86b6c1c6ef
 	r.panicRecover = true
 
 	return r
