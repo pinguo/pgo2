@@ -1,7 +1,6 @@
 package pgo2
 
 import (
-	"fmt"
 	"reflect"
 	"regexp"
 	"strings"
@@ -215,7 +214,6 @@ func (r *Router) Resolve(path, method string) (handler *Handler, params []string
 	}
 
 	path = util.CleanPath(path)
-	fmt.Println("path 333", path)
 	// The second mapping
 	handler = r.Handler(path)
 	if handler != nil {
@@ -262,7 +260,7 @@ func (r *Router) CmdHandlers() map[string]*Handler {
 // CreateController Create the controller and parameters
 func (r *Router) CreateController(path string, ctx iface.IContext) (reflect.Value, reflect.Value, []string) {
 	container := App().Container()
-	fmt.Println("path", path, ctx.Method())
+
 	handler, params := r.Resolve(path, ctx.Method())
 	if handler == nil {
 		return reflect.Value{}, reflect.Value{}, nil

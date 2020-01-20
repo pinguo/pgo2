@@ -8,8 +8,7 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/pinguo/pgo2"
+	"github.com/pinguo/pgo2/logs"
 	"github.com/pinguo/pgo2/util"
 )
 
@@ -39,9 +38,15 @@ type Pool struct {
 	connList map[string]*ConnBox
 
 	lock sync.RWMutex
+
+	logger logs.ILogger
 }
 
 func (c *Pool) Init() error {
+	if c.logger == nil {
+		return errors.New("miss logger")
+	}
+
 	if c.exchangeName == "" {
 		return errors.New("exchangeName cannot be empty")
 	}
@@ -60,6 +65,10 @@ func (c *Pool) Init() error {
 
 	return nil
 
+}
+
+func (c *Pool) SetLogger(logger logs.ILogger) {
+	c.logger = logger
 }
 
 func (c *Pool) SetServers(v []interface{}) {
@@ -307,7 +316,7 @@ func (c *Pool) probeServer(addr string, weight int64) {
 		func() {
 			defer func() {
 				if err := recover(); err != nil {
-					pgo2.GLogger().Error("Rabbit probeServer err:" + util.ToString(err))
+					c.logger.Error("Rabbit probeServer err:" + util.ToString(err))
 				}
 			}()
 
@@ -322,7 +331,7 @@ func (c *Pool) probeServer(addr string, weight int64) {
 			} else if e == nil && connBox.isClosed() {
 				connBox.setEnable()
 				if err := connBox.initConn(); err != nil {
-					pgo2.GLogger().Error("Rabbit probeServer err:" + util.ToString(err))
+					c.logger.Error("Rabbit probeServer err:" + util.ToString(err))
 				}
 			}
 		}()
@@ -333,7 +342,7 @@ func (c *Pool) probeServer(addr string, weight int64) {
 func (c *Pool) probeLoop() {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println("rabbitMq pool.probeLoop err:" + util.ToString(err))
+			c.logger.Error("rabbitMq pool.probeLoop err:" + util.ToString(err))
 		}
 
 		c.probeLoop()

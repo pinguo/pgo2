@@ -7,8 +7,7 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/pinguo/pgo2"
+	"github.com/pinguo/pgo2/logs"
 	"github.com/pinguo/pgo2/util"
 )
 
@@ -41,9 +40,15 @@ type Pool struct {
 
 	// 重新检查标志
 	reCheck string
+
+	logger logs.ILogger
 }
 
 func (p *Pool) Init() error {
+	if p.logger == nil {
+		return errors.New("miss logger")
+	}
+
 	if len(p.servers) == 0 {
 		p.servers[defaultServer] = &serverInfo{weight: 1, disabled: false}
 	}
@@ -71,6 +76,10 @@ func (p *Pool) Init() error {
 	}
 
 	return nil
+}
+
+func (p *Pool) SetLogger(logger logs.ILogger){
+	p.logger = logger
 }
 
 func (p *Pool) SetPrefix(prefix string) {
@@ -187,14 +196,14 @@ func (p *Pool) AddrNewKeys(cmd string, v interface{}) (map[string][]string, map[
 func (p *Pool) RunAddrFunc(addr string, keys []string, wg *sync.WaitGroup, f func(*Conn, []string)) error {
 	defer func() {
 		if err := recover(); err != nil {
-			pgo2.GLogger().Error("go coroutine RunAddrFunc,err:" + util.ToString(err))
+			p.logger.Error("go coroutine RunAddrFunc,err:" + util.ToString(err))
 		}
 		wg.Done() // notify done
 	}()
 
 	conn, err := p.GetConnByAddr(addr)
 	if err != nil {
-		pgo2.GLogger().Error("go coroutine RunAddrFunc,err:" + util.ToString(err))
+		p.logger.Error("go coroutine RunAddrFunc,err:" + util.ToString(err))
 		return err
 	}
 	defer conn.Close(false)
@@ -363,7 +372,7 @@ func (p *Pool) probeLoop() {
 	defer func() {
 		defer func() {
 			if err := recover(); err != nil {
-				pgo2.GLogger().Error("redis pool.probeLoop recover err:" + util.ToString(err))
+				p.logger.Error("redis pool.probeLoop recover err:" + util.ToString(err))
 			}
 
 			p.probeLoop()

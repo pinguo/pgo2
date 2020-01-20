@@ -42,7 +42,7 @@ type Container struct {
 
 // Bind bind template object to class,
 // param i must be a pointer of struct.
-func (c *Container) Bind(i interface{}) string {
+func (c *Container) Bind(i interface{}) string{
 	iv := reflect.ValueOf(i)
 	if iv.Kind() != reflect.Ptr {
 		panic("Container: invalid type, need pointer")
@@ -72,6 +72,7 @@ func (c *Container) Bind(i interface{}) string {
 
 	// get class name
 	pkgPath := rt.PkgPath()
+
 	if index := strings.Index(pkgPath, "/"+ControllerWebPkg); index >= 0 {
 		pkgPath = pkgPath[index+1:]
 	}
@@ -85,6 +86,7 @@ func (c *Container) Bind(i interface{}) string {
 	if len(name) > VendorLength && name[:VendorLength] == VendorPrefix {
 		name = name[VendorLength:]
 	}
+
 	c.items[name] = &item
 
 	return name

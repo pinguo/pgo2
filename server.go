@@ -89,7 +89,6 @@ type Server struct {
 	pool            sync.Pool       // Context pool
 	maxPostBodySize int64           // max post body size
 	debug           bool            // debug=true not recover panic
-	serveOptions    *ServeOptions
 }
 
 func (s *Server) Pool() sync.Pool {
@@ -229,15 +228,8 @@ func (s *Server) GetStats() *ServerStats {
 	}
 }
 
-type ServeOptions struct {
-	HttpServer  *http.Server
-	HttpsServer *http.Server
-	DebugServer *http.Server
-	Block       bool
-}
-
 // Serve request processing entry
-func (s *Server) Serve(cfgs ... *ServeOptions) {
+func (s *Server) Serve() {
 	// flush log when app end
 	defer App().Log().Flush()
 	// exec stopBefore when app end
@@ -262,17 +254,13 @@ func (s *Server) Serve(cfgs ... *ServeOptions) {
 		s.httpAddr = DefaultHttpAddr
 	}
 
-	if len(cfgs) > 0 {
-
-	} else {
-		wg := sync.WaitGroup{}
-		s.handleHttp(&wg)
-		s.handleHttps(&wg)
-		s.handleDebug(&wg)
-		s.handleSignal(&wg)
-		s.handleStats(&wg)
-		wg.Wait()
-	}
+	wg := sync.WaitGroup{}
+	s.handleHttp(&wg)
+	s.handleHttps(&wg)
+	s.handleDebug(&wg)
+	s.handleSignal(&wg)
+	s.handleStats(&wg)
+	wg.Wait()
 }
 
 // ServeCMD serve command request
@@ -303,6 +291,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *Server) HandleRequest(ctx iface.IContext) {
 	// get request path and resolve route
 	path := ctx.Path()
+
 	// get new controller bind to this route
 	rv, action, params := App().Router().CreateController(path, ctx)
 	if !rv.IsValid() {
@@ -357,18 +346,7 @@ func (s *Server) handleHttp(wg *sync.WaitGroup) {
 		return
 	}
 
-	var svr *http.Server
-	if s.serveOptions != nil && s.serveOptions.HttpServer != nil {
-		svr = s.serveOptions.HttpServer
-		svr.Addr = s.httpAddr
-		svr.ReadTimeout = s.readTimeout
-		svr.WriteTimeout = s.writeTimeout
-		svr.MaxHeaderBytes = s.maxHeaderBytes
-		svr.Handler = s
-	} else {
-		svr = s.newHttpServer(s.httpAddr)
-	}
-
+	svr := s.newHttpServer(s.httpAddr)
 	s.servers = append(s.servers, svr)
 	wg.Add(1)
 

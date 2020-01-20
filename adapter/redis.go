@@ -25,7 +25,7 @@ func NewRedis(componentId ...string) *Redis {
 	}
 
 	c := &Redis{}
-	c.client = pgo2.App().Component(id, redis.New).(*redis.Client)
+	c.client = pgo2.App().Component(id, redis.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*redis.Client)
 	c.panicRecover = true
 
 	return c
@@ -41,7 +41,7 @@ func NewRedisPool(iObj iface.IObject, componentId ...interface{}) iface.IObject 
 
 	c := iObj.(*Redis)
 
-	c.client = pgo2.App().Component(id, redis.New).(*redis.Client)
+	c.client = pgo2.App().Component(id, redis.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*redis.Client)
 	c.panicRecover = true
 
 	return c
