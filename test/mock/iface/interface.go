@@ -1376,3 +1376,52 @@ func (mr *MockIContextMockRecorder) ProfileString() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProfileString", reflect.TypeOf((*MockIContext)(nil).ProfileString))
 }
+
+// SetAccessLogFormat mocks base method
+func (m *MockIContext) SetAccessLogFormat(v iface.IAccessLogFormat) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetAccessLogFormat", v)
+}
+
+// SetAccessLogFormat indicates an expected call of SetAccessLogFormat
+func (mr *MockIContextMockRecorder) SetAccessLogFormat(v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetAccessLogFormat", reflect.TypeOf((*MockIContext)(nil).SetAccessLogFormat), v)
+}
+
+// MockIAccessLogFormat is a mock of IAccessLogFormat interface
+type MockIAccessLogFormat struct {
+	ctrl     *gomock.Controller
+	recorder *MockIAccessLogFormatMockRecorder
+}
+
+// MockIAccessLogFormatMockRecorder is the mock recorder for MockIAccessLogFormat
+type MockIAccessLogFormatMockRecorder struct {
+	mock *MockIAccessLogFormat
+}
+
+// NewMockIAccessLogFormat creates a new mock instance
+func NewMockIAccessLogFormat(ctrl *gomock.Controller) *MockIAccessLogFormat {
+	mock := &MockIAccessLogFormat{ctrl: ctrl}
+	mock.recorder = &MockIAccessLogFormatMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockIAccessLogFormat) EXPECT() *MockIAccessLogFormatMockRecorder {
+	return m.recorder
+}
+
+// Format mocks base method
+func (m *MockIAccessLogFormat) Format(arg0 iface.IContext) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Format", arg0)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Format indicates an expected call of Format
+func (mr *MockIAccessLogFormatMockRecorder) Format(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Format", reflect.TypeOf((*MockIAccessLogFormat)(nil).Format), arg0)
+}
