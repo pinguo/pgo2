@@ -35,7 +35,7 @@ type IController interface {
 }
 
 type IErrorController interface {
-	Error (status int, message string)
+	Error(status int, message string)
 }
 
 type IPlugin interface {
@@ -137,8 +137,13 @@ type IContext interface {
 	PushLogString() string
 	CountingString() string
 	ProfileString() string
+	SetAccessLogFormat(v IAccessLogFormat)
 }
 
 type IObjPoolFunc func(obj IObject, params ...interface{}) IObject
 type IObjSingleFunc func(params ...interface{}) IObject
 type IComponentFunc func(config map[string]interface{}) (interface{}, error)
+
+type IAccessLogFormat interface {
+	Format(IContext) string
+}

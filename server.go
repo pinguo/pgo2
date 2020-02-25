@@ -90,12 +90,18 @@ type Server struct {
 	pool            sync.Pool       // Context pool
 	maxPostBodySize int64           // max post body size
 	debug           bool            // debug=true not recover panic
+	accessLogFormat iface.IAccessLogFormat
 }
 
 // SetHttpAddr set http addr, if both httpAddr and httpsAddr
 // are empty, "0.0.0.0:8000" will be used as httpAddr.
 func (s *Server) SetHttpAddr(addr string) {
 	s.httpAddr = addr
+}
+
+// SetAccessLogFormat set accessLogFormat
+func (s *Server) SetAccessLogFormat(v iface.IAccessLogFormat){
+	s.accessLogFormat = v
 }
 
 // SetHttpsAddr set https addr.
@@ -262,7 +268,7 @@ func (s *Server) Serve() {
 
 // ServeCMD serve command request
 func (s *Server) ServeCMD() {
-	ctx := Context{debug: s.debug, enableAccessLog: s.enableAccessLog}
+	ctx := Context{debug: s.debug, enableAccessLog: s.enableAccessLog, accessLogFormat:s.accessLogFormat}
 	// only apply the last plugin for command
 	ctx.Process(s.plugins[len(s.plugins)-1:])
 }
@@ -279,6 +285,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := s.pool.Get().(iface.IContext)
 
 	ctx.HttpRW(s.debug, s.enableAccessLog, r, w)
+	ctx.SetAccessLogFormat(s.accessLogFormat)
 	ctx.Process(s.plugins)
 	s.pool.Put(ctx)
 }

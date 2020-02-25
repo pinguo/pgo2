@@ -38,10 +38,16 @@ type Context struct {
 	index        int
 	objects      []objectItem
 
+	accessLogFormat iface.IAccessLogFormat
+
 	queryCache url.Values
 
 	logs.Profiler
 	logs.Logger
+}
+
+func (c *Context) SetAccessLogFormat(v iface.IAccessLogFormat) {
+	c.accessLogFormat = v
 }
 
 func (c *Context) HttpRW(debug, enableAccessLog bool, r *http.Request, w http.ResponseWriter) {
@@ -111,12 +117,16 @@ func (c *Context) finish(goLog bool) {
 	if !goLog {
 		// write header if not yet
 		c.response.finish()
-
 		// write access log
 		if c.enableAccessLog {
-			c.Notice("%s %s %d %d %dms pushlog[%s] profile[%s] counting[%s]",
-				c.Method(), c.Path(), c.Status(), c.Size(), c.ElapseMs(),
-				c.PushLogString(), c.ProfileString(), c.CountingString())
+			if c.accessLogFormat != nil {
+				c.Notice(c.accessLogFormat.Format(c))
+			} else {
+				c.Notice("%s %s %d %d %dms pushlog[%s] profile[%s] counting[%s]",
+					c.Method(), c.Path(), c.Status(), c.Size(), c.ElapseMs(),
+					c.PushLogString(), c.ProfileString(), c.CountingString())
+			}
+
 		}
 	} else {
 		if c.enableAccessLog {
