@@ -12,6 +12,7 @@ import (
 )
 
 var HttpClass string
+
 func init() {
 	container := pgo2.App().Container()
 	HttpClass = container.Bind(&Http{})
@@ -85,6 +86,12 @@ func (h *Http) Get(addr string, data interface{}, option ...*phttp.Option) *http
 	defer h.Context().ProfileStop(profile)
 	defer h.handlePanic()
 
+	if option == nil {
+		option = make([]*phttp.Option, 1)
+		option[0] = &phttp.Option{}
+	}
+	option[0].SetHeader("X-Log-Id", h.Context().LogId())
+
 	res, err := h.client.Get(addr, data, option...)
 	h.parseErr(err)
 
@@ -97,6 +104,12 @@ func (h *Http) Post(addr string, data interface{}, option ...*phttp.Option) *htt
 	h.Context().ProfileStart(profile)
 	defer h.Context().ProfileStop(profile)
 	defer h.handlePanic()
+
+	if option == nil {
+		option = make([]*phttp.Option, 1)
+		option[0] = &phttp.Option{}
+	}
+	option[0].SetHeader("X-Log-Id", h.Context().LogId())
 
 	res, err := h.client.Post(addr, data, option...)
 	h.parseErr(err)
@@ -111,6 +124,12 @@ func (h *Http) Do(req *http.Request, option ...*phttp.Option) *http.Response {
 	defer h.Context().ProfileStop(profile)
 	defer h.handlePanic()
 
+	if option == nil {
+		option = make([]*phttp.Option, 1)
+		option[0] = &phttp.Option{}
+	}
+	option[0].SetHeader("X-Log-Id", h.Context().LogId())
+
 	res, err := h.client.Do(req, option...)
 	h.parseErr(err)
 
@@ -123,6 +142,8 @@ func (h *Http) DoMulti(requests []*http.Request, option ...*phttp.Option) []*htt
 		panic("http multi request invalid num of options")
 	}
 
+	baseOption := &phttp.Option{}
+	baseOption.SetHeader("X-Log-Id", h.Context().LogId())
 	profile := "Http.DoMulti"
 	h.Context().ProfileStart(profile)
 	defer h.Context().ProfileStop(profile)
@@ -149,9 +170,11 @@ func (h *Http) DoMulti(requests []*http.Request, option ...*phttp.Option) []*htt
 		}()
 
 		if len(option) > 0 && option[k] != nil {
+			option[k].SetHeader("X-Log-Id", h.Context().LogId())
 			res, err = h.client.Do(requests[k], option[k])
 		} else {
-			res, err = h.client.Do(requests[k])
+
+			res, err = h.client.Do(requests[k], baseOption)
 		}
 		h.parseErr(err)
 	}
