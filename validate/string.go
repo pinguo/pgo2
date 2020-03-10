@@ -150,6 +150,10 @@ func (s *String) Int() *Int {
 	return &Int{s.Name, s.UseDft, util.ToInt(s.Value)}
 }
 
+func (s *String) Int64() *Int64 {
+	return &Int64{s.Name, s.UseDft, util.ToInt64(s.Value)}
+}
+
 func (s *String) Float() *Float {
 	return &Float{s.Name, s.UseDft, util.ToFloat(s.Value)}
 }
@@ -213,6 +217,15 @@ func (s *StringSlice) Int() *IntSlice {
 	validator := &IntSlice{s.Name, make([]int, 0)}
 	for _, v := range s.Value {
 		validator.Value = append(validator.Value, util.ToInt(v))
+	}
+
+	return validator
+}
+
+func (s *StringSlice) Int64() *Int64Slice {
+	validator := &Int64Slice{s.Name, make([]int64, 0)}
+	for _, v := range s.Value {
+		validator.Value = append(validator.Value, util.ToInt64(v))
 	}
 
 	return validator

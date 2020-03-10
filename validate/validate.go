@@ -20,6 +20,12 @@ func IntData(data interface{}, name string, dft ...interface{}) *Int {
 	return &Int{name, useDft, util.ToInt(value)}
 }
 
+// validate int64 value
+func Int64Data(data interface{}, name string, dft ...interface{}) *Int64 {
+	value, useDft := Value(data, name, dft...)
+	return &Int64{name, useDft, util.ToInt64(value)}
+}
+
 // validate float value
 func FloatData(data interface{}, name string, dft ...interface{}) *Float {
 	value, useDft := Value(data, name, dft...)
