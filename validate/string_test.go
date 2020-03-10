@@ -242,6 +242,15 @@ func TestString_Int(t *testing.T) {
 	}
 }
 
+func TestString_Int64(t *testing.T) {
+	s := &String{Name: "name", UseDft: false, Value: "1"}
+	var obj interface{}
+	obj = s.Int64()
+	if _, ok := obj.(*Int64); ok == false {
+		t.FailNow()
+	}
+}
+
 func TestString_Float(t *testing.T) {
 	s := &String{Name: "name", UseDft: false, Value: "1.0"}
 	var obj interface{}
@@ -306,6 +315,15 @@ func TestStringSlice_Int(t *testing.T) {
 	var obj interface{}
 	obj = s.Int()
 	if _, ok := obj.(*IntSlice); ok == false {
+		t.FailNow()
+	}
+}
+
+func TestStringSlice_Int64(t *testing.T) {
+	s := &StringSlice{Name: "name", UseDft: false, Value: []string{"1", "2"}}
+	var obj interface{}
+	obj = s.Int64()
+	if _, ok := obj.(*Int64Slice); ok == false {
 		t.FailNow()
 	}
 }

@@ -69,6 +69,32 @@ func ToInt(v interface{}) int {
 	}
 }
 
+func ToInt64(v interface{}) int64 {
+	switch val := v.(type) {
+	case bool:
+		if val {
+			return 1
+		} else {
+			return 0
+		}
+	case float32, float64:
+		// direct type conversion may cause data loss, use reflection instead
+		return int64(reflect.ValueOf(v).Float())
+	case int, int8, int16, int32, int64:
+		return int64(reflect.ValueOf(v).Int())
+	case uint, uint8, uint16, uint32, uint64:
+		return int64(reflect.ValueOf(v).Uint())
+	case string:
+		return str2int64(val)
+	case []byte:
+		return str2int64(string(val))
+	case nil:
+		return 0
+	default:
+		panic(fmt.Sprintf("ToInt: invalid type: %T", v))
+	}
+}
+
 func ToFloat(v interface{}) float64 {
 	switch val := v.(type) {
 	case bool:
@@ -140,6 +166,19 @@ func str2int(s string) int {
 	} else if f64, e := strconv.ParseFloat(s, 64); e == nil {
 		// convert float string
 		return int(f64)
+	} else {
+		return 0
+	}
+}
+
+func str2int64(s string) int64 {
+	s = strings.TrimSpace(s)
+	if i64, e := strconv.ParseInt(s, 0, 0); e == nil {
+		// convert int string(decimal, hexadecimal, octal)
+		return i64
+	} else if f64, e := strconv.ParseFloat(s, 64); e == nil {
+		// convert float string
+		return int64(f64)
 	} else {
 		return 0
 	}

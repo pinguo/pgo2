@@ -28,6 +28,14 @@ func TestIntData(t *testing.T) {
 	}
 }
 
+func TestInt64Data(t *testing.T) {
+	var obj interface{}
+	obj = Int64Data("12", "name")
+	if _, ok := obj.(*Int64); ok == false {
+		t.FailNow()
+	}
+}
+
 func TestStringData(t *testing.T) {
 	var obj interface{}
 	obj = StringData("saaa", "name")
