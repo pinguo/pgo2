@@ -224,6 +224,38 @@ func TestString_IPv4(t *testing.T) {
 	})
 }
 
+func TestString_MongoId(t *testing.T) {
+	t.Run("panic len!=24", func(t *testing.T) {
+		defer func() {
+			if err := recover(); err != nil {
+				return
+			}
+			t.FailNow()
+		}()
+		s := &String{Name: "name", UseDft: false, Value: "dfdfdfdfd"}
+		s.MongoId()
+	})
+
+	t.Run("panic notHex", func(t *testing.T) {
+		defer func() {
+			if err := recover(); err != nil {
+				return
+			}
+			t.FailNow()
+		}()
+		s := &String{Name: "name", UseDft: false, Value: "5e71b7544634b70930c7a1ZM"}
+		s.MongoId()
+	})
+
+	//
+	t.Run("normal", func(t *testing.T) {
+		s := &String{Name: "name", UseDft: false, Value: "5e71b7544634b70930c7a10a"}
+		if s.MongoId() != s {
+			t.FailNow()
+		}
+	})
+}
+
 func TestString_Bool(t *testing.T) {
 	s := &String{Name: "name", UseDft: false, Value: "false"}
 	var obj interface{}
