@@ -1,6 +1,7 @@
 package validate
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 	"regexp"
@@ -137,6 +138,20 @@ func (s *String) Mobile() *String {
 func (s *String) IPv4() *String {
 	if !s.UseDft && !ipv4Re.MatchString(s.Value) {
 		panic(perror.New(http.StatusBadRequest, "%s is invalid ipv4", s.Name))
+	}
+
+	return s
+}
+
+func (s *String) MongoId() *String {
+	if !s.UseDft {
+		if len(s.Value) != 24 {
+			panic(perror.New(http.StatusBadRequest, "%s is invalid MongoId", s.Name))
+		}
+		_, err := hex.DecodeString(s.Value)
+		if err != nil {
+			panic(perror.New(http.StatusBadRequest, "%s is invalid MongoId", s.Name))
+		}
 	}
 
 	return s
