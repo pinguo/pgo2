@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+
+var mapToMapsRK = strings.NewReplacer("][", ".", "[", ".", "]", ".")
+
 // MapClear clear map to empty
 func MapClear(m map[string]interface{}) {
 	for k := range m {
@@ -89,4 +92,98 @@ func MapSet(m map[string]interface{}, key string, val interface{}) {
 			panic(fmt.Sprintf("MapSet: invalid type: %T", val))
 		}
 	}
+}
+
+
+
+
+// 转换map为map/slice {"[aaa][0][bbb]":"sss"} => {"aaa":[{"bbb":"sss"}]}
+// 主要是转换map 中key为数字的map 转换为slice
+// 转换后的slice顺序不保证
+func ParamsToMapSlice(m map[string]interface{}) map[string]interface{} {
+	ks := make([]string, 0, len(m))
+	mm := make(map[string]interface{})
+	for k, v := range m {
+		kk := strings.Trim(mapToMapsRK.Replace(k), ".")
+		ks = append(ks, kk)
+		MapSet(mm, kk, v)
+	}
+
+	changeData(mm)
+
+	return mm
+
+}
+
+func changeData(mm map[string]interface{}) {
+	data := mm
+	for k, v := range data {
+		vv, ok := v.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		allNum := true
+
+		for kkk, _ := range vv {
+			if IsAllDigit(kkk) == false {
+				allNum = false
+				break
+			}
+		}
+
+		if allNum == false {
+			changeData(vv)
+			continue
+		}
+
+		sliceData := make([]interface{}, 0, len(vv))
+		for _, vvv := range vv {
+			sliceData = append(sliceData, vvv)
+		}
+		data[k] = sliceData
+		for _, v4 := range sliceData {
+			if v5, ok := v4.(map[string]interface{}); ok {
+				changeData(v5)
+			}
+		}
+
+	}
+}
+
+// 强制转换map为[]string
+// {"1":"ss"} => ["ss"]
+// 转换后的slice顺序不保证
+func MapToSliceString(sI interface{}) []string {
+	s ,ok:=sI.(map[string]interface{})
+	if ok == false{
+		panic(fmt.Sprintf("MapToSliceString: invalid type: %T", sI))
+	}
+
+	sliceData := make([]string, 0, len(s))
+	for _,v:=range s{
+		sliceData = append(sliceData,ToString(v))
+	}
+
+	return sliceData
+}
+
+// 强制转换map为[]int
+// {"1":1} => [1]
+// 转换后的slice顺序不保证
+func MapToSliceInt(sI interface{}) []int {
+	s ,ok:=sI.(map[string]interface{})
+	if ok == false{
+		panic(fmt.Sprintf("MapToSliceString: invalid type: %T", sI))
+	}
+
+	sliceData := make([]int, 0, len(s))
+	for _,v:=range s{
+		if vInt,ok:= v.(int);ok == false{
+			panic(fmt.Sprintf("MapToSliceInt: invalid type: %T", v))
+		}else{
+			sliceData = append(sliceData,vInt)
+		}
+	}
+
+	return sliceData
 }

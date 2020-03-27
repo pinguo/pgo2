@@ -1,6 +1,9 @@
 package util
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestMapClear(t *testing.T) {
 	m := map[string]interface{}{"dd": "gg", "aa": "bb"}
@@ -33,5 +36,69 @@ func TestMapMerge(t *testing.T) {
 
 	if _, has := m["cc"]; has == false {
 		t.Fatal(`_,has := m["cc"];has==false`)
+	}
+}
+
+
+func TestParamsToMapSlice(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		data := map[string]interface{}{
+			"advs[0][advId]":"advid0",
+			"advs[0][defaultLanguage]":2,
+			"advs[1][advId]":"advid1",
+			"advs[1][defaultLanguage]":2,
+			"advs[0][appVersionData][0]":"9.0.0",
+			"advs[0][appVersionData][1]":"9.0.1",
+			"aaa":"aaa",
+		}
+
+		ret :=ParamsToMapSlice(data)
+		if _,ok:=ret["advs"].([]interface{});ok==false{
+			t.Fatal(`_,ok:=ret["advs"].([]interface{});ok==false`)
+		}
+	})
+
+	t.Run("int+string", func(t *testing.T) {
+		data := map[string]interface{}{
+			"advs[0][advId]":"advid0",
+			"advs[0][defaultLanguage]":2,
+			"advs[a][advId]":"advid1",
+			"advs[a][defaultLanguage]":2,
+			"advs[0][appVersionData][0]":"9.0.0",
+			"advs[0][appVersionData][1]":"9.0.1",
+			"aaa":"aaa",
+		}
+
+		ret :=ParamsToMapSlice(data)
+		if _,ok:=ret["advs"].([]interface{});ok==true{
+			t.Fatal(`_,ok:=ret["advs"].([]interface{});ok==true`)
+		}
+	})
+
+}
+
+func TestMapToSliceString(t *testing.T) {
+	data:=map[string]interface{}{
+		"0":"0",
+		"1":"1",
+	}
+
+	ret :=MapToSliceString(data)
+	t.Log(reflect.TypeOf(ret))
+	if reflect.TypeOf(ret).String()!="[]string"{
+		t.Fatal(`reflect.TypeOf(ret).String()!="[]string"`)
+	}
+}
+
+func TestMapToSliceInt(t *testing.T) {
+	data:=map[string]interface{}{
+		"0":0,
+		"1":1,
+	}
+
+	ret :=MapToSliceInt(data)
+	t.Log(reflect.TypeOf(ret))
+	if reflect.TypeOf(ret).String()!="[]int"{
+		t.Fatal(`reflect.TypeOf(ret).String()!="[]int"`)
 	}
 }
