@@ -37,3 +37,59 @@ func TestSliceUniqueString(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+
+func TestSliceFilterInt(t *testing.T) {
+
+
+	t.Run("callback=empty", func(t *testing.T) {
+		list := []int{0,2}
+		if len(SliceFilterInt(list)) != 1{
+			t.Fatal(`len(SliceFilterInt(list)) != 1`)
+		}
+	})
+
+	t.Run("callback=filter2", func(t *testing.T) {
+		list := []int{1,0,2}
+		if len(SliceFilterInt(list, func(s int) bool {
+			if s==1 {
+				return false
+			}
+			return true
+		})) != 2{
+			t.Fatal(`len(SliceFilterInt(list)) != 2`)
+		}
+	})
+
+}
+
+func TestSliceFilterString(t *testing.T) {
+
+
+	t.Run("callback=empty", func(t *testing.T) {
+		list := []string{"","2"}
+		if len(SliceFilterString(list)) != 1{
+			t.Fatal(`len(SliceFilterInt(list)) != 1`)
+		}
+	})
+
+	t.Run("callback=filter2", func(t *testing.T) {
+		list := []string{"1","","2"}
+		if len(SliceFilterString(list, func(s string) bool {
+			if s=="1" {
+				return false
+			}
+			return true
+		})) != 2{
+			t.Fatal(`len(SliceFilterString(list)) != 2`)
+		}
+	})
+
+	t.Run("list=empty", func(t *testing.T) {
+		list := []string{}
+		if len(SliceFilterString(list)) != 0{
+			t.Fatal(`len(SliceFilterInt(list)) != 0`)
+		}
+	})
+
+}
