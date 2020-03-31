@@ -27,7 +27,8 @@ func SliceSearchString(a []string, x string) int {
 
 // SliceUniqueInt retrieve unique items item from int slice.
 func SliceUniqueInt(a []int) []int {
-	result, exists := make([]int, 0), make(map[int]bool)
+	l := int(len(a)/2) + 1
+	result, exists := make([]int, 0, l), make(map[int]bool)
 	for _, v := range a {
 		if !exists[v] {
 			result = append(result, v)
@@ -40,12 +41,71 @@ func SliceUniqueInt(a []int) []int {
 
 // SliceUniqueString retrieve unique string items from string slice.
 func SliceUniqueString(a []string) []string {
-	result, exists := make([]string, 0), make(map[string]bool)
+	l := int(len(a)/2) + 1
+	result, exists := make([]string, 0, l), make(map[string]bool)
 	for _, v := range a {
 		if !exists[v] {
 			result = append(result, v)
 			exists[v] = true
 		}
+	}
+
+	return result
+}
+
+type SliceFilterIntFunc func(s int) bool
+
+// SliceFilterInt 依次将 slice 中的每个值传递到 callback 函数。
+// 如果 callback 函数返回 true，则 slice 的当前值会被包含在返回的结果slice中。
+// 如果callback 未传 就会过滤零值
+func SliceFilterInt(a []int, callbacks ...SliceFilterIntFunc) []int {
+	l := int(len(a)/2) + 1
+	result := make([]int, 0, l)
+	var callback SliceFilterIntFunc
+	if len(callbacks) > 0 {
+		callback = callbacks[0]
+	}
+	for _, v := range a {
+		if callback == nil {
+			if v == 0 {
+				continue
+			}
+		} else {
+			if callback(v) == false {
+				continue
+			}
+		}
+
+		result = append(result, v)
+	}
+
+	return result
+}
+
+type SliceFilterStringFunc func(s string) bool
+
+// SliceFilterString 依次将 slice 中的每个值传递到 callback 函数。
+// 如果 callback 函数返回 true，则 slice 的当前值会被包含在返回的结果slice中。
+// 如果callback 未传 就会过滤零值
+func SliceFilterString(a []string, callbacks ...SliceFilterStringFunc) []string {
+	l := int(len(a)/2) + 1
+	result := make([]string, 0, l)
+	var callback SliceFilterStringFunc
+	if len(callbacks) > 0 {
+		callback = callbacks[0]
+	}
+	for _, v := range a {
+		if callback == nil {
+			if v == "" {
+				continue
+			}
+		} else {
+			if callback(v) == false {
+				continue
+			}
+		}
+
+		result = append(result, v)
 	}
 
 	return result
