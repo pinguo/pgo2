@@ -138,7 +138,7 @@ func (c *Controller) Jsonp(callback string, data interface{}, status int, msg ..
 }
 
 // Data output data response
-func (c *Controller) Data(data []byte) {
+func (c *Controller) Data(data []byte, dftContentType ...string) {
 	ctx := c.Context()
 	r := render.NewData(data)
 	httpStatus := r.HttpCode()
@@ -147,7 +147,15 @@ func (c *Controller) Data(data []byte) {
 	}
 
 	ctx.PushLog("status", httpStatus)
-	ctx.SetHeader("Content-Type", r.ContentType())
+	contentType := ""
+	if len(dftContentType) > 0 {
+		contentType = dftContentType[0]
+	}
+
+	if contentType != "" {
+		ctx.SetHeader("Content-Type", contentType)
+	}
+
 	ctx.End(httpStatus, r.Content())
 }
 
