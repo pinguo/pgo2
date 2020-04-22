@@ -5,7 +5,7 @@ import (
 )
 
 type mockTestMergeFieldA struct {
-	Name string
+	Name string `bson:"myname"`
 	Id   int
 	desc string
 }
@@ -111,6 +111,49 @@ func TestSTMergeField(t *testing.T) {
 
 		if a.desc != a.desc {
 			t.Fatal(`a.desc!=a.desc`)
+		}
+	})
+
+}
+
+func TestST2Map(t *testing.T) {
+	t.Run("param1 not pointer", func(t *testing.T) {
+		defer func() {
+			if err := recover(); err != nil {
+				return
+			}
+			t.FailNow()
+		}()
+		a := "a"
+		ST2Map(a, false)
+	})
+
+	t.Run("not struct", func(t *testing.T) {
+		defer func() {
+			if err := recover(); err != nil {
+				return
+			}
+			t.FailNow()
+		}()
+		a := "a"
+		ST2Map(&a, false)
+	})
+
+	t.Run("normal", func(t *testing.T) {
+
+		a := &mockTestMergeFieldA{Name: "name1", Id: 1, desc: "desc1"}
+
+		ret := ST2Map(a, false, "bson")
+		if ret["myname"] != a.Name {
+			t.Fatal(`ret["myname"]!=a.Name`)
+		}
+
+		if ret["id"] != a.Id {
+			t.Fatal(`ret["id"]!=a.Id`)
+		}
+
+		if _, has := ret["desc"]; has == true {
+			t.Fatal(`_,has:=ret["desc"];has==true`)
 		}
 	})
 

@@ -2,6 +2,7 @@ package util
 
 import (
 	"reflect"
+	"strings"
 )
 
 // STMergeSame merge none zero field of s2 into s1,
@@ -87,4 +88,66 @@ func STMergeField(s1, s2 interface{}) {
 		// set value of field1 to convertible value of field2
 		field1.Set(field2.Convert(field1.Type()))
 	}
+}
+
+
+// ST2Map Struct to map
+// stayZero 是否保留零值
+// dftTag 获取标签为字段名，如果未传标签或者没有标签 获取字段名字，并首字母小写当作字段名
+func ST2Map(s interface{}, stayZero bool, dftTag ...string) map[string]interface{} {
+	v1 := reflect.ValueOf(s)
+	if v1.Kind() == reflect.Ptr {
+		v1 = v1.Elem()
+	} else {
+		panic("ST2Map: param 1 must be pointer")
+	}
+
+	if v1.Kind() != reflect.Struct {
+		panic("ST2Map: param 1  must be struct")
+	}
+
+	tag := ""
+	if len(dftTag) > 0 {
+		tag = dftTag[0]
+	}
+
+	t1 := v1.Type()
+
+	ret := make(map[string]interface{})
+	for i, n := 0, v1.NumField(); i < n; i++ {
+
+		fieldT := t1.Field(i)
+		var field string
+		if tag != "" {
+			field = fieldT.Tag.Get(tag)
+			if field == "-" {
+				continue
+			}
+		}
+
+		if field == "" {
+			name := fieldT.Name
+			field = strings.ToLower(fieldT.Name[0:1])
+			if len(name) > 1 {
+				field = field + name[1:]
+			}
+		}
+
+		fieldV := v1.Field(i)
+		if fieldV.CanInterface() == false{
+			continue
+		}
+
+		if stayZero == false {
+			zero := reflect.Zero(fieldT.Type)
+			if reflect.DeepEqual(fieldV.Interface(), zero.Interface()) {
+				continue
+			}
+		}
+
+		ret[field] = fieldV.Interface()
+
+	}
+
+	return ret
 }
