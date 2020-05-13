@@ -9,6 +9,7 @@ import (
 )
 
 var RabbitMqClass string
+
 func init() {
 	container := pgo2.App().Container()
 	RabbitMqClass = container.Bind(&RabbitMq{})
@@ -30,7 +31,7 @@ func NewRabbitMq(componentId ...string) *RabbitMq {
 	}
 
 	r := &RabbitMq{}
-	r.client = pgo2.App().Component(id, rabbitmq.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*rabbitmq.Client)
+	r.client = pgo2.App().Component(id, rabbitmq.New, map[string]interface{}{"logger": pgo2.GLogger()}).(*rabbitmq.Client)
 	r.panicRecover = true
 
 	return r
@@ -46,7 +47,7 @@ func NewRabbitMqPool(iObj iface.IObject, componentId ...interface{}) iface.IObje
 	}
 
 	r := iObj.(*RabbitMq)
-	r.client = pgo2.App().Component(id, rabbitmq.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*rabbitmq.Client)
+	r.client = pgo2.App().Component(id, rabbitmq.New, map[string]interface{}{"logger": pgo2.GLogger()}).(*rabbitmq.Client)
 	r.panicRecover = true
 
 	return r
@@ -68,12 +69,17 @@ func (r *RabbitMq) handlePanic() {
 	}
 }
 
-func (r *RabbitMq) ExchangeDeclare() {
+func (r *RabbitMq) ExchangeDeclare(dftExchange ...*rabbitmq.ExchangeData) {
 	profile := "rabbit.ExchangeDeclare"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
 	defer r.handlePanic()
-	err := r.client.SetExchangeDeclare()
+	var exchange  *rabbitmq.ExchangeData
+	if len(dftExchange) > 0 {
+		exchange = dftExchange[0]
+	}
+
+	err := r.client.SetExchangeDeclare(exchange)
 	panicErr(err)
 }
 
@@ -88,19 +94,42 @@ func (r *RabbitMq) Publish(opCode string, data interface{}, dftOpUid ...string) 
 		opUid = dftOpUid[0]
 	}
 
-	res, err := r.client.Publish(&rabbitmq.PublishData{OpCode: opCode, Data: data, OpUid: opUid}, r.Context().LogId())
+	res, err := r.client.Publish(&rabbitmq.PublishData{ OpCode: opCode, Data: data, OpUid: opUid}, r.Context().LogId())
 	panicErr(err)
 
 	return res
 }
 
-func (r *RabbitMq) GetConsumeChannelBox(queueName string, opCodes []string) *rabbitmq.ChannelBox {
+func (r *RabbitMq) PublishExchange(serviceName, exchangeName, exchangeType, opCode string, data interface{}, dftOpUid ...string) bool {
+	profile := "rabbit.Publish"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	opUid := ""
+	if len(dftOpUid) > 0 {
+		opUid = dftOpUid[0]
+	}
+
+	res, err := r.client.Publish(&rabbitmq.PublishData{ServiceName: serviceName,
+		ExChange: &rabbitmq.ExchangeData{Name: exchangeName, Type: exchangeType, Durable:true},
+		OpCode:   opCode, Data: data, OpUid: opUid}, r.Context().LogId())
+	panicErr(err)
+
+	return res
+}
+
+func (r *RabbitMq) GetConsumeChannelBox(queueName string, opCodes []string, dftExchange ...*rabbitmq.ExchangeData) *rabbitmq.ChannelBox {
 	profile := "rabbit.GetConsumeChannelBox"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
 	defer r.handlePanic()
 
-	res, err := r.client.GetConsumeChannelBox(queueName, opCodes)
+	var exchange  *rabbitmq.ExchangeData
+	if len(dftExchange) > 0 {
+		exchange = dftExchange[0]
+	}
+	res, err := r.client.GetConsumeChannelBox(queueName, opCodes, exchange)
 	panicErr(err)
 
 	return res
@@ -120,6 +149,28 @@ func (r *RabbitMq) Consume(queueName string, opCodes []string, limit int, autoAc
 	defer r.handlePanic()
 
 	res, err := r.client.Consume(&rabbitmq.ConsumeData{QueueName: queueName, OpCodes: opCodes, Limit: limit, AutoAck: autoAck, NoWait: noWait, Exclusive: exclusive})
+	panicErr(err)
+
+	return res
+}
+
+// 消费，返回chan 可以不停取数据
+// exchangeName 交换机名
+// exchangeType 交换机type
+// queueName 队列名字
+// opCodes 绑定队列的code
+// limit 每次接收多少条
+// autoAck 是否自动答复 如果为false 需要手动调用Delivery.ack(false)
+// noWait 是否一直等待
+// exclusive 是否独占队列
+func (r *RabbitMq) ConsumeExchange(exchangeName, exchangeType, queueName string, opCodes []string, limit int, autoAck, noWait, exclusive bool) <-chan amqp.Delivery {
+	profile := "rabbit.Consume"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.Consume(&rabbitmq.ConsumeData{ExChange: &rabbitmq.ExchangeData{Name: exchangeName, Type: exchangeType, Durable:true},
+		QueueName: queueName, OpCodes: opCodes, Limit: limit, AutoAck: autoAck, NoWait: noWait, Exclusive: exclusive})
 	panicErr(err)
 
 	return res

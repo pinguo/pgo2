@@ -26,7 +26,7 @@ import (
 //          maxIdleChannelTime:"10s"
 //          probeInterval: "0s"
 //          maxWaitTime: "200ms"
-//          serverName: "pgo-xxx"
+//          serviceName: "pgo-xxx"
 //          servers:
 //              - "127.0.0.1:6379"
 //              - "127.0.0.1:6380"
@@ -45,6 +45,7 @@ func New(config map[string]interface{}) (interface{}, error) {
 	if err := core.ClientConfigure(c, config); err != nil {
 		return nil, err
 	}
+
 
 	if err := c.Init(); err != nil {
 		return nil, err
@@ -90,14 +91,14 @@ func (c *Client) DecodeHeaders(d amqp.Delivery) *RabbitHeaders {
 	return ret
 }
 
-func (c *Client) SetExchangeDeclare() error {
+func (c *Client) SetExchangeDeclare(exchange *ExchangeData) error {
 	ch, err := c.getFreeChannel()
 	if err != nil {
 		return err
 	}
 	defer ch.Close(false)
 
-	return c.exchangeDeclare(ch)
+	return c.exchangeDeclare(ch, exchange)
 
 }
 
@@ -122,17 +123,23 @@ func (c *Client) Publish(parameter *PublishData, logId string) (bool, error) {
 		return false, c.failOnError(err, "Encode err")
 	}
 
+	exchangeName,_ := c.parseExchange(parameter.ExChange)
+	contentType := "text/plain"
+	if parameter.ContentType != "" {
+		contentType = parameter.ContentType
+	}
 	err = ch.channel.Publish(
-		c.getExchangeName(),             // exchange
+		c.getExchangeName(exchangeName),             // exchange
 		c.getRouteKey(parameter.OpCode), // routing key
 		false,                           // mandatory
 		false,                           // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
+			ContentType: contentType,
 			Body:        goBytes.Bytes(),
-			Headers:     amqp.Table{"logId": logId, "service": c.ServiceName, "opUid": parameter.OpUid},
+			Headers:     amqp.Table{"logId": logId, "service": c.ServiceName(parameter.ServiceName), "opUid": parameter.OpUid},
 			Timestamp:   time.Now(),
 		})
+
 	if err != nil {
 		return false, c.failOnError(err, "Failed to publish a message")
 	}
@@ -140,17 +147,35 @@ func (c *Client) Publish(parameter *PublishData, logId string) (bool, error) {
 	return true, nil
 }
 
+func  (c *Client) parseExchange(exchange *ExchangeData) (exchangeName string, exchangeType string){
+	if exchange != nil {
+		exchangeName = exchange.Name
+		exchangeType = exchange.Type
+	}
+
+	return
+}
+
 // 定义交换机
-func (c *Client) exchangeDeclare(ch *ChannelBox) error {
+func (c *Client) exchangeDeclare(ch *ChannelBox, exchange *ExchangeData) error {
+	exchangeName,exchangeType := c.parseExchange(exchange)
+	durable,autoDelete,internal,noWait:= true,false,false,false
+	var args amqp.Table
+	if exchange !=nil {
+		durable,autoDelete,internal,noWait= exchange.Durable,exchange.AutoDelete,exchange.Internal,exchange.NoWait
+		args = exchange.Args
+	}
+
 	err := ch.channel.ExchangeDeclare(
-		c.getExchangeName(), // name
-		c.exchangeType,      // type
-		true,                // durable
-		false,               // auto-deleted
-		false,               // internal
-		false,               // no-wait
-		nil,                 // arguments
+		c.getExchangeName(exchangeName), // name
+		c.ExchangeType(exchangeType),      // type
+		durable,                // durable
+		autoDelete,               // auto-deleted
+		internal,               // internal
+		noWait,               // no-wait
+		args,                 // arguments
 	)
+
 	if err != nil {
 		return c.failOnError(err, "Failed to declare an exchange")
 	}
@@ -159,12 +184,13 @@ func (c *Client) exchangeDeclare(ch *ChannelBox) error {
 }
 
 // 定义交换机
-func (c *Client) bindQueue(ch *ChannelBox, queueName string, opCodes []string) error {
+func (c *Client) bindQueue(ch *ChannelBox, queueName string, opCodes []string, exchange *ExchangeData) error {
+	exchangeName,_ := c.parseExchange(exchange)
 	for _, opCode := range opCodes {
 		err := ch.channel.QueueBind(
 			queueName,             // queue name
 			c.getRouteKey(opCode), // routing key
-			c.getExchangeName(),   // exchange
+			c.getExchangeName(exchangeName),   // exchange
 			false,
 			nil)
 		if err != nil {
@@ -193,13 +219,13 @@ func (c *Client) queueDeclare(ch *ChannelBox, queueName string) (amqp.Queue, err
 	return q, nil
 }
 
-func (c *Client) GetConsumeChannelBox(queueName string, opCodes []string) (*ChannelBox, error) {
+func (c *Client) GetConsumeChannelBox(queueName string, opCodes []string ,exchange *ExchangeData) (*ChannelBox, error) {
 	ch, err := c.getFreeChannel()
 	if err != nil {
 		return nil, err
 	}
 	// 定义交换机
-	if err := c.exchangeDeclare(ch); err != nil {
+	if err := c.exchangeDeclare(ch, exchange); err != nil {
 		return nil, err
 	}
 	// 定义queue
@@ -207,7 +233,7 @@ func (c *Client) GetConsumeChannelBox(queueName string, opCodes []string) (*Chan
 		return nil, err
 	}
 	// 绑定queue
-	if err := c.bindQueue(ch, queueName, opCodes); err != nil {
+	if err := c.bindQueue(ch, queueName, opCodes, exchange); err != nil {
 		return nil, err
 	}
 
@@ -216,7 +242,7 @@ func (c *Client) GetConsumeChannelBox(queueName string, opCodes []string) (*Chan
 }
 
 func (c *Client) Consume(parameter *ConsumeData) (<-chan amqp.Delivery, error) {
-	ch, err := c.GetConsumeChannelBox(parameter.QueueName, parameter.OpCodes)
+	ch, err := c.GetConsumeChannelBox(parameter.QueueName, parameter.OpCodes, parameter.ExChange)
 	if err != nil {
 		return nil, err
 	}

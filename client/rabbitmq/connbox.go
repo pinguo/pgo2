@@ -91,6 +91,7 @@ func (c *ConnBox) initConn() (retErr error) {
 		if err != nil {
 			errMsg := err.Error()
 			retErr = errors.New("Failed to connect to RabbitMQ:" + errMsg)
+			return
 		}
 
 		c.disable = false
