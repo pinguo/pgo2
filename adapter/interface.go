@@ -96,10 +96,12 @@ type IRedis interface {
 
 type IRabbitMq interface {
 	SetPanicRecover(v bool)
-	ExchangeDeclare()
+	ExchangeDeclare(dftExchange ...*rabbitmq.ExchangeData)
 	Publish(opCode string, data interface{}, dftOpUid ...string) bool
-	GetConsumeChannelBox(queueName string, opCodes []string) *rabbitmq.ChannelBox
+	PublishExchange(serviceName, exchangeName, exchangeType, opCode string, data interface{}, dftOpUid ...string) bool
+	GetConsumeChannelBox(queueName string, opCodes []string, dftExchange ...*rabbitmq.ExchangeData) *rabbitmq.ChannelBox
 	Consume(queueName string, opCodes []string, limit int, autoAck, noWait, exclusive bool) <-chan amqp.Delivery
+	ConsumeExchange(exchangeName, exchangeType, queueName string, opCodes []string, limit int, autoAck, noWait, exclusive bool) <-chan amqp.Delivery
 	DecodeBody(d amqp.Delivery, ret interface{}) error
 	DecodeHeaders(d amqp.Delivery) *rabbitmq.RabbitHeaders
 }

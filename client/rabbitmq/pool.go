@@ -18,7 +18,7 @@ type serverInfo struct {
 }
 
 type Pool struct {
-	ServiceName string
+	serviceName string
 	servers     map[string]*serverInfo
 	tlsRootCAs  string
 	tlsCert     string
@@ -48,11 +48,11 @@ func (c *Pool) Init() error {
 		return errors.New("miss logger")
 	}
 
-	if c.exchangeName == "" {
-		return errors.New("exchangeName cannot be empty")
-	}
+	//if c.exchangeName == "" {
+	//	return errors.New("exchangeName cannot be empty")
+	//}
 
-	if c.ServiceName == "" {
+	if c.serviceName == "" {
 		return errors.New("ServiceName cannot be empty")
 	}
 
@@ -122,7 +122,7 @@ func (c *Pool) SetExchangeName(v string) {
 }
 
 func (c *Pool) SetServiceName(v string) {
-	c.ServiceName = v
+	c.serviceName = v
 }
 
 func (c *Pool) SetExchangeType(v string) {
@@ -167,12 +167,49 @@ func (c *Pool) SetProbeInterval(v string) error {
 	return nil
 }
 
-func (c *Pool) getExchangeName() string {
-	return "pgo2." + c.exchangeName
+func  (c *Pool) ServiceName(serviceName string) string{
+	if serviceName == "" {
+		serviceName = c.serviceName
+	}
+
+	if serviceName == "" {
+		panic(errors.New("serviceName cannot be empty"))
+	}
+
+	return serviceName
+}
+
+func  (c *Pool) ExchangeType(exchangeType string) string{
+	if exchangeType == "" {
+		exchangeType = c.exchangeType
+	}
+
+	if exchangeType == "" {
+		panic(errors.New("exchangeType cannot be empty"))
+	}
+
+	return exchangeType
+}
+
+
+
+func  (c *Pool) orgExchangeName(exchangeName string) string{
+	if exchangeName == "" {
+		exchangeName = c.exchangeName
+	}
+
+	if exchangeName == "" {
+		panic(errors.New("exchangeName cannot be empty"))
+	}
+	return exchangeName
+}
+
+func (c *Pool) getExchangeName(exchangeName string) string {
+	return c.orgExchangeName(exchangeName)
 }
 
 func (c *Pool) getRouteKey(opCode string) string {
-	return "pgo2." + c.exchangeName + "." + opCode
+	return opCode
 }
 
 // 获取channel链接
@@ -181,6 +218,7 @@ func (c *Pool) getFreeChannel() (*ChannelBox, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	connBox.useChannelCount++
 
 	var channelBox *ChannelBox
@@ -250,6 +288,7 @@ func (c *Pool) getConnBox(idDft ...string) (*ConnBox, error) {
 		}
 	}
 
+
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 	if len(idDft) > 0 {
@@ -288,7 +327,6 @@ func (c *Pool) initConn() error {
 			} else {
 				c.connList[id] = conn
 			}
-
 		}
 
 	}
