@@ -90,7 +90,10 @@ func (h *Http) Get(addr string, data interface{}, option ...*phttp.Option) *http
 		option = make([]*phttp.Option, 1)
 		option[0] = &phttp.Option{}
 	}
-	option[0].SetHeader("X-Log-Id", h.Context().LogId())
+
+	if _, has := option[0].Header["X-Log-Id"]; has == false {
+		option[0].SetHeader("X-Log-Id", h.Context().LogId())
+	}
 
 	res, err := h.client.Get(addr, data, option...)
 	h.parseErr(err)
@@ -109,7 +112,10 @@ func (h *Http) Post(addr string, data interface{}, option ...*phttp.Option) *htt
 		option = make([]*phttp.Option, 1)
 		option[0] = &phttp.Option{}
 	}
-	option[0].SetHeader("X-Log-Id", h.Context().LogId())
+
+	if _, has := option[0].Header["X-Log-Id"]; has == false {
+		option[0].SetHeader("X-Log-Id", h.Context().LogId())
+	}
 
 	res, err := h.client.Post(addr, data, option...)
 	h.parseErr(err)
@@ -128,7 +134,10 @@ func (h *Http) Do(req *http.Request, option ...*phttp.Option) *http.Response {
 		option = make([]*phttp.Option, 1)
 		option[0] = &phttp.Option{}
 	}
-	option[0].SetHeader("X-Log-Id", h.Context().LogId())
+
+	if _, has := option[0].Header["X-Log-Id"]; has == false {
+		option[0].SetHeader("X-Log-Id", h.Context().LogId())
+	}
 
 	res, err := h.client.Do(req, option...)
 	h.parseErr(err)
@@ -143,7 +152,14 @@ func (h *Http) DoMulti(requests []*http.Request, option ...*phttp.Option) []*htt
 	}
 
 	baseOption := &phttp.Option{}
-	baseOption.SetHeader("X-Log-Id", h.Context().LogId())
+	if len(option) > 0 {
+		baseOption = option[0]
+	}
+
+	if _, has := baseOption.Header["X-Log-Id"]; has == false {
+		baseOption.SetHeader("X-Log-Id", h.Context().LogId())
+	}
+
 	profile := "Http.DoMulti"
 	h.Context().ProfileStart(profile)
 	defer h.Context().ProfileStop(profile)
@@ -170,7 +186,10 @@ func (h *Http) DoMulti(requests []*http.Request, option ...*phttp.Option) []*htt
 		}()
 
 		if len(option) > 0 && option[k] != nil {
-			option[k].SetHeader("X-Log-Id", h.Context().LogId())
+			if _, has := option[k].Header["X-Log-Id"]; has == false {
+				option[k].SetHeader("X-Log-Id", h.Context().LogId())
+			}
+
 			res, err = h.client.Do(requests[k], option[k])
 		} else {
 

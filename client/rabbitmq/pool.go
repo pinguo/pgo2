@@ -191,8 +191,6 @@ func  (c *Pool) ExchangeType(exchangeType string) string{
 	return exchangeType
 }
 
-
-
 func  (c *Pool) orgExchangeName(exchangeName string) string{
 	if exchangeName == "" {
 		exchangeName = c.exchangeName
