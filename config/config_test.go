@@ -90,6 +90,10 @@ func TestConfig_Getter(t *testing.T) {
 		if config.GetBool("testyaml.testBool", false) != true {
 			t.Fatal(`config.GetBool("testyaml.testBool", false) !=true`)
 		}
+
+		if config.GetBool("testyaml-testBool", false,"-") != true {
+			t.Fatal(`config.GetBool("testyaml-testBool", false,"-") != true`)
+		}
 	})
 
 	t.Run("GetBoolDefault", func(t *testing.T) {
@@ -99,6 +103,10 @@ func TestConfig_Getter(t *testing.T) {
 
 		if config.GetBool("testyaml.testBoolDft", true) != true {
 			t.Fatal(`config.GetBool("testyaml.testBoolDft", false) !=true`)
+		}
+
+		if config.GetBool("testyaml-testBoolDft", true,"-") != true {
+			t.Fatal(`config.GetBool("testyaml-testBoolDft", true,"-") != true`)
 		}
 	})
 
@@ -110,6 +118,10 @@ func TestConfig_Getter(t *testing.T) {
 		if config.GetString("testyaml.testString", "") == "" {
 			t.Fatal(`config.GetString("testyaml.GetString", "") ==""`)
 		}
+
+		if config.GetString("testyaml-testString", "","-") == "" {
+			t.Fatal(` config.GetString("testyaml-testString", "","-") == ""`)
+		}
 	})
 
 	t.Run("GetStringDefault", func(t *testing.T) {
@@ -119,6 +131,10 @@ func TestConfig_Getter(t *testing.T) {
 
 		if config.GetString("testyaml.testStringDft", "dft") != "dft" {
 			t.Fatal(`config.GetString("testyaml.testStringDft", "dft") !="dft"`)
+		}
+
+		if config.GetString("testyaml-testStringDft", "dft", "-") != "dft" {
+			t.Fatal(`config.GetString("testyaml-testStringDft", "dft", "-") != "dft"`)
 		}
 	})
 
@@ -130,6 +146,10 @@ func TestConfig_Getter(t *testing.T) {
 		if config.GetInt("testyaml.testInt", 0) == 0 {
 			t.Fatal(`config.GetInt("testyaml.testInt", 0) ==0`)
 		}
+
+		if config.GetInt("testyaml-testInt", 0,"-") == 0 {
+			t.Fatal(`config.GetInt("testyaml-testInt", 0,"-") == 0 `)
+		}
 	})
 
 	t.Run("GetIntDefault", func(t *testing.T) {
@@ -139,6 +159,10 @@ func TestConfig_Getter(t *testing.T) {
 
 		if config.GetInt("testyaml.testIntDft", 100) != 100 {
 			t.Fatal(`config.GetInt("testyaml.testIntDft", 100) !=100`)
+		}
+
+		if config.GetInt("testyaml-testIntDft", 100, "-") != 100 {
+			t.Fatal(`config.GetInt("testyaml-testIntDft", 100, "-") != 100`)
 		}
 	})
 
@@ -150,6 +174,10 @@ func TestConfig_Getter(t *testing.T) {
 		if config.GetFloat("testyaml.testFloat", 0) == 0 {
 			t.Fatal(`config.GetFloat("testyaml.testFloat", 0) ==0`)
 		}
+
+		if config.GetFloat("testyaml-testFloat", 0, "-") == 0 {
+			t.Fatal(` config.GetFloat("testyaml-testFloat", 0, "-") == 0`)
+		}
 	})
 
 	t.Run("GetFloatDefault", func(t *testing.T) {
@@ -159,6 +187,10 @@ func TestConfig_Getter(t *testing.T) {
 
 		if config.GetFloat("testyaml.testFloatDft", 100) != 100 {
 			t.Fatal(`config.GetFloat("testyaml.testFloatDft", 100) !=100`)
+		}
+
+		if config.GetFloat("testyaml-testFloatDft", 100, "-") != 100 {
+			t.Fatal(`config.GetFloat("testyaml-testFloatDft", 100, "-") != 100`)
 		}
 	})
 }
@@ -173,6 +205,10 @@ func TestConfig_GetSlice(t *testing.T) {
 		if len(config.GetSliceBool("testyaml.testSBool")) != 2 {
 			t.Fatal(`len(config.GetSliceBool("testyaml.testSBool")) !=2`)
 		}
+
+		if len(config.GetSliceBool("testyaml-testSBool", "-")) != 2 {
+			t.Fatal(`config.GetSliceBool("testyaml-testSBool", "-")) != 2`)
+		}
 	})
 
 	t.Run("GetSliceString", func(t *testing.T) {
@@ -182,6 +218,10 @@ func TestConfig_GetSlice(t *testing.T) {
 
 		if len(config.GetSliceString("testyaml.testSString")) != 2 {
 			t.Fatal(`len(config.GetSliceString("testyaml.testSString", ""))!=2`)
+		}
+
+		if len(config.GetSliceString("testyaml-testSString", "-")) != 2 {
+			t.Fatal(`len(config.GetSliceString("testyaml-testSString", "-")) != 2`)
 		}
 	})
 
@@ -193,6 +233,10 @@ func TestConfig_GetSlice(t *testing.T) {
 		if len(config.GetSliceInt("testyaml.testSInt")) != 2 {
 			t.Fatal(`len(config.GetSliceInt("testyaml.testInt")) !=2`)
 		}
+
+		if len(config.GetSliceInt("testyaml-testSInt", "-")) != 2 {
+			t.Fatal(`len(config.GetSliceInt("testyaml-testSInt", "-")) != 2`)
+		}
 	})
 
 	t.Run("GetSliceFloat", func(t *testing.T) {
@@ -203,6 +247,10 @@ func TestConfig_GetSlice(t *testing.T) {
 		if len(config.GetSliceFloat("testyaml.testSFloat")) != 2 {
 			t.Fatal(`len(config.GetSliceFloat("testyaml.testSFloat")) != 2`)
 		}
+
+		if len(config.GetSliceFloat("testyaml-testSFloat", "-")) != 2 {
+			t.Fatal(`len(config.GetSliceFloat("testyaml-testSFloat", "-")) != 2`)
+		}
 	})
 }
 
@@ -210,6 +258,12 @@ func TestConfig_Set(t *testing.T) {
 	config := New(mockTestBasePath, mockTestEnv)
 	config.Set("mockTestSet", "vv")
 	if config.GetString("mockTestSet", "") != "vv" {
-		t.FailNow()
+		t.Fatal(`config.GetString("mockTestSet", "") != "vv"`)
 	}
+
+	config.Set("mockTestSet-splitTest", "vv", "-")
+	if config.GetString("mockTestSet.splitTest", "") != "vv" {
+		t.Fatal(`config.GetString("mockTestSet.splitTest", "") != "vv"`)
+	}
+
 }

@@ -88,8 +88,8 @@ func (c *Config) AddPath(path string) {
 // GetBool get bool value from config,
 // key is dot separated config key,
 // dft is default value if key not exists.
-func (c *Config) GetBool(key string, dft bool) bool {
-	if v := c.Get(key); v != nil {
+func (c *Config) GetBool(key string, dft bool, dftSplit ...string) bool {
+	if v := c.Get(key, dftSplit...); v != nil {
 		return util.ToBool(v)
 	}
 
@@ -99,8 +99,8 @@ func (c *Config) GetBool(key string, dft bool) bool {
 // GetInt get int value from config,
 // key is dot separated config key,
 // dft is default value if key not exists.
-func (c *Config) GetInt(key string, dft int) int {
-	if v := c.Get(key); v != nil {
+func (c *Config) GetInt(key string, dft int, dftSplit ...string) int {
+	if v := c.Get(key, dftSplit...); v != nil {
 		return util.ToInt(v)
 	}
 
@@ -110,8 +110,8 @@ func (c *Config) GetInt(key string, dft int) int {
 // GetFloat get float value from config,
 // key is dot separated config key,
 // dft is default value if key not exists.
-func (c *Config) GetFloat(key string, dft float64) float64 {
-	if v := c.Get(key); v != nil {
+func (c *Config) GetFloat(key string, dft float64, dftSplit ...string) float64 {
+	if v := c.Get(key, dftSplit...); v != nil {
 		return util.ToFloat(v)
 	}
 
@@ -121,8 +121,8 @@ func (c *Config) GetFloat(key string, dft float64) float64 {
 // GetString get string value from config,
 // key is dot separated config key,
 // dft is default value if key not exists.
-func (c *Config) GetString(key string, dft string) string {
-	if v := c.Get(key); v != nil {
+func (c *Config) GetString(key string, dft string, dftSplit ...string) string {
+	if v := c.Get(key, dftSplit...); v != nil {
 		return util.ToString(v)
 	}
 
@@ -132,9 +132,9 @@ func (c *Config) GetString(key string, dft string) string {
 // GetSliceBool get []bool value from config,
 // key is dot separated config key,
 // nil is default value if key not exists.
-func (c *Config) GetSliceBool(key string) []bool {
+func (c *Config) GetSliceBool(key string, dftSplit ...string) []bool {
 	var ret []bool
-	if v := c.Get(key); v != nil {
+	if v := c.Get(key, dftSplit...); v != nil {
 		if vI, ok := v.([]interface{}); ok == true {
 			for _, vv := range vI {
 				ret = append(ret, util.ToBool(vv))
@@ -148,9 +148,9 @@ func (c *Config) GetSliceBool(key string) []bool {
 // GetSliceInt get []int value from config,
 // key is dot separated config key,
 // nil is default value if key not exists.
-func (c *Config) GetSliceInt(key string) []int {
+func (c *Config) GetSliceInt(key string, dftSplit ...string) []int {
 	var ret []int
-	if v := c.Get(key); v != nil {
+	if v := c.Get(key, dftSplit...); v != nil {
 		if vI, ok := v.([]interface{}); ok == true {
 			for _, vv := range vI {
 				ret = append(ret, util.ToInt(vv))
@@ -164,9 +164,9 @@ func (c *Config) GetSliceInt(key string) []int {
 // GetSliceFloat get []float value from config,
 // key is dot separated config key,
 // nil is default value if key not exists.
-func (c *Config) GetSliceFloat(key string) []float64 {
+func (c *Config) GetSliceFloat(key string, dftSplit ...string) []float64 {
 	var ret []float64
-	if v := c.Get(key); v != nil {
+	if v := c.Get(key, dftSplit...); v != nil {
 		if vI, ok := v.([]interface{}); ok == true {
 			for _, vv := range vI {
 				ret = append(ret, util.ToFloat(vv))
@@ -180,9 +180,9 @@ func (c *Config) GetSliceFloat(key string) []float64 {
 // GetSliceString get []string value from config,
 // key is dot separated config key,
 // nil is default value if key not exists.
-func (c *Config) GetSliceString(key string) []string {
+func (c *Config) GetSliceString(key string, dftSplit ...string) []string {
 	var ret []string
-	if v := c.Get(key); v != nil {
+	if v := c.Get(key, dftSplit...); v != nil {
 		if vI, ok := v.([]interface{}); ok == true {
 			for _, vv := range vI {
 				ret = append(ret, util.ToString(vv))
@@ -197,8 +197,13 @@ func (c *Config) GetSliceString(key string) []string {
 // the first part of key is file name
 // without extension. if key is empty,
 // all loaded config will be returned.
-func (c *Config) Get(key string) interface{} {
-	ks := strings.Split(key, ".")
+func (c *Config) Get(key string, dftSplit ...string) interface{} {
+	split := "."
+	if len(dftSplit) > 0 {
+		split = dftSplit[0]
+	}
+
+	ks := strings.Split(key, split)
 	if _, ok := c.data[ks[0]]; !ok {
 		c.load(ks[0])
 	}
@@ -206,18 +211,18 @@ func (c *Config) Get(key string) interface{} {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 
-	return util.MapGet(c.data, key)
+	return util.MapGet(c.data, key, split)
 }
 
 // Set set value by dot separated key,
 // if key is empty, the value will set
 // to root, if val is nil, the key will
 // be deleted.
-func (c *Config) Set(key string, val interface{}) {
+func (c *Config) Set(key string, val interface{}, dftSplit ...string) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	util.MapSet(c.data, key, val)
+	util.MapSet(c.data, key, val, dftSplit...)
 }
 
 // Load load config file under the search paths.
