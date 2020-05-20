@@ -32,9 +32,13 @@ func MapMerge(a map[string]interface{}, m ...map[string]interface{}) {
 }
 
 // MapGet get value by dot separated key, empty key for m itself
-func MapGet(m map[string]interface{}, key string) interface{} {
+func MapGet(m map[string]interface{}, key string, dftSplit ...string) interface{} {
 	var data interface{} = m
-	ks := strings.Split(key, ".")
+	split := "."
+	if len(dftSplit) > 0 {
+		split = dftSplit[0]
+	}
+	ks := strings.Split(key, split)
 
 	for _, k := range ks {
 		// skip empty key segment
@@ -56,11 +60,16 @@ func MapGet(m map[string]interface{}, key string) interface{} {
 }
 
 // MapSet set value by dot separated key, empty key for root, nil val for clear
-func MapSet(m map[string]interface{}, key string, val interface{}) {
+func MapSet(m map[string]interface{}, key string, val interface{}, dftSplit ...string) {
 	data := m
 	last := ""
 
-	ks := strings.Split(key, ".")
+	split := "."
+	if len(dftSplit) > 0 {
+		split = dftSplit[0]
+	}
+
+	ks := strings.Split(key, split)
 	for _, k := range ks {
 		// skip empty key segment
 		if k = strings.TrimSpace(k); len(k) == 0 {

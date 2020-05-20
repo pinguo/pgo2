@@ -96,141 +96,191 @@ func (mr *MockIConfigMockRecorder) AddPath(path interface{}) *gomock.Call {
 }
 
 // GetBool mocks base method
-func (m *MockIConfig) GetBool(key string, dft bool) bool {
+func (m *MockIConfig) GetBool(key string, dft bool, dftSplit ...string) bool {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetBool", key, dft)
+	varargs := []interface{}{key, dft}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetBool", varargs...)
 	ret0, _ := ret[0].(bool)
 	return ret0
 }
 
 // GetBool indicates an expected call of GetBool
-func (mr *MockIConfigMockRecorder) GetBool(key, dft interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) GetBool(key, dft interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBool", reflect.TypeOf((*MockIConfig)(nil).GetBool), key, dft)
+	varargs := append([]interface{}{key, dft}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBool", reflect.TypeOf((*MockIConfig)(nil).GetBool), varargs...)
 }
 
 // GetInt mocks base method
-func (m *MockIConfig) GetInt(key string, dft int) int {
+func (m *MockIConfig) GetInt(key string, dft int, dftSplit ...string) int {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetInt", key, dft)
+	varargs := []interface{}{key, dft}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetInt", varargs...)
 	ret0, _ := ret[0].(int)
 	return ret0
 }
 
 // GetInt indicates an expected call of GetInt
-func (mr *MockIConfigMockRecorder) GetInt(key, dft interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) GetInt(key, dft interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInt", reflect.TypeOf((*MockIConfig)(nil).GetInt), key, dft)
+	varargs := append([]interface{}{key, dft}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInt", reflect.TypeOf((*MockIConfig)(nil).GetInt), varargs...)
 }
 
 // GetFloat mocks base method
-func (m *MockIConfig) GetFloat(key string, dft float64) float64 {
+func (m *MockIConfig) GetFloat(key string, dft float64, dftSplit ...string) float64 {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetFloat", key, dft)
+	varargs := []interface{}{key, dft}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetFloat", varargs...)
 	ret0, _ := ret[0].(float64)
 	return ret0
 }
 
 // GetFloat indicates an expected call of GetFloat
-func (mr *MockIConfigMockRecorder) GetFloat(key, dft interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) GetFloat(key, dft interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFloat", reflect.TypeOf((*MockIConfig)(nil).GetFloat), key, dft)
+	varargs := append([]interface{}{key, dft}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFloat", reflect.TypeOf((*MockIConfig)(nil).GetFloat), varargs...)
 }
 
 // GetString mocks base method
-func (m *MockIConfig) GetString(key, dft string) string {
+func (m *MockIConfig) GetString(key, dft string, dftSplit ...string) string {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetString", key, dft)
+	varargs := []interface{}{key, dft}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetString", varargs...)
 	ret0, _ := ret[0].(string)
 	return ret0
 }
 
 // GetString indicates an expected call of GetString
-func (mr *MockIConfigMockRecorder) GetString(key, dft interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) GetString(key, dft interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetString", reflect.TypeOf((*MockIConfig)(nil).GetString), key, dft)
+	varargs := append([]interface{}{key, dft}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetString", reflect.TypeOf((*MockIConfig)(nil).GetString), varargs...)
 }
 
 // GetSliceBool mocks base method
-func (m *MockIConfig) GetSliceBool(key string) []bool {
+func (m *MockIConfig) GetSliceBool(key string, dftSplit ...string) []bool {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSliceBool", key)
+	varargs := []interface{}{key}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetSliceBool", varargs...)
 	ret0, _ := ret[0].([]bool)
 	return ret0
 }
 
 // GetSliceBool indicates an expected call of GetSliceBool
-func (mr *MockIConfigMockRecorder) GetSliceBool(key interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) GetSliceBool(key interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSliceBool", reflect.TypeOf((*MockIConfig)(nil).GetSliceBool), key)
+	varargs := append([]interface{}{key}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSliceBool", reflect.TypeOf((*MockIConfig)(nil).GetSliceBool), varargs...)
 }
 
 // GetSliceInt mocks base method
-func (m *MockIConfig) GetSliceInt(key string) []int {
+func (m *MockIConfig) GetSliceInt(key string, dftSplit ...string) []int {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSliceInt", key)
+	varargs := []interface{}{key}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetSliceInt", varargs...)
 	ret0, _ := ret[0].([]int)
 	return ret0
 }
 
 // GetSliceInt indicates an expected call of GetSliceInt
-func (mr *MockIConfigMockRecorder) GetSliceInt(key interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) GetSliceInt(key interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSliceInt", reflect.TypeOf((*MockIConfig)(nil).GetSliceInt), key)
+	varargs := append([]interface{}{key}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSliceInt", reflect.TypeOf((*MockIConfig)(nil).GetSliceInt), varargs...)
 }
 
 // GetSliceFloat mocks base method
-func (m *MockIConfig) GetSliceFloat(key string) []float64 {
+func (m *MockIConfig) GetSliceFloat(key string, dftSplit ...string) []float64 {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSliceFloat", key)
+	varargs := []interface{}{key}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetSliceFloat", varargs...)
 	ret0, _ := ret[0].([]float64)
 	return ret0
 }
 
 // GetSliceFloat indicates an expected call of GetSliceFloat
-func (mr *MockIConfigMockRecorder) GetSliceFloat(key interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) GetSliceFloat(key interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSliceFloat", reflect.TypeOf((*MockIConfig)(nil).GetSliceFloat), key)
+	varargs := append([]interface{}{key}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSliceFloat", reflect.TypeOf((*MockIConfig)(nil).GetSliceFloat), varargs...)
 }
 
 // GetSliceString mocks base method
-func (m *MockIConfig) GetSliceString(key string) []string {
+func (m *MockIConfig) GetSliceString(key string, dftSplit ...string) []string {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSliceString", key)
+	varargs := []interface{}{key}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetSliceString", varargs...)
 	ret0, _ := ret[0].([]string)
 	return ret0
 }
 
 // GetSliceString indicates an expected call of GetSliceString
-func (mr *MockIConfigMockRecorder) GetSliceString(key interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) GetSliceString(key interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSliceString", reflect.TypeOf((*MockIConfig)(nil).GetSliceString), key)
+	varargs := append([]interface{}{key}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSliceString", reflect.TypeOf((*MockIConfig)(nil).GetSliceString), varargs...)
 }
 
 // Get mocks base method
-func (m *MockIConfig) Get(key string) interface{} {
+func (m *MockIConfig) Get(key string, dftSplit ...string) interface{} {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", key)
+	varargs := []interface{}{key}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
 	ret0, _ := ret[0].(interface{})
 	return ret0
 }
 
 // Get indicates an expected call of Get
-func (mr *MockIConfigMockRecorder) Get(key interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) Get(key interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockIConfig)(nil).Get), key)
+	varargs := append([]interface{}{key}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockIConfig)(nil).Get), varargs...)
 }
 
 // Set mocks base method
-func (m *MockIConfig) Set(key string, val interface{}) {
+func (m *MockIConfig) Set(key string, val interface{}, dftSplit ...string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Set", key, val)
+	varargs := []interface{}{key, val}
+	for _, a := range dftSplit {
+		varargs = append(varargs, a)
+	}
+	m.ctrl.Call(m, "Set", varargs...)
 }
 
 // Set indicates an expected call of Set
-func (mr *MockIConfigMockRecorder) Set(key, val interface{}) *gomock.Call {
+func (mr *MockIConfigMockRecorder) Set(key, val interface{}, dftSplit ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockIConfig)(nil).Set), key, val)
+	varargs := append([]interface{}{key, val}, dftSplit...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockIConfig)(nil).Set), varargs...)
 }
 
 // CheckPath mocks base method

@@ -18,11 +18,22 @@ func TestMapGetter(t *testing.T) {
 	MapSet(m, "cc.cck", "cvv")
 	v := MapGet(m, "cc.cck")
 	if v != "cvv" {
-		t.FailNow()
+		t.Fatal(`v != "cvv"`)
 	}
 
-	if MapGet(m, "cc1") != nil {
-		t.FailNow()
+	MapSet(m, "cc1-cck1", "cvv","-")
+	vv := MapGet(m, "cc1-cck1", "-")
+	if vv != "cvv" {
+		t.Fatal(`vv != "cvv"`)
+	}
+
+	vvv := MapGet(m, "cc1.cck1")
+	if vvv != "cvv" {
+		t.Fatal(`vvv != "cvv"`)
+	}
+
+	if MapGet(m, "cc3") != nil {
+		t.Fatal(`MapGet(m, "cc1") != nil`)
 	}
 }
 

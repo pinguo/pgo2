@@ -7,15 +7,15 @@ type IConfigParser interface {
 type IConfig interface {
 	AddParser(ext string, parser IConfigParser)
 	AddPath(path string)
-	GetBool(key string, dft bool) bool
-	GetInt(key string, dft int) int
-	GetFloat(key string, dft float64) float64
-	GetString(key string, dft string) string
-	GetSliceBool(key string) []bool
-	GetSliceInt(key string) []int
-	GetSliceFloat(key string) []float64
-	GetSliceString(key string) []string
-	Get(key string) interface{}
-	Set(key string, val interface{})
+	GetBool(key string, dft bool, dftSplit ...string) bool
+	GetInt(key string, dft int, dftSplit ...string) int
+	GetFloat(key string, dft float64, dftSplit ...string) float64
+	GetString(key string, dft string, dftSplit ...string) string
+	GetSliceBool(key string, dftSplit ...string) []bool
+	GetSliceInt(key string, dftSplit ...string) []int
+	GetSliceFloat(key string, dftSplit ...string) []float64
+	GetSliceString(key string, dftSplit ...string) []string
+	Get(key string, dftSplit ...string) interface{}
+	Set(key string, val interface{}, dftSplit ...string)
 	CheckPath() error
 }
