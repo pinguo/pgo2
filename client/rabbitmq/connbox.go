@@ -113,12 +113,9 @@ func (c *ConnBox) check(startTime time.Time) {
 		}
 	}()
 
-	for {
-		if c.startTime != startTime {
-			// 自毁
-			return
-		}
+	timeTicker := time.NewTicker(time.Second)
 
+	for {
 		select {
 		case err, ok := <-c.notifyClose:
 			if ok == false {
@@ -141,9 +138,12 @@ func (c *ConnBox) check(startTime time.Time) {
 				}()
 				return
 			}
-
-		default:
-			time.Sleep(100 * time.Microsecond)
+		case <-timeTicker.C:
+			if c.startTime != startTime {
+				// 自毁
+				timeTicker.Stop()
+				return
+			}
 
 		}
 	}
