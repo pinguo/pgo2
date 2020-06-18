@@ -119,6 +119,18 @@ func (r *RabbitMq) PublishExchange(serviceName, exchangeName, exchangeType, opCo
 	return res
 }
 
+func (r *RabbitMq) ChannelBox() *rabbitmq.ChannelBox {
+	profile := "rabbit.ChannelBox"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.FreeChannel()
+	panicErr(err)
+
+	return res
+}
+
 func (r *RabbitMq) GetConsumeChannelBox(queueName string, opCodes []string, dftExchange ...*rabbitmq.ExchangeData) *rabbitmq.ChannelBox {
 	profile := "rabbit.GetConsumeChannelBox"
 	r.Context().ProfileStart(profile)
