@@ -99,6 +99,7 @@ type IRabbitMq interface {
 	ExchangeDeclare(dftExchange ...*rabbitmq.ExchangeData)
 	Publish(opCode string, data interface{}, dftOpUid ...string) bool
 	PublishExchange(serviceName, exchangeName, exchangeType, opCode string, data interface{}, dftOpUid ...string) bool
+	ChannelBox() *rabbitmq.ChannelBox
 	GetConsumeChannelBox(queueName string, opCodes []string, dftExchange ...*rabbitmq.ExchangeData) *rabbitmq.ChannelBox
 	Consume(queueName string, opCodes []string, limit int, autoAck, noWait, exclusive bool) <-chan amqp.Delivery
 	ConsumeExchange(exchangeName, exchangeType, queueName string, opCodes []string, limit int, autoAck, noWait, exclusive bool) <-chan amqp.Delivery

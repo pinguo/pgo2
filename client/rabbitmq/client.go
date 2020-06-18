@@ -219,6 +219,10 @@ func (c *Client) queueDeclare(ch *ChannelBox, queueName string) (amqp.Queue, err
 	return q, nil
 }
 
+func (c *Client) FreeChannel() (*ChannelBox, error){
+	return c.getFreeChannel()
+}
+
 func (c *Client) GetConsumeChannelBox(queueName string, opCodes []string ,exchange *ExchangeData) (*ChannelBox, error) {
 	ch, err := c.getFreeChannel()
 	if err != nil {
