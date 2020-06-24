@@ -41,6 +41,7 @@ type Pool struct {
 	lock sync.RWMutex
 
 	logger logs.ILogger
+	vHost  string // 带"/" 的vhost
 }
 
 func (c *Pool) Init() error {
@@ -82,7 +83,8 @@ func (c *Pool) SetServers(v []interface{}) {
 		}
 
 		if end := strings.Index(addr, "/"); end > pos {
-			addr = addr[: end]
+			c.vHost = addr[end:]
+			addr = addr[:end]
 		}
 
 		info := c.servers[addr]
@@ -93,6 +95,7 @@ func (c *Pool) SetServers(v []interface{}) {
 
 		info.weight += 1
 	}
+
 }
 
 func (c *Pool) GetServers() (servers []string) {
@@ -341,7 +344,12 @@ func (c *Pool) getConnId(addr string, i int64) string {
 }
 
 func (c *Pool) getDsn(addr string) string {
-	return fmt.Sprintf("%s://%s:%s@%s", dftProtocol, c.user, c.pass, addr)
+	dsn := fmt.Sprintf("%s://%s:%s@%s", dftProtocol, c.user, c.pass, addr)
+	if c.vHost != "" {
+		dsn += c.vHost
+	}
+
+	return dsn
 }
 
 func (c *Pool) probeServer(addr string, weight int64) {
