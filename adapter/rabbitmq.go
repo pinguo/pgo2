@@ -23,15 +23,22 @@ type RabbitMq struct {
 
 // NewRabbitMq of RabbitMq Client, add context support.
 // usage: rabbitMq := this.GetObj(adapter.NewRabbitMq()).(adapter.IRabbitMq)/(*adapter.RabbitMq)
-func NewRabbitMq(componentId ...string) *RabbitMq {
+func NewRabbitMq(dftConfig ...string) *RabbitMq {
 
 	id := DefaultRabbitId
-	if len(componentId) > 0 {
-		id = componentId[0]
+	l := len(dftConfig)
+	if l > 0 {
+		id = dftConfig[0]
+	}
+
+	op:= map[string]interface{}{"logger": pgo2.GLogger()}
+	if l >= 3 {
+		op["user"] = dftConfig[1]
+		op["pass"] = dftConfig[2]
 	}
 
 	r := &RabbitMq{}
-	r.client = pgo2.App().Component(id, rabbitmq.New, map[string]interface{}{"logger": pgo2.GLogger()}).(*rabbitmq.Client)
+	r.client = pgo2.App().Component(id, rabbitmq.New, op).(*rabbitmq.Client)
 	r.panicRecover = true
 
 	return r
@@ -39,15 +46,22 @@ func NewRabbitMq(componentId ...string) *RabbitMq {
 
 // NewRabbitMqPool of RabbitMq Client from pool, add context support.
 // usage: rabbitMq := this.GetObjPool(adapter.RabbitMqClass,adapter.NewRabbitMqPool).(adapter.IRabbitMq)/(*adapter.RabbitMq)
-func NewRabbitMqPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
+func NewRabbitMqPool(iObj iface.IObject, dftConfig ...interface{}) iface.IObject {
 
 	id := DefaultRabbitId
-	if len(componentId) > 0 {
-		id = componentId[0].(string)
+	l := len(dftConfig)
+	if l > 0 {
+		id = dftConfig[0].(string)
+	}
+
+	op:= map[string]interface{}{"logger": pgo2.GLogger()}
+	if l >= 3 {
+		op["user"] = dftConfig[1]
+		op["pass"] = dftConfig[2]
 	}
 
 	r := iObj.(*RabbitMq)
-	r.client = pgo2.App().Component(id, rabbitmq.New, map[string]interface{}{"logger": pgo2.GLogger()}).(*rabbitmq.Client)
+	r.client = pgo2.App().Component(id, rabbitmq.New, op).(*rabbitmq.Client)
 	r.panicRecover = true
 
 	return r

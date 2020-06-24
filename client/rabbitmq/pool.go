@@ -76,8 +76,13 @@ func (c *Pool) SetServers(v []interface{}) {
 	for _, vv := range v {
 		addr := vv.(string)
 
-		if pos := strings.Index(addr, "://"); pos != -1 {
+		pos := strings.Index(addr, "://")
+		if pos != -1 {
 			addr = addr[pos+3:]
+		}
+
+		if end := strings.Index(addr, "/"); end > pos {
+			addr = addr[: end]
 		}
 
 		info := c.servers[addr]
@@ -167,7 +172,7 @@ func (c *Pool) SetProbeInterval(v string) error {
 	return nil
 }
 
-func  (c *Pool) ServiceName(serviceName string) string{
+func (c *Pool) ServiceName(serviceName string) string {
 	if serviceName == "" {
 		serviceName = c.serviceName
 	}
@@ -179,7 +184,7 @@ func  (c *Pool) ServiceName(serviceName string) string{
 	return serviceName
 }
 
-func  (c *Pool) ExchangeType(exchangeType string) string{
+func (c *Pool) ExchangeType(exchangeType string) string {
 	if exchangeType == "" {
 		exchangeType = c.exchangeType
 	}
@@ -191,7 +196,7 @@ func  (c *Pool) ExchangeType(exchangeType string) string{
 	return exchangeType
 }
 
-func  (c *Pool) orgExchangeName(exchangeName string) string{
+func (c *Pool) orgExchangeName(exchangeName string) string {
 	if exchangeName == "" {
 		exchangeName = c.exchangeName
 	}
@@ -285,7 +290,6 @@ func (c *Pool) getConnBox(idDft ...string) (*ConnBox, error) {
 			return nil, err
 		}
 	}
-
 
 	c.lock.RLock()
 	defer c.lock.RUnlock()
