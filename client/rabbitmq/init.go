@@ -12,7 +12,7 @@ const (
 	dftMaxChannelNum      = 2000
 	dftMaxIdleChannel     = 200
 	dftMaxIdleChannelTime = 60 * time.Second
-	dftMaxWaitTime        = 200 * time.Microsecond
+	dftMaxWaitTime        = 100 * time.Microsecond
 	dftProbeInterval      = 0
 	dftProtocol           = "amqp"
 	defaultTimeout        = 1 * time.Second

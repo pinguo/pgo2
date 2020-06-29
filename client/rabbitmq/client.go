@@ -107,18 +107,12 @@ func (c *Client) Publish(parameter *PublishData, logId string) (bool, error) {
 		return false, errors.New("Rabbit OpCode and LogId cannot be empty")
 	}
 
-	ch, err := c.getFreeChannel()
-	if err != nil {
-		return false, err
-	}
-	defer ch.Close(false)
-
 	// 增加速度，在消费端定义交换机 或者单独定义交换机
 	// c.exchangeDeclare(ch)
 
 	var goBytes bytes.Buffer
 	myGob := gob.NewEncoder(&goBytes)
-	err = myGob.Encode(parameter.Data)
+	err := myGob.Encode(parameter.Data)
 	if err != nil {
 		return false, c.failOnError(err, "Encode err")
 	}
@@ -128,6 +122,13 @@ func (c *Client) Publish(parameter *PublishData, logId string) (bool, error) {
 	if parameter.ContentType != "" {
 		contentType = parameter.ContentType
 	}
+
+	ch, err := c.getFreeChannel()
+	if err != nil {
+		return false, err
+	}
+	defer ch.Close(false)
+
 	err = ch.channel.Publish(
 		c.getExchangeName(exchangeName),             // exchange
 		c.getRouteKey(parameter.OpCode), // routing key
