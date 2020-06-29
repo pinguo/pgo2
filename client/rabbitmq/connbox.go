@@ -96,7 +96,7 @@ func (c *ConnBox) initConn() (retErr error) {
 
 		c.disable = false
 		c.channelList = make(chan *ChannelBox, c.maxChannelNum)
-		c.notifyClose = make(chan *amqp.Error)
+		c.notifyClose = make(chan *amqp.Error, 1)
 		c.startTime = time.Now()
 		c.connection.NotifyClose(c.notifyClose)
 	}()
@@ -158,6 +158,10 @@ func (c *ConnBox) isClosed() bool {
 
 func (c *ConnBox) close() {
 	if c.connection != nil && c.connection.IsClosed() == false {
+		for v:=range c.channelList{
+			v.Close(true)
+		}
+
 		err := c.connection.Close()
 		if err != nil {
 			pgo2.GLogger().Warn("Rabbit ConnBox.close err:" + err.Error())

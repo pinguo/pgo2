@@ -251,9 +251,13 @@ func (c *Pool) getChannelBox(connBox *ConnBox) (*ChannelBox, error) {
 		// 等待回收
 		var channelBox *ChannelBox
 		timeAfter := time.After(c.maxWaitTime)
-		select {
-		case channelBox = <-connBox.channelList:
-		case <-timeAfter:
+	ForSelect:
+		for {
+			select {
+			case channelBox = <-connBox.channelList:
+			case <-timeAfter:
+				break ForSelect
+			}
 		}
 
 		if channelBox == nil {
@@ -304,10 +308,11 @@ func (c *Pool) getConnBox(idDft ...string) (*ConnBox, error) {
 	num := 0
 	for i, connBox := range c.connList {
 		if connBox.isClosed() {
+			c.logger.Info(k + " isClosed")
 			continue
 		}
 		cLen := len(connBox.channelList)
-		if num == 0 || cLen > num {
+		if num == 0 || cLen < num {
 			k = i
 			num = cLen
 		}
