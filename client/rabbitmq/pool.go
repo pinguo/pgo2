@@ -258,7 +258,11 @@ func (c *Pool) getChannelBox(connBox *ConnBox) (*ChannelBox, error) {
 		}
 
 		if channelBox == nil  {
-			return nil, errors.New("RabbitMq gets the channel timeout")
+			return nil, errors.New("RabbitMq getChannelBox the channel timeout")
+		}
+
+		if connBox.isClosed() {
+			return nil, errors.New("RabbitMq getChannelBox connBox.isClosed()")
 		}
 
 		return channelBox, nil
