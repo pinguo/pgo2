@@ -117,19 +117,20 @@ func (c *ConnBox) check(startTime time.Time) {
 
 	for {
 		select {
-		case err, ok := <-c.notifyClose:
+		case notifyErr, ok := <-c.notifyClose:
 			if ok == false {
 				return
 			}
 
-			if err != nil {
+			if notifyErr != nil {
 				func() {
 					defer func() {
 						if err := recover(); err != nil {
-							pgo2.GLogger().Error("Rabbit ConnBox.check start initConn err:" + util.ToString(err))
+							pgo2.GLogger().Error("Rabbit ConnBox.check start initConn err1:" + util.ToString(err))
 						}
 					}()
 
+					pgo2.GLogger().Error("Rabbit ConnBox.check notifyErr != nil  err1:" + util.ToString(notifyErr))
 					c.setDisable()
 
 					if err := c.initConn(); err != nil {
@@ -161,10 +162,12 @@ func (c *ConnBox) close() {
 		for v:=range c.channelList{
 			v.Close(true)
 		}
-
+		pgo2.GLogger().Info("ConnBox.close len(channelList)=",len(c.channelList))
 		err := c.connection.Close()
 		if err != nil {
 			pgo2.GLogger().Warn("Rabbit ConnBox.close err:" + err.Error())
 		}
+
+
 	}
 }
