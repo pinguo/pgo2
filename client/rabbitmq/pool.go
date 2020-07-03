@@ -234,7 +234,7 @@ func (c *Pool) getFreeChannel() (*ChannelBox, error) {
 	default:
 	}
 
-	if channelBox == nil {
+	if channelBox == nil || connBox.isClosed() {
 		return c.getChannelBox(connBox)
 	}
 
@@ -381,13 +381,16 @@ func (c *Pool) probeServer(addr string, weight int64) {
 			if e != nil && !connBox.isClosed() {
 				c.logger.Warn("rabbit.Pool.probeServer. e != nil && !connBox.isClosed() connBox.setDisable() err:" + e.Error())
 				connBox.setDisable()
+				c.logger.Info("ffff00---")
 			} else if e == nil && connBox.isClosed() {
 				connBox.setEnable()
 				if err := connBox.initConn(); err != nil {
 					c.logger.Error("Rabbit probeServer err:" + util.ToString(err))
 				}
 			}
+			c.logger.Info("ffff00")
 		}()
+		c.logger.Info("ffff")
 
 	}
 }
@@ -403,6 +406,7 @@ func (c *Pool) probeLoop() {
 
 	for {
 		<-time.After(c.probeInterval)
+		c.logger.Info("probeLoop ...")
 		for addr, info := range c.servers {
 			c.probeServer(addr, info.weight)
 		}
