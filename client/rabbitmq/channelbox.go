@@ -11,6 +11,11 @@ import (
 func newChannelBox(connBox *ConnBox, pool *Pool) (*ChannelBox, error) {
 	connBox.newChannelLock.Lock()
 	defer connBox.newChannelLock.Unlock()
+
+	if connBox.connection.IsClosed() {
+		return nil, errors.New("Rabbit newChannelBox connBox.connection.IsClosed()")
+	}
+
 	channel, err := connBox.connection.Channel()
 
 	if err != nil {
