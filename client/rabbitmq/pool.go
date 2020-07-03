@@ -257,8 +257,12 @@ func (c *Pool) getChannelBox(connBox *ConnBox) (*ChannelBox, error) {
 		case <-timeAfter:
 		}
 
-		if channelBox == nil {
-			return nil, errors.New("RabbitMq gets the channel timeout")
+		if channelBox == nil  {
+			return nil, errors.New("RabbitMq getChannelBox the channel timeout")
+		}
+
+		if connBox.isClosed() {
+			return nil, errors.New("RabbitMq getChannelBox connBox.isClosed()")
 		}
 
 		return channelBox, nil
@@ -384,9 +388,11 @@ func (c *Pool) probeServer(addr string, weight int64) {
 				c.logger.Info("ffff00---")
 			} else if e == nil && connBox.isClosed() {
 				connBox.setEnable()
+				c.logger.Info("connBox.setEnable()")
 				if err := connBox.initConn(); err != nil {
 					c.logger.Error("Rabbit probeServer err:" + util.ToString(err))
 				}
+				c.logger.Info("connBox.initConn()")
 			}
 			c.logger.Info("ffff00")
 		}()
