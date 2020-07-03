@@ -251,13 +251,10 @@ func (c *Pool) getChannelBox(connBox *ConnBox) (*ChannelBox, error) {
 		// 等待回收
 		var channelBox *ChannelBox
 		timeAfter := time.After(c.maxWaitTime)
-	ForSelect:
-		for {
-			select {
-			case channelBox = <-connBox.channelList:
-			case <-timeAfter:
-				break ForSelect
-			}
+
+		select {
+		case channelBox = <-connBox.channelList:
+		case <-timeAfter:
 		}
 
 		if channelBox == nil {
@@ -308,7 +305,7 @@ func (c *Pool) getConnBox(idDft ...string) (*ConnBox, error) {
 	num := 0
 	for i, connBox := range c.connList {
 		if connBox.isClosed() {
-			c.logger.Info(k + " isClosed")
+			c.logger.Info(i + " isClosed")
 			continue
 		}
 		cLen := len(connBox.channelList)
@@ -376,11 +373,13 @@ func (c *Pool) probeServer(addr string, weight int64) {
 
 			connBox, err := c.getConnBox(id)
 			if err != nil {
+				c.logger.Warn("rabbit.Pool.probeServer.getConnBox.err connBox.setDisable() err:" + err.Error())
 				connBox.setDisable()
 				return
 			}
 
 			if e != nil && !connBox.isClosed() {
+				c.logger.Warn("rabbit.Pool.probeServer. e != nil && !connBox.isClosed() connBox.setDisable() err:" + e.Error())
 				connBox.setDisable()
 			} else if e == nil && connBox.isClosed() {
 				connBox.setEnable()
