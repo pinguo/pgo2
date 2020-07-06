@@ -15,7 +15,7 @@ const (
 	dftMaxWaitTime        = 100 * time.Microsecond
 	dftProbeInterval      = 0
 	dftProtocol           = "amqp"
-	defaultTimeout        = 1 * time.Millisecond
+	defaultTimeout        = 1 * time.Second
 	errSetProp            = "rabbitMq: failed to set %s, %s"
 )
 
