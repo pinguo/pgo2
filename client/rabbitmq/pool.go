@@ -273,8 +273,10 @@ func (c *Pool) getChannelBox(connBox *ConnBox) (*ChannelBox, error) {
 
 // 释放或者返回channel链接池
 func (c *Pool) putFreeChannel(channelBox *ChannelBox) (bool, error) {
+	c.logger.Info("start putFreeChannel")
 	connBox, err := c.getConnBox(channelBox.connBoxId)
 	if err != nil {
+		c.logger.Info("putFreeChannel getConnBox err:",err.Error())
 		return false, err
 	}
 	if len(connBox.channelList) >= c.maxIdleChannel {
