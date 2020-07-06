@@ -328,7 +328,6 @@ func (c *Pool) getConnBox(idDft ...string) (*ConnBox, error) {
 
 // 设置tcp链接
 func (c *Pool) initConn() error {
-
 	c.lock.Lock()
 	defer c.lock.Unlock()
 	for addr, info := range c.servers {
@@ -384,17 +383,21 @@ func (c *Pool) probeServer(addr string, weight int64) {
 				return
 			}
 
-			if e != nil && !connBox.isClosed() {
+			if e != nil && !connBox.Disable() && connBox.connection.IsClosed() {
 				c.logger.Warn("rabbit.Pool.probeServer. e != nil && !connBox.isClosed() connBox.setDisable() err:" + e.Error())
 				connBox.setDisable()
 				c.logger.Info("ffff00---")
-			} else if e == nil && connBox.isClosed() {
+				return
+			}
+
+			if e == nil && connBox.isClosed() {
 				connBox.setEnable()
 				c.logger.Info("connBox.setEnable()")
 				if err := connBox.initConn(); err != nil {
 					c.logger.Error("Rabbit probeServer err:" + util.ToString(err))
 				}
 				c.logger.Info("connBox.initConn()")
+				return
 			}
 			c.logger.Info("ffff00")
 		}()

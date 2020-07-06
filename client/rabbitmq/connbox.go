@@ -152,6 +152,10 @@ func (c *ConnBox) check(startTime time.Time) {
 	}
 }
 
+func (c *ConnBox) Disable() bool{
+	return c.disable
+}
+
 func (c *ConnBox) isClosed() bool {
 	if c.disable || c.connection.IsClosed() {
 		pgo2.GLogger().Info("disable",c.disable,"c.connection.IsClosed()",c.connection.IsClosed())
