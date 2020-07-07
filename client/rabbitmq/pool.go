@@ -274,10 +274,10 @@ func (c *Pool) getChannelBox(connBox *ConnBox) (*ChannelBox, error) {
 
 // 释放或者返回channel链接池
 func (c *Pool) putFreeChannel(channelBox *ChannelBox) (bool, error) {
-	//c.logger.Info("start putFreeChannel")
+	// c.logger.Info("start putFreeChannel")
 	connBox, err := c.getConnBox(channelBox.connBoxId)
 	if err != nil {
-		//c.logger.Info("putFreeChannel getConnBox err:",err.Error())
+		// c.logger.Info("putFreeChannel getConnBox err:",err.Error())
 		return false, err
 	}
 	if len(connBox.channelList) >= c.maxIdleChannel {
@@ -379,7 +379,7 @@ func (c *Pool) probeServer(addr string, weight int64) {
 
 			connBox, err := c.getConnBox(id)
 			if err != nil {
-				//c.logger.Warn("rabbit.Pool.probeServer.getConnBox.err connBox.setDisable() err:" + err.Error())
+				// c.logger.Warn("rabbit.Pool.probeServer.getConnBox.err connBox.setDisable() err:" + err.Error())
 				connBox.setDisable()
 				return
 			}
