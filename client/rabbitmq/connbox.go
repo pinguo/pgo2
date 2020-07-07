@@ -152,39 +152,38 @@ func (c *ConnBox) check(startTime time.Time) {
 	}
 }
 
-func (c *ConnBox) Disable() bool{
+func (c *ConnBox) Disable() bool {
 	return c.disable
 }
 
 func (c *ConnBox) isClosed() bool {
 	if c.disable || c.connection.IsClosed() {
-		pgo2.GLogger().Info("disable",c.disable,"c.connection.IsClosed()",c.connection.IsClosed())
+		// pgo2.GLogger().Info("disable",c.disable,"c.connection.IsClosed()",c.connection.IsClosed())
 		return true
 	}
 	return false
 }
 
 func (c *ConnBox) close() {
-	pgo2.GLogger().Info("ConnBox.close begin")
+	// pgo2.GLogger().Info("ConnBox.close begin")
 	if c.connection != nil && c.connection.IsClosed() == false {
-		pgo2.GLogger().Info("ConnBox.close 1 len(channelList)=",len(c.channelList))
+		// pgo2.GLogger().Info("ConnBox.close 1 len(channelList)=",len(c.channelList))
 		l := len(c.channelList)
 		pgo2.GLogger().Info("sl:", l)
-		for i:=0;i< l;i++{
+		for i := 0; i < l; i++ {
 			select {
-			case v:=<-c.channelList:
-				pgo2.GLogger().Info("ssss:", i)
+			case v := <-c.channelList:
+				//pgo2.GLogger().Info("ssss:", i)
 				v.Close(true)
 			default:
 			}
 		}
 
-		pgo2.GLogger().Info("ConnBox.close len(channelList)=",len(c.channelList))
+		// pgo2.GLogger().Info("ConnBox.close len(channelList)=",len(c.channelList))
 		err := c.connection.Close()
 		if err != nil {
 			pgo2.GLogger().Warn("Rabbit ConnBox.close err:" + err.Error())
 		}
-
 
 	}
 }
