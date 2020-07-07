@@ -169,11 +169,11 @@ func (c *ConnBox) close() {
 	if c.connection != nil && c.connection.IsClosed() == false {
 		// pgo2.GLogger().Info("ConnBox.close 1 len(channelList)=",len(c.channelList))
 		l := len(c.channelList)
-		pgo2.GLogger().Info("sl:", l)
+		// pgo2.GLogger().Info("sl:", l)
 		for i := 0; i < l; i++ {
 			select {
 			case v := <-c.channelList:
-				//pgo2.GLogger().Info("ssss:", i)
+				// pgo2.GLogger().Info("ssss:", i)
 				v.Close(true)
 			default:
 			}
