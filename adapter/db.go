@@ -194,9 +194,9 @@ func (d *Db) ExecContext(ctx context.Context, query string, args ...interface{})
 	return res
 }
 
-// Prepare creates a prepared statement for later queries or executions,
+// PrepareSql creates a prepared statement for later queries or executions,
 // the Close method must be called by caller.
-func (d *Db) Prepare(query string) IStmt {
+func (d *Db) PrepareSql(query string) IStmt {
 	ctx, _ := context.WithTimeout(context.Background(), DefaultDbTimeout)
 	return d.PrepareContext(ctx, query)
 }
@@ -213,7 +213,7 @@ func (d *Db) PrepareContext(ctx context.Context, query string) IStmt {
 	stmt, err := d.GetDb(master).PrepareContext(ctx, query)
 
 	if err != nil {
-		d.Context().Error("Db.Prepare error, %s, query:%s", err.Error(), query)
+		d.Context().Error("Db.PrepareContext error, %s, query:%s", err.Error(), query)
 		return nil
 	}
 
@@ -346,9 +346,9 @@ func (t *Tx) ExecContext(ctx context.Context, query string, args ...interface{})
 	return res
 }
 
-// Prepare creates a prepared statement for later queries or executions,
+// PrepareSql creates a prepared statement for later queries or executions,
 // the Close method must be called by caller.
-func (t *Tx) Prepare(query string) IStmt {
+func (t *Tx) PrepareSql(query string) IStmt {
 	ctx, _ := context.WithTimeout(context.Background(), DefaultDbTimeout)
 	return t.PrepareContext(ctx, query)
 }
@@ -360,7 +360,7 @@ func (t *Tx) PrepareContext(ctx context.Context, query string) IStmt {
 	stmt, err := t.tx.PrepareContext(ctx, query)
 
 	if err != nil {
-		t.Context().Error("Db.Prepare error, %s, query:%s", err.Error(), query)
+		t.Context().Error("Db.PrepareContext error, %s, query:%s", err.Error(), query)
 		return nil
 	}
 

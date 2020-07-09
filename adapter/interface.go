@@ -118,7 +118,7 @@ type IDb interface {
 	QueryContext(ctx context.Context, query string, args ...interface{}) *sql.Rows
 	Exec(query string, args ...interface{}) sql.Result
 	ExecContext(ctx context.Context, query string, args ...interface{}) sql.Result
-	Prepare(query string) IStmt
+	PrepareSql(query string) IStmt
 	PrepareContext(ctx context.Context, query string) IStmt
 }
 
@@ -132,7 +132,7 @@ type ITx interface {
 	QueryContext(ctx context.Context, query string, args ...interface{}) *sql.Rows
 	Exec(query string, args ...interface{}) sql.Result
 	ExecContext(ctx context.Context, query string, args ...interface{}) sql.Result
-	Prepare(query string) IStmt
+	PrepareSql(query string) IStmt
 	PrepareContext(ctx context.Context, query string) IStmt
 }
 
