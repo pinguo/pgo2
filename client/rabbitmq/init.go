@@ -9,8 +9,8 @@ import (
 const (
 	dftExchangeType       = "direct"
 	dftExchangeName       = "direct_pgo2_dft"
-	dftMaxChannelNum      = 2000
-	dftMaxIdleChannel     = 200
+	dftMaxChannelNum      = 100
+	dftMaxIdleChannel     = 10
 	dftMaxIdleChannelTime = 60 * time.Second
 	dftMaxWaitTime        = 100 * time.Microsecond
 	dftProbeInterval      = 0
