@@ -1,6 +1,8 @@
 package adapter
 
 import (
+	"time"
+
 	"github.com/pinguo/pgo2"
 	"github.com/pinguo/pgo2/client/rabbitmq"
 	"github.com/pinguo/pgo2/iface"
@@ -174,7 +176,8 @@ func (r *RabbitMq) Consume(queueName string, opCodes []string, limit int, autoAc
 	defer r.Context().ProfileStop(profile)
 	defer r.handlePanic()
 
-	res, err := r.client.Consume(&rabbitmq.ConsumeData{QueueName: queueName, OpCodes: opCodes, Limit: limit, AutoAck: autoAck, NoWait: noWait, Exclusive: exclusive})
+	ConsumeName := queueName + "-" + time.Now().Format("20060102150405")
+	res, err := r.client.Consume(&rabbitmq.ConsumeData{QueueName: queueName, Name:ConsumeName, OpCodes: opCodes, Limit: limit, AutoAck: autoAck, NoWait: noWait, Exclusive: exclusive})
 	panicErr(err)
 
 	return res
@@ -195,7 +198,8 @@ func (r *RabbitMq) ConsumeExchange(exchangeName, exchangeType, queueName string,
 	defer r.Context().ProfileStop(profile)
 	defer r.handlePanic()
 
-	res, err := r.client.Consume(&rabbitmq.ConsumeData{ExChange: &rabbitmq.ExchangeData{Name: exchangeName, Type: exchangeType, Durable:true},
+	ConsumeName := queueName + "-" + time.Now().Format("20060102150405")
+	res, err := r.client.Consume(&rabbitmq.ConsumeData{Name:ConsumeName, ExChange: &rabbitmq.ExchangeData{Name: exchangeName, Type: exchangeType, Durable:true},
 		QueueName: queueName, OpCodes: opCodes, Limit: limit, AutoAck: autoAck, NoWait: noWait, Exclusive: exclusive})
 	panicErr(err)
 

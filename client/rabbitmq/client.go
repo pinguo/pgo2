@@ -258,7 +258,7 @@ func (c *Client) Consume(parameter *ConsumeData) (<-chan amqp.Delivery, error) {
 
 	messages, err := ch.channel.Consume(
 		parameter.QueueName, // queue
-		"",                  // consumer
+		parameter.Name,                  // consumer
 		parameter.AutoAck,   // auto ack
 		parameter.Exclusive, // exclusive
 		false,               // no local
