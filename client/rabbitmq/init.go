@@ -52,6 +52,7 @@ type PublishData struct {
 type ConsumeData struct {
 	ExChange  *ExchangeData
 	QueueName string
+	Name      string
 	OpCodes   []string
 	AutoAck   bool
 	NoWait    bool
