@@ -379,13 +379,13 @@ func (c *Pool) probeServer(addr string, weight int64) {
 
 			connBox, err := c.getConnBox(id)
 			if err != nil {
-				// c.logger.Warn("rabbit.Pool.probeServer.getConnBox.err connBox.setDisable() err:" + err.Error())
-				connBox.setDisable()
+				c.logger.Warn("rabbit.Pool.probeServer.getConnBox.err :" + err.Error())
+				// connBox.setDisable()
 				return
 			}
 
 			if e != nil && !connBox.Disable() && connBox.connection.IsClosed() {
-				// c.logger.Warn("rabbit.Pool.probeServer. e != nil && !connBox.isClosed() connBox.setDisable() err:" + e.Error())
+				c.logger.Warn("rabbit.Pool.probeServer. e != nil && !connBox.isClosed() connBox.setDisable() err:" + e.Error())
 				connBox.setDisable()
 				// c.logger.Info("ffff00---")
 				return
@@ -393,14 +393,14 @@ func (c *Pool) probeServer(addr string, weight int64) {
 
 			if e == nil && connBox.isClosed() {
 				connBox.setEnable()
-				// c.logger.Info("connBox.setEnable()")
+				c.logger.Info("Rabbit probeServer connBox.setEnable()")
 				if err := connBox.initConn(); err != nil {
 					c.logger.Error("Rabbit probeServer err:" + util.ToString(err))
 				}
-				// c.logger.Info("connBox.initConn()")
+				c.logger.Info("Rabbit probeServer connBox.initConn()")
 				return
 			}
-			// c.logger.Info("ffff00")
+			c.logger.Info("Rabbit probeServer end func")
 		}()
 		// c.logger.Info("ffff")
 
