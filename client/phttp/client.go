@@ -68,6 +68,12 @@ func (c *Client) SetUserAgent(userAgent string) {
 	c.userAgent = userAgent
 }
 
+func (c *Client) SetTransport(transport *http.Transport) {
+	oldTransport := c.client.Transport
+	util.STMergeSame(oldTransport, transport)
+	c.client.Transport = oldTransport
+}
+
 func (c *Client) SetTimeout(v string) error {
 	if timeout, err := time.ParseDuration(v); err != nil {
 		return fmt.Errorf("http parse timeout failed, " + err.Error())
