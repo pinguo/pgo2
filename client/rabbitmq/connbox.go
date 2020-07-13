@@ -100,10 +100,10 @@ func (c *ConnBox) initConn() (retErr error) {
 		c.channelList = make(chan *ChannelBox, c.maxChannelNum)
 		c.notifyClose = make(chan *amqp.Error, 1)
 		c.startTime = time.Now()
-		c.connection.NotifyClose(c.notifyClose)
+		//c.connection.NotifyClose(c.notifyClose)
 	}()
 
-	go c.check(c.startTime)
+	// go c.check(c.startTime)
 
 	return retErr
 }
