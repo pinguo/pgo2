@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/gob"
 	"errors"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/pinguo/pgo2/core"
@@ -122,29 +124,51 @@ func (c *Client) Publish(parameter *PublishData, logId string) (bool, error) {
 		contentType = parameter.ContentType
 	}
 
-	ch, err := c.getFreeChannel()
-	if err != nil {
-		return false, err
+StartPublish:
+	retry, ret, err := func() (bool, bool, error) {
+		ch, err := c.getFreeChannel()
+		if err != nil {
+			return false, false, err
+		}
+
+		defer ch.Close(false)
+		num := 1
+
+		err = ch.channel.Publish(
+			c.getExchangeName(exchangeName), // exchange
+			c.getRouteKey(parameter.OpCode), // routing key
+			false,                           // mandatory
+			false,                           // immediate
+			amqp.Publishing{
+				ContentType: contentType,
+				Body:        goBytes.Bytes(),
+				Headers:     amqp.Table{"logId": logId, "service": c.ServiceName(parameter.ServiceName), "opUid": parameter.OpUid},
+				Timestamp:   time.Now(),
+			})
+
+		if err == nil {
+			return false, true, nil
+		}
+
+		if strings.Index(err.Error(), "channel/connection is not open") != -1 ||
+			strings.Index(err.Error(), "CHANNEL_ERROR - expected 'channel.open'") != -1 {
+			// 重试一次
+			ch.closed = true
+			if num == 1 {
+				num++
+				return true, false, err
+
+			}
+		}
+
+		return false, false, c.failOnError(err, fmt.Sprintf("Failed to publish a message sendNum(%d)", num))
+	}()
+
+	if retry {
+		goto StartPublish
 	}
-	defer ch.Close(false)
 
-	err = ch.channel.Publish(
-		c.getExchangeName(exchangeName), // exchange
-		c.getRouteKey(parameter.OpCode), // routing key
-		false,                           // mandatory
-		false,                           // immediate
-		amqp.Publishing{
-			ContentType: contentType,
-			Body:        goBytes.Bytes(),
-			Headers:     amqp.Table{"logId": logId, "service": c.ServiceName(parameter.ServiceName), "opUid": parameter.OpUid},
-			Timestamp:   time.Now(),
-		})
-
-	if err != nil {
-		return false, c.failOnError(err, "Failed to publish a message")
-	}
-
-	return true, nil
+	return ret, err
 }
 
 func (c *Client) parseExchange(exchange *ExchangeData) (exchangeName string, exchangeType string) {
@@ -258,7 +282,7 @@ func (c *Client) Consume(parameter *ConsumeData) (<-chan amqp.Delivery, error) {
 
 	messages, err := ch.channel.Consume(
 		parameter.QueueName, // queue
-		parameter.Name,                  // consumer
+		parameter.Name,      // consumer
 		parameter.AutoAck,   // auto ack
 		parameter.Exclusive, // exclusive
 		false,               // no local
