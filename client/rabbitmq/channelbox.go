@@ -31,9 +31,14 @@ type ChannelBox struct {
 	channel       *amqp.Channel
 	connStartTime time.Time
 	lastActive    time.Time
+	closed        bool
 }
 
 func (c *ChannelBox) Close(force bool) error {
+	if c.closed {
+		return nil
+	}
+
 	conn, err := c.pool.getConnBox(c.connBoxId)
 	if err != nil {
 		return err
