@@ -2,6 +2,7 @@ package pgo2
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -54,17 +55,30 @@ func App(newApp ...bool) *Application {
 	return application
 }
 
+func ArgsApp(newApp bool, args []string) *Application {
+	if application != nil && newApp == false {
+		return application
+	}
+
+	application = NewApp(args...)
+
+	return application
+}
+
 // Run run app
-func Run() {
+func Run(args ...string) {
+	if len(args) == 0 {
+		args = os.Args
+	}
 	// Initialization route
-	App().Router().InitHandlers()
+	ArgsApp(false, args).Router().InitHandlers()
 	// Check config path
 	if err := App().Config().CheckPath(); err != nil {
 		cmdList()
 		panic(err)
 	}
 	// Listen for server or start CMD
-	App().Server().Serve()
+	ArgsApp(false, args).Server().Serve()
 }
 
 // GLogger get global logger

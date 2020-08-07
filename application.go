@@ -16,17 +16,23 @@ import (
 	"github.com/pinguo/pgo2/util"
 )
 
-func init() {
-	_ = flag.String("env", "", "set running env (optional), eg. --env=online")
-	_ = flag.String("cmd", "", "set running cmd (optional), eg. --cmd=/foo/bar")
-	_ = flag.String("base", "", "set base path (optional), eg. --base=/base/path")
-	_ = flag.String("cmdList", "", "Displays a list of CMD controllers used (optional), eg. --cmdList")
+func validArgs(f *flag.FlagSet) {
+	_ = f.String("env", "", "set running env (optional), eg. --env=online")
+	_ = f.String("cmd", "", "set running cmd (optional), eg. --cmd=/foo/bar")
+	_ = f.String("base", "", "set base path (optional), eg. --base=/base/path")
+	_ = f.String("cmdList", "", "Displays a list of CMD controllers used (optional), eg. --cmdList")
 }
 
-func NewApp() *Application {
-	exeBase := filepath.Base(os.Args[0])
-	exeExt := filepath.Ext(os.Args[0])
-	exeDir := filepath.Dir(os.Args[0])
+func NewApp(args ...string) *Application {
+	if len(args) == 0 {
+		args = os.Args
+	}
+	flagSet := flag.NewFlagSet("pgo2", flag.ExitOnError)
+	flagSet.Parse(args)
+	validArgs(flagSet)
+	exeBase := filepath.Base(flagSet.Args()[0])
+	exeExt := filepath.Ext(flagSet.Args()[0])
+	exeDir := filepath.Dir(flagSet.Args()[0])
 
 	app := &Application{
 		mode:       ModeWeb,
@@ -38,7 +44,7 @@ func NewApp() *Application {
 
 	app.basePath = app.genBasePath(exeDir)
 
-	app.Init(os.Args)
+	app.Init(args)
 
 	return app
 }
