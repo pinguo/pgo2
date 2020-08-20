@@ -50,6 +50,11 @@ func (c *Context) SetAccessLogFormat(v iface.IAccessLogFormat) {
 	c.accessLogFormat = v
 }
 
+func (c *Context) SetEnableAccessLog(v bool) {
+	c.enableAccessLog = v
+}
+
+
 func (c *Context) HttpRW(debug, enableAccessLog bool, r *http.Request, w http.ResponseWriter) {
 	c.debug = debug
 	c.enableAccessLog = enableAccessLog

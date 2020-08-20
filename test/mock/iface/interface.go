@@ -1389,6 +1389,18 @@ func (mr *MockIContextMockRecorder) SetAccessLogFormat(v interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetAccessLogFormat", reflect.TypeOf((*MockIContext)(nil).SetAccessLogFormat), v)
 }
 
+// SetEnableAccessLog mocks base method
+func (m *MockIContext) SetEnableAccessLog(v bool) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetEnableAccessLog", v)
+}
+
+// SetEnableAccessLog indicates an expected call of SetEnableAccessLog
+func (mr *MockIContextMockRecorder) SetEnableAccessLog(v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetEnableAccessLog", reflect.TypeOf((*MockIContext)(nil).SetEnableAccessLog), v)
+}
+
 // MockIAccessLogFormat is a mock of IAccessLogFormat interface
 type MockIAccessLogFormat struct {
 	ctrl     *gomock.Controller
