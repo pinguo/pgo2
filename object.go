@@ -25,8 +25,16 @@ func (o *Object) GetObj(obj iface.IObject) iface.IObject {
 }
 
 // GetObjPool Get Object from pool
+// Deprecated:  Use GetObjBox instead.
 func (o *Object) GetObjPool(className string, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
 	return o.GetObjPoolCtx(o.Context(), className, funcName, params...)
+}
+
+
+// GetObjPool Get Object from box,Have the function of the pool
+// params: Parameter passed into Prepare
+func (o *Object) GetObjBox(className string, params ...interface{}) iface.IObject {
+	return o.GetObjBoxCtx(o.Context(), className, params...)
 }
 
 // GetObject Get single object
@@ -41,13 +49,22 @@ func (o *Object) GetObjCtx(ctx iface.IContext, obj iface.IObject) iface.IObject 
 }
 
 // GetObjPoolCtx Get Object from pool and new Context
+// Deprecated: Use GetObjBoxCtx instead.
 func (o *Object) GetObjPoolCtx(ctx iface.IContext, className string, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
-	obj := App().GetObjPool(className, ctx)
-
+	var obj iface.IObject
 	if funcName != nil {
+		obj = App().GetObjPool(className, ctx)
 		return funcName(obj, params...)
+	}else{
+		obj = App().GetObjPool(className, ctx, params...)
 	}
 	return obj
+}
+
+// GetObjBoxCtx Get Object from box and new Context,Have the function of the pool
+// params: Parameter passed into Prepare
+func (o *Object) GetObjBoxCtx(ctx iface.IContext, className string, params ...interface{}) iface.IObject {
+	return App().GetObjPool(className, ctx, params...)
 }
 
 // GetObject Get single object and new Context

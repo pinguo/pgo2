@@ -118,7 +118,7 @@ func (c *Container) GetType(name string) reflect.Type {
 
 // Get get new class object. name is class name, config is properties map,
 // params is optional construct parameters.
-func (c *Container) Get(name string, ctx iface.IContext) reflect.Value {
+func (c *Container) Get(name string, ctx iface.IContext, params ...interface{}) reflect.Value {
 	item, ok := c.items[name]
 	if !ok {
 		panic("Container: class not found, " + name)
@@ -140,7 +140,10 @@ func (c *Container) Get(name string, ctx iface.IContext) reflect.Value {
 	// call Init()
 	if item.pmIdx != -1 {
 		if im := rv.Method(item.pmIdx); im.IsValid() {
-			in := make([]reflect.Value, 0)
+			in := make([]reflect.Value, len(params))
+			for k, arg := range params {
+				in[k] = reflect.ValueOf(arg)
+			}
 			im.Call(in)
 		}
 	}
