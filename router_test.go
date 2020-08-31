@@ -166,7 +166,7 @@ func TestRouter_Resolve(t *testing.T) {
 func TestRouter_CreateController(t *testing.T) {
 	App(true)
 	var c *Container
-	patches := gomonkey.ApplyMethod(reflect.TypeOf(c), "Get", func(_ *Container, _ string, ctx iface.IContext) reflect.Value {
+	patches := gomonkey.ApplyMethod(reflect.TypeOf(c), "Get", func(_ *Container, _ string, ctx iface.IContext, params ...interface{}) reflect.Value {
 		t.Log("mock Container.Get")
 		m := &mockController{}
 		m.SetContext(ctx)

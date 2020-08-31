@@ -1,12 +1,17 @@
 package pgo2
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
 
 type containerTestCommand struct {
 	Controller
+}
+
+func (c *Container) Prepare(a, b string){
+	fmt.Println("a",a,"b",b)
 }
 
 func TestContainer(t *testing.T) {
@@ -32,6 +37,7 @@ func TestContainer(t *testing.T) {
 
 	t.Run("Get", func(t *testing.T) {
 		IC := container.Get(className, &Context{}).Interface()
+		container.Get(className, &Context{}).Interface()
 		if _, ok := IC.(*containerTestCommand); ok == false {
 			t.FailNow()
 		}
@@ -44,10 +50,27 @@ func TestContainer(t *testing.T) {
 		}
 	})
 
+
+
 	t.Run("Put", func(t *testing.T) {
-		rt := reflect.TypeOf(&containerTestCommand{})
+		rt := reflect.TypeOf(containerTestCommand{})
 
 		container.Put(className, reflect.New(rt))
+	})
+
+	t.Run("GetPrepareNoParams", func(t *testing.T) {
+		IC := container.Get(className, &Context{}).Interface()
+		if _, ok := IC.(*containerTestCommand); ok == false {
+			t.FailNow()
+		}
+	})
+
+	//
+	t.Run("GetPrepareNoParams", func(t *testing.T) {
+		IC1 := container.Get(className, &Context{}, "aa","bb").Interface()
+		if _, ok := IC1.(*containerTestCommand); ok == false {
+			t.FailNow()
+		}
 	})
 
 }

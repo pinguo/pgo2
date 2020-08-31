@@ -365,9 +365,9 @@ func (app *Application) Component(id string, funcName iface.IComponentFunc, para
 }
 
 // Get get pool class object. name is class name, ctx is context,
-func (app *Application) GetObjPool(name string, ctx iface.IContext) iface.IObject {
+func (app *Application) GetObjPool(name string, ctx iface.IContext, params ...interface{}) iface.IObject {
 	if name := GetAlias(name); len(name) > 0 {
-		return app.container.Get(name, ctx).Interface().(iface.IObject)
+		return app.container.Get(name, ctx, params...).Interface().(iface.IObject)
 	}
 
 	panic("unknown class: " + name)

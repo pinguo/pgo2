@@ -22,8 +22,10 @@ type IObject interface {
 	Context() IContext
 	GetObj(obj IObject) IObject
 	GetObjPool(className string, funcName IObjPoolFunc, params ...interface{}) IObject
+	GetObjBox(className string, params ...interface{}) IObject
 	GetObjSingle(name string, funcName IObjSingleFunc, params ...interface{}) IObject
 	GetObjPoolCtx(ctr IContext, className string, funcName IObjPoolFunc, params ...interface{}) IObject
+	GetObjBoxCtx(ctx IContext, className string, params ...interface{}) IObject
 	GetObjCtx(ctx IContext, obj IObject) IObject
 	GetObjSingleCtx(ctx IContext, name string, funcName IObjSingleFunc, params ...interface{}) IObject
 }

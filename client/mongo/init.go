@@ -2,6 +2,8 @@ package mongo
 
 import "time"
 
+// 基于mgo封装
+
 const (
 	defaultDsn     = "mongodb://127.0.0.1:27017/"
 	defaultOptions = "connect=replicaSet&maxPoolSize=100&minPoolSize=1&maxIdleTimeMS=300000" +
