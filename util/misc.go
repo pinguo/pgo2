@@ -113,7 +113,12 @@ func FormatLanguage(lang string) string {
 
 // PanicTrace get panic trace
 func PanicTrace(maxDepth int, multiLine, debug bool) string {
-	buf := make([]byte, 1024)
+	bufLen := 1024
+	if debug {
+		bufLen = 4096
+	}
+
+	buf := make([]byte, bufLen)
 	if n := runtime.Stack(buf, false); n < len(buf) {
 		buf = buf[:n]
 	}
