@@ -7,6 +7,7 @@ import (
 	"github.com/pinguo/pgo2/client/rabbitmq"
 	"github.com/pinguo/pgo2/iface"
 	"github.com/pinguo/pgo2/util"
+	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
 )
 
@@ -110,14 +111,14 @@ func (r *RabbitMq) Publish(opCode string, data interface{}, dftOpUid ...string) 
 		opUid = dftOpUid[0]
 	}
 
-	res, err := r.client.Publish(&rabbitmq.PublishData{ OpCode: opCode, Data: data, OpUid: opUid}, r.Context().LogId())
+	res, err := r.client.Publish(&rabbitmq.PublishData{ OpCode: opCode, Data: data, OpUid: opUid, DeliveryMode:amqp.Persistent}, r.Context().LogId())
 	panicErr(err)
 
 	return res
 }
 
 func (r *RabbitMq) PublishExchange(serviceName, exchangeName, exchangeType, opCode string, data interface{}, dftOpUid ...string) bool {
-	profile := "rabbit.Publish"
+	profile := "rabbit.PublishExchange"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
 	defer r.handlePanic()
@@ -127,7 +128,30 @@ func (r *RabbitMq) PublishExchange(serviceName, exchangeName, exchangeType, opCo
 		opUid = dftOpUid[0]
 	}
 
-	res, err := r.client.Publish(&rabbitmq.PublishData{ServiceName: serviceName,
+	res, err := r.client.Publish(&rabbitmq.PublishData{ServiceName: serviceName,DeliveryMode:amqp.Persistent,
+		ExChange: &rabbitmq.ExchangeData{Name: exchangeName, Type: exchangeType, Durable:true},
+		OpCode:   opCode, Data: data, OpUid: opUid}, r.Context().LogId())
+	panicErr(err)
+
+	return res
+}
+
+func (r *RabbitMq) PublishExchangeDelivery(serviceName, exchangeName, exchangeType, opCode string, data interface{},deliveryMode uint8, dftOpUid ...string) bool {
+	profile := "rabbit.PublishExchangeDelivery"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	opUid := ""
+	if len(dftOpUid) > 0 {
+		opUid = dftOpUid[0]
+	}
+
+	if deliveryMode > amqp.Persistent  || deliveryMode < 0 {
+		panicErr(errors.New("Invalid deliveryMode"))
+	}
+
+	res, err := r.client.Publish(&rabbitmq.PublishData{ServiceName: serviceName,DeliveryMode:deliveryMode,
 		ExChange: &rabbitmq.ExchangeData{Name: exchangeName, Type: exchangeType, Durable:true},
 		OpCode:   opCode, Data: data, OpUid: opUid}, r.Context().LogId())
 	panicErr(err)

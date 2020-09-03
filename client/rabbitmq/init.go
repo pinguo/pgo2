@@ -41,6 +41,7 @@ type ExchangeData struct {
 
 // rabbit 发布结构
 type PublishData struct {
+	DeliveryMode uint8 // Transient (0 or 1)  or Persistent (2)
 	ServiceName string // 服务名
 	ExChange    *ExchangeData
 	OpCode      string      // 操作code 和queue绑定相关
