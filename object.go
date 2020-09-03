@@ -25,7 +25,7 @@ func (o *Object) GetObj(obj iface.IObject) iface.IObject {
 }
 
 // GetObjPool Get Object from pool
-// Deprecated:  Use GetObjBox instead.
+// Recommended:  Use GetObjBox instead.
 func (o *Object) GetObjPool(className string, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
 	return o.GetObjPoolCtx(o.Context(), className, funcName, params...)
 }
@@ -49,7 +49,7 @@ func (o *Object) GetObjCtx(ctx iface.IContext, obj iface.IObject) iface.IObject 
 }
 
 // GetObjPoolCtx Get Object from pool and new Context
-// Deprecated: Use GetObjBoxCtx instead.
+// Recommended: Use GetObjBoxCtx instead.
 func (o *Object) GetObjPoolCtx(ctx iface.IContext, className string, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
 	var obj iface.IObject
 	if funcName != nil {

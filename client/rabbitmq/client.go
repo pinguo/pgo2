@@ -144,6 +144,7 @@ StartPublish:
 				Body:        goBytes.Bytes(),
 				Headers:     amqp.Table{"logId": logId, "service": c.ServiceName(parameter.ServiceName), "opUid": parameter.OpUid},
 				Timestamp:   time.Now(),
+				DeliveryMode:parameter.DeliveryMode,
 			})
 
 		if err == nil {
