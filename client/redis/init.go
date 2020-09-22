@@ -3,8 +3,6 @@ package redis
 import "time"
 
 const (
-	AdapterClass = "@pgo/Client/Redis/Adapter"
-
 	defaultComponentId = "redis"
 	defaultServer      = "127.0.0.1:6379"
 	defaultPrefix      = "pgo2_"

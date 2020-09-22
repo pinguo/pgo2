@@ -15,14 +15,14 @@ type Float struct {
 
 func (f *Float) Min(v float64) *Float {
 	if !f.UseDft && f.Value < v {
-		panic(perror.New(http.StatusBadRequest, "%s is too small", f.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is too small", f.Name))
 	}
 	return f
 }
 
 func (f *Float) Max(v float64) *Float {
 	if !f.UseDft && f.Value > v {
-		panic(perror.New(http.StatusBadRequest, "%s is too large", f.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is too large", f.Name))
 	}
 	return f
 }

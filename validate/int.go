@@ -15,14 +15,14 @@ type Int struct {
 
 func (i *Int) Min(v int) *Int {
 	if !i.UseDft && i.Value < v {
-		panic(perror.New(http.StatusBadRequest, "%s is too small", i.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is too small", i.Name))
 	}
 	return i
 }
 
 func (i *Int) Max(v int) *Int {
 	if !i.UseDft && i.Value > v {
-		panic(perror.New(http.StatusBadRequest, "%s is too large", i.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is too large", i.Name))
 	}
 	return i
 }
@@ -37,7 +37,7 @@ func (i *Int) Enum(enums ...int) *Int {
 	}
 
 	if !i.UseDft && !found {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid", i.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid", i.Name))
 	}
 	return i
 }

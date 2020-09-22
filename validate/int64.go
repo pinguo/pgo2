@@ -15,14 +15,14 @@ type Int64 struct {
 
 func (i *Int64) Min(v int64) *Int64 {
 	if !i.UseDft && i.Value < v {
-		panic(perror.New(http.StatusBadRequest, "%s is too small", i.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is too small", i.Name))
 	}
 	return i
 }
 
 func (i *Int64) Max(v int64) *Int64 {
 	if !i.UseDft && i.Value > v {
-		panic(perror.New(http.StatusBadRequest, "%s is too large", i.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is too large", i.Name))
 	}
 	return i
 }
@@ -37,7 +37,7 @@ func (i *Int64) Enum(enums ...int64) *Int64 {
 	}
 
 	if !i.UseDft && !found {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid", i.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid", i.Name))
 	}
 	return i
 }

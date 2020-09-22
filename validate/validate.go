@@ -70,7 +70,7 @@ func Value(data interface{}, name string, dft ...interface{}) (interface{}, bool
 			value = dft[0]
 			useDft = true
 		} else {
-			panic(perror.New(http.StatusBadRequest, "%s is required", name))
+			panic(perror.NewWarn(http.StatusBadRequest, "%s is required", name))
 		}
 	} else if strValue, strOk := value.(string); strOk {
 		strValue = strings.Trim(strValue, " \r\n\t")
@@ -80,7 +80,7 @@ func Value(data interface{}, name string, dft ...interface{}) (interface{}, bool
 			value = dft[0]
 			useDft = true
 		} else {
-			panic(perror.New(http.StatusBadRequest, "%s can't be empty", name))
+			panic(perror.NewWarn(http.StatusBadRequest, "%s can't be empty", name))
 		}
 	}
 

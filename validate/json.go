@@ -16,7 +16,7 @@ type Json struct {
 
 func (j *Json) Has(key string) *Json {
 	if v := util.MapGet(j.Value, key); !j.UseDft && v == nil {
-		panic(perror.New(http.StatusBadRequest, "%s json field missing", j.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s json field missing", j.Name))
 	}
 	return j
 }

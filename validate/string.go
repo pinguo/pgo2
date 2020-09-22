@@ -28,21 +28,21 @@ type String struct {
 
 func (s *String) Min(v int) *String {
 	if !s.UseDft && utf8.RuneCountInString(s.Value) < v {
-		panic(perror.New(http.StatusBadRequest, "%s is too short", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is too short", s.Name))
 	}
 	return s
 }
 
 func (s *String) Max(v int) *String {
 	if !s.UseDft && utf8.RuneCountInString(s.Value) > v {
-		panic(perror.New(http.StatusBadRequest, "%s is too long", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is too long", s.Name))
 	}
 	return s
 }
 
 func (s *String) Len(v int) *String {
 	if !s.UseDft && utf8.RuneCountInString(s.Value) != v {
-		panic(perror.New(http.StatusBadRequest, "%s has invalid length", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s has invalid length", s.Name))
 	}
 	return s
 }
@@ -57,7 +57,7 @@ func (s *String) Enum(enums ...string) *String {
 	}
 
 	if !s.UseDft && !found {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid", s.Name))
 	}
 	return s
 }
@@ -71,7 +71,7 @@ func (s *String) RegExp(v interface{}) *String {
 	}
 
 	if !s.UseDft && !re.MatchString(s.Value) {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid", s.Name))
 	}
 
 	return s
@@ -80,14 +80,14 @@ func (s *String) RegExp(v interface{}) *String {
 func (s *String) Filter(f func(v, n string) string) *String {
 	defer func() {
 		if v := recover(); !s.UseDft && v != nil {
-			panic(perror.New(http.StatusBadRequest, "%s is invalid", s.Name))
+			panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid", s.Name))
 		}
 	}()
 
 	if v := f(s.Value, s.Name); len(v) > 0 {
 		s.Value = v
 	} else if !s.UseDft {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid", s.Name))
 	}
 
 	return s
@@ -113,7 +113,7 @@ func (s *String) Password() *String {
 	}
 
 	if !s.UseDft && (!length || !number || !letter || !special) {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid password", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid password", s.Name))
 	}
 
 	return s
@@ -121,7 +121,7 @@ func (s *String) Password() *String {
 
 func (s *String) Email() *String {
 	if !s.UseDft && !emailRe.MatchString(s.Value) {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid email", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid email", s.Name))
 	}
 
 	return s
@@ -129,7 +129,7 @@ func (s *String) Email() *String {
 
 func (s *String) Mobile() *String {
 	if !s.UseDft && !mobileRe.MatchString(s.Value) {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid mobile", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid mobile", s.Name))
 	}
 
 	return s
@@ -137,7 +137,7 @@ func (s *String) Mobile() *String {
 
 func (s *String) IPv4() *String {
 	if !s.UseDft && !ipv4Re.MatchString(s.Value) {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid ipv4", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid ipv4", s.Name))
 	}
 
 	return s
@@ -146,11 +146,11 @@ func (s *String) IPv4() *String {
 func (s *String) MongoId() *String {
 	if !s.UseDft {
 		if len(s.Value) != 24 {
-			panic(perror.New(http.StatusBadRequest, "%s is invalid MongoId", s.Name))
+			panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid MongoId", s.Name))
 		}
 		_, err := hex.DecodeString(s.Value)
 		if err != nil {
-			panic(perror.New(http.StatusBadRequest, "%s is invalid MongoId", s.Name))
+			panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid MongoId", s.Name))
 		}
 	}
 
@@ -190,7 +190,7 @@ func (s *String) Json() *Json {
 	validator := &Json{s.Name, s.UseDft, make(map[string]interface{})}
 	decoder := json.NewDecoder(strings.NewReader(s.Value))
 	if err := decoder.Decode(&validator.Value); !s.UseDft && err != nil {
-		panic(perror.New(http.StatusBadRequest, "%s is invalid json", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s is invalid json", s.Name))
 	}
 
 	return validator
@@ -209,21 +209,21 @@ type StringSlice struct {
 
 func (s *StringSlice) Min(v int) *StringSlice {
 	if !s.UseDft && len(s.Value) < v {
-		panic(perror.New(http.StatusBadRequest, "%s has too few elements", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s has too few elements", s.Name))
 	}
 	return s
 }
 
 func (s *StringSlice) Max(v int) *StringSlice {
 	if !s.UseDft && len(s.Value) > v {
-		panic(perror.New(http.StatusBadRequest, "%s has too many elements", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s has too many elements", s.Name))
 	}
 	return s
 }
 
 func (s *StringSlice) Len(v int) *StringSlice {
 	if !s.UseDft && len(s.Value) != v {
-		panic(perror.New(http.StatusBadRequest, "%s has invalid length", s.Name))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s has invalid length", s.Name))
 	}
 	return s
 }

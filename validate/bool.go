@@ -15,7 +15,7 @@ type Bool struct {
 
 func (b *Bool) Must(v bool) *Bool {
 	if !b.UseDft && b.Value != v {
-		panic(perror.New(http.StatusBadRequest, "%s must be %v", b.Name, v))
+		panic(perror.NewWarn(http.StatusBadRequest, "%s must be %v", b.Name, v))
 	}
 	return b
 }

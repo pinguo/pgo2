@@ -1,13 +1,13 @@
 package adapter
 
 import (
+	"errors"
 	"time"
 
 	"github.com/pinguo/pgo2"
 	"github.com/pinguo/pgo2/client/rabbitmq"
 	"github.com/pinguo/pgo2/iface"
 	"github.com/pinguo/pgo2/util"
-	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
 )
 
