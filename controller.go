@@ -61,32 +61,41 @@ func (c *Controller) AfterAction(action string) {
 // HandlePanic process unhandled action panic
 func (c *Controller) HandlePanic(v interface{}, debug bool) {
 	status := http.StatusInternalServerError
+	pErrorType := ""
+
+	recoverErr := func(message string) {
+		if err := recover(); err != nil {
+			c.Json(EmptyObject, status, message)
+			c.Context().Error("%s, trace[%s]", util.ToString(err), util.PanicTrace(TraceMaxDepth, false, debug))
+		}
+	}
 
 	switch e := v.(type) {
 	case *perror.Error:
 		status = e.Status()
-		defer func() {
-			if err := recover(); err != nil {
-				c.Json(EmptyObject, status, e.Message())
-				c.Context().Error("%s, trace[%s]", util.ToString(err), util.PanicTrace(TraceMaxDepth, false, debug))
-			}
-		}()
+		pErrorType = e.ErrType()
 
-		App().Router().ErrorController(c.Context(), status).(iface.IErrorController).Error(status, e.Message())
+		defer recoverErr(e.Message())
+
+		App().Router().ErrorController(c.Context()).(iface.IErrorController).Error(status, e.Message())
 	default:
-		defer func() {
-			if err := recover(); err != nil {
-				c.Json(EmptyObject, status)
-				c.Context().Error("%s, trace[%s]", util.ToString(err), util.PanicTrace(TraceMaxDepth, false, debug))
-			}
-		}()
+		defer recoverErr("")
 
 		App().Router().ErrorController(c.Context(), status).(iface.IErrorController).Error(status, "")
 	}
 
-	if status != http.StatusOK {
+	if status == http.StatusOK {
+		return
+	}
+
+	switch pErrorType {
+	case perror.ErrTypeWarn:
+		c.Context().Warn("%s, trace[%s]", util.ToString(v), util.PanicTrace(TraceMaxDepth, false, debug))
+	case perror.ErrTypeIgnore:
+	default:
 		c.Context().Error("%s, trace[%s]", util.ToString(v), util.PanicTrace(TraceMaxDepth, false, debug))
 	}
+
 }
 
 // Redirect output redirect response
