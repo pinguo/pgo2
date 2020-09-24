@@ -141,6 +141,7 @@ type IContext interface {
 	ProfileString() string
 	SetAccessLogFormat(v IAccessLogFormat)
 	SetEnableAccessLog(v bool)
+	SetProfileEnable(v bool)
 }
 
 type IObjPoolFunc func(obj IObject, params ...interface{}) IObject

@@ -9,15 +9,16 @@ import (
 )
 
 func NewProfiler() *Profiler {
-	return &Profiler{}
+	return &Profiler{ProfileEnable:true}
 }
 
 // Profiler
 type Profiler struct {
-	pushLog      []string
-	counting     map[string][2]int
-	profile      map[string][2]int
-	profileStack map[string]time.Time
+	pushLog       []string
+	counting      map[string][2]int
+	profile       map[string][2]int
+	profileStack  map[string]time.Time
+	ProfileEnable bool
 }
 
 func (p *Profiler) Reset() {
@@ -27,8 +28,17 @@ func (p *Profiler) Reset() {
 	p.profileStack = nil
 }
 
+// SetEnable  log switch
+func (p *Profiler) SetProfileEnable(v bool) {
+	p.ProfileEnable = v
+}
+
 // PushLog add push log, the push log string is key=Util.ToString(v)
 func (p *Profiler) PushLog(key string, v interface{}) {
+	if !p.ProfileEnable {
+		return
+	}
+
 	if p.pushLog == nil {
 		p.pushLog = make([]string, 0)
 	}
@@ -39,6 +49,10 @@ func (p *Profiler) PushLog(key string, v interface{}) {
 
 // Counting add counting info, the counting string is key=sum(hit)/sum(total)
 func (p *Profiler) Counting(key string, hit, total int) {
+	if !p.ProfileEnable {
+		return
+	}
+
 	if p.counting == nil {
 		p.counting = make(map[string][2]int)
 	}
@@ -59,6 +73,10 @@ func (p *Profiler) Counting(key string, hit, total int) {
 
 // ProfileStart mark start of profile
 func (p *Profiler) ProfileStart(key string) {
+	if !p.ProfileEnable {
+		return
+	}
+
 	if p.profileStack == nil {
 		p.profileStack = make(map[string]time.Time)
 	}
@@ -68,6 +86,10 @@ func (p *Profiler) ProfileStart(key string) {
 
 // ProfileStop mark stop of profile
 func (p *Profiler) ProfileStop(key string) {
+	if !p.ProfileEnable {
+		return
+	}
+
 	if startTime, ok := p.profileStack[key]; ok {
 		delete(p.profileStack, key)
 		p.ProfileAdd(key, time.Now().Sub(startTime))
@@ -76,6 +98,10 @@ func (p *Profiler) ProfileStop(key string) {
 
 // ProfileAdd add profile info, the profile string is key=sum(elapse)/count
 func (p *Profiler) ProfileAdd(key string, elapse time.Duration) {
+	if !p.ProfileEnable {
+		return
+	}
+
 	if p.profile == nil {
 		p.profile = make(map[string][2]int)
 	}

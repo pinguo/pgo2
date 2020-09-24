@@ -52,6 +52,7 @@ func (c *Context) SetAccessLogFormat(v iface.IAccessLogFormat) {
 
 func (c *Context) SetEnableAccessLog(v bool) {
 	c.enableAccessLog = v
+	c.SetProfileEnable(v)
 }
 
 
@@ -61,6 +62,7 @@ func (c *Context) HttpRW(debug, enableAccessLog bool, r *http.Request, w http.Re
 	c.input = r
 	c.output = &c.response
 	c.response.reset(w)
+	c.SetProfileEnable(enableAccessLog)
 }
 
 func (c *Context) reset() {
