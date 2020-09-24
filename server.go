@@ -268,7 +268,9 @@ func (s *Server) Serve() {
 
 // ServeCMD serve command request
 func (s *Server) ServeCMD() {
-	ctx := Context{debug: s.debug, enableAccessLog: s.enableAccessLog, accessLogFormat:s.accessLogFormat}
+	ctx := Context{debug: s.debug}
+	ctx.SetEnableAccessLog(s.enableAccessLog)
+	ctx.SetAccessLogFormat(s.accessLogFormat)
 	// only apply the last plugin for command
 	ctx.Process(s.plugins[len(s.plugins)-1:])
 }
