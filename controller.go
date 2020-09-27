@@ -249,3 +249,9 @@ func (c *Controller) View(view string, data interface{}, contentTypes ...string)
 func (c *Controller) Error(status int, message string) {
 	c.Json(EmptyObject, status, message)
 }
+
+func (c *Controller) SetActionDesc(message string) {
+	if handler, has := App().Router().cmdHandlers[c.Context().Path()]; has {
+		handler.SetDesc(message)
+	}
+}

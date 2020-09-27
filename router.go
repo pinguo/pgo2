@@ -56,6 +56,11 @@ type Handler struct {
 	cId   string
 	aName string
 	aId   int
+	desc  string
+}
+
+func (h *Handler) SetDesc(v string){
+	h.desc = v
 }
 
 type Router struct {
@@ -80,6 +85,7 @@ func (r *Router) SetHttpStatus(v bool) {
 func (r *Router) SetErrorController(v string) {
 	r.errorController = v
 }
+
 
 // SetRules set rule list, format: `^/api/user/(\d+)$ => /api/user`
 func (r *Router) SetRules(rules []interface{}) {
