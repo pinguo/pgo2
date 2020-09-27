@@ -165,7 +165,7 @@ func cmdList(path string) {
 	showParams := func(path string) string {
 		ctx := &Context{}
 		rv, _, _ := App().Router().CreateController(path, ctx)
-		if rv.IsZero() {
+		if !rv.IsValid() {
 			return ""
 		}
 
