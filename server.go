@@ -241,14 +241,15 @@ func (s *Server) Serve() {
 	// add server plugins
 	s.addServerPlugin()
 
-	if App().cmdList() {
-		cmdList()
-		return
-	}
-
 	// process command request
 	if App().Mode() == ModeCmd {
 		s.ServeCMD()
+		return
+	}
+
+	//
+	if App().help() {
+		cmdList("")
 		return
 	}
 
@@ -301,6 +302,10 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
 	// get new controller bind to this route
 	rv, action, params := App().Router().CreateController(path, ctx)
 	if !rv.IsValid() {
+		if s.help(rv,action,"") {
+			return
+		}
+
 		func() {
 			defer func() {
 				if err := recover(); err != nil {
@@ -312,11 +317,18 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
 
 			App().Router().ErrorController(ctx, http.StatusNotFound).(iface.IErrorController).Error(http.StatusNotFound, "route not found")
 		}()
+
+		return
+	}
+
+	if s.help(rv,action,ctx.Path()) {
 		return
 	}
 
 	actionId := ctx.ActionId()
 	controller := rv.Interface().(iface.IController)
+
+
 
 	// fill empty string for missing param
 	numIn := action.Type().NumIn()
@@ -345,6 +357,18 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
 	controller.BeforeAction(actionId)
 	// call action method
 	action.Call(callParams)
+}
+
+func (s *Server) help(rv, action reflect.Value,path string) bool{
+	if !App().help() {
+		return false
+	}
+
+	cmdList(path)
+
+	return true
+
+
 }
 
 func (s *Server) handleHttp(wg *sync.WaitGroup) {

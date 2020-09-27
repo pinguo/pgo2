@@ -16,11 +16,12 @@ import (
 	"github.com/pinguo/pgo2/util"
 )
 
+
 func init() {
-	_ = flag.String("env", "", "set running env (optional), eg. --env=online")
-	_ = flag.String("cmd", "", "set running cmd (optional), eg. --cmd=/foo/bar")
-	_ = flag.String("base", "", "set base path (optional), eg. --base=/base/path")
-	_ = flag.String("cmdList", "", "Displays a list of CMD controllers used (optional), eg. --cmdList")
+	// 预先声明系统参数
+	for _,vFlag:=range globalParams{
+		_ = flag.String(vFlag.Name, vFlag.DefValue, vFlag.Usage)
+	}
 }
 
 func NewApp() *Application {
@@ -115,8 +116,8 @@ func (app *Application) Arg(name string) string {
 	return ""
 }
 
-func (app *Application) cmdList() bool {
-	return app.HasArg("cmdList")
+func (app *Application) help() bool {
+	return app.HasArg("help")
 }
 
 func (app *Application) Init(osArgs []string) {
@@ -128,7 +129,7 @@ func (app *Application) Init(osArgs []string) {
 	}
 
 	// overwrite running mode
-	if cmd, has := args["cmd"]; has && len(cmd) > 0 {
+	if _, has := args["cmd"]; has  {
 		app.mode = ModeCmd
 	}
 

@@ -174,9 +174,9 @@ func (r *Router) firstToLower(s string) string {
 }
 
 func (r *Router) setHandler(cmdType, uri, cPath, cId, aName string, aNum int) {
-	uri = strings.ToLower(uri)
 	switch cmdType {
 	case ControllerWebPkg:
+		uri = strings.ToLower(uri)
 		r.webHandlers[uri] = &Handler{uri: uri, cPath: cPath, cId: cId, aName: aName, aId: aNum}
 	case ControllerCmdPkg:
 		r.cmdHandlers[uri] = &Handler{uri: uri, cPath: cPath, cId: cId, aName: aName, aId: aNum}
@@ -242,8 +242,9 @@ func (r *Router) Resolve(path, method string) (handler *Handler, params []string
 }
 
 func (r *Router) Handler(path string) *Handler {
-	path = strings.ToLower(path)
+
 	if ModeWeb == App().mode {
+		path = strings.ToLower(path)
 		if handler, ok := r.webHandlers[path]; ok {
 			return handler
 		}

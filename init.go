@@ -1,7 +1,9 @@
 package pgo2
 
 import (
+	"flag"
 	"fmt"
+	"reflect"
 	"regexp"
 	"strings"
 	"time"
@@ -11,27 +13,28 @@ import (
 )
 
 const (
-	ModeWeb               = "web"
-	ModeCmd               = "cmd"
-	DefaultEnv            = "develop"
-	DefaultControllerPath = "index"
-	DefaultActionPath     = "index"
-	DefaultHttpAddr       = "0.0.0.0:8000"
-	DefaultTimeout        = 30 * time.Second
-	DefaultHeaderBytes    = 1 << 20
-	ControllerWebPkg      = "controller"
-	ControllerCmdPkg      = "command"
-	ControllerWebType     = "Controller"
-	ControllerCmdType     = "Command"
-	ConstructMethod       = "Construct"
-	PrepareMethod         = "Prepare"
-	VendorPrefix          = "vendor/"
-	VendorLength          = 7
-	ActionPrefix          = "Action"
-	ActionLength          = 6
-	TraceMaxDepth         = 10
-	MaxPlugins            = 32
-	MaxCacheObjects       = 100
+	ModeWeb                = "web"
+	ModeCmd                = "cmd"
+	DefaultEnv             = "develop"
+	DefaultControllerPath  = "index"
+	DefaultActionPath      = "index"
+	DefaultHttpAddr        = "0.0.0.0:8000"
+	DefaultTimeout         = 30 * time.Second
+	DefaultHeaderBytes     = 1 << 20
+	ControllerWebPkg       = "controller"
+	ControllerCmdPkg       = "command"
+	ControllerWebType      = "Controller"
+	ControllerCmdType      = "Command"
+	ConstructMethod        = "Construct"
+	PrepareMethod          = "Prepare"
+	VendorPrefix           = "vendor/"
+	VendorLength           = 7
+	ActionPrefix           = "Action"
+	ActionLength           = 6
+	TraceMaxDepth          = 10
+	MaxPlugins             = 32
+	MaxCacheObjects        = 100
+	ParamsFlagMethodPrefix = "ParamsFlag"
 )
 
 var (
@@ -42,6 +45,12 @@ var (
 	logger         *logs.Logger
 	EmptyObject    struct{}
 	restFulActions = map[string]int{"GET": 1, "POST": 1, "PUT": 1, "DELETE": 1, "PATCH": 1, "OPTIONS": 1, "HEAD": 1}
+	globalParams   = map[string]*flag.Flag{
+		"env":  {Name: "env", Usage: "set running env (optional), eg. --env=online"},
+		"cmd":  {Name: "cmd", Usage: "set running cmd (optional), eg. --cmd=/foo/bar"},
+		"base": {Name: "base", Usage: "set base path (optional), eg. --base=/base/path"},
+		"help": {Name: "help", Usage: "Displays a list of CMD controllers used (optional), eg. --help=1"},
+	}
 )
 
 func App(newApp ...bool) *Application {
@@ -60,7 +69,7 @@ func Run() {
 	App().Router().InitHandlers()
 	// Check config path
 	if err := App().Config().CheckPath(); err != nil {
-		cmdList()
+		cmdList("")
 		panic(err)
 	}
 	// Listen for server or start CMD
@@ -105,17 +114,82 @@ func GetAlias(alias string) string {
 	return ""
 }
 
-func cmdList() {
+func cmdList(path string) {
 	list := App().Router().CmdHandlers()
-	fmt.Println("System parameters:")
-	fmt.Println("set running env (requested), eg. --env=online")
-	fmt.Println("set running cmd (optional), eg. --cmd=/foo/bar")
-	fmt.Println("set base path (optional), eg. --base=/base/path")
-	fmt.Println("Displays a list of CMD controllers used (optional), eg. --cmdList")
-	fmt.Println("")
+
+	flagParams := func(global bool) string {
+		retStr := ""
+		flag.VisitAll(func(vFlag *flag.Flag) {
+			_, hasGP := globalParams[vFlag.Name]
+			if global && !hasGP {
+				return
+			}
+
+			if !global && hasGP {
+				return
+			}
+			s := fmt.Sprintf("    \t  --%s", vFlag.Name) // Two spaces before -; see next two comments.
+			name, usage := flag.UnquoteUsage(vFlag)
+			if len(name) > 0 {
+				s += " " + name
+			}
+
+			s += "    \t"
+			s += strings.ReplaceAll(usage, "\n", "\n    \t")
+			isZeroValue := func(vFlag *flag.Flag, value string) bool {
+				// Build a zero value of the flag's Value type, and see if the
+				// result of calling its String method equals the value passed in.
+				// This works unless the Value type is itself an interface type.
+				typ := reflect.TypeOf(vFlag.Value)
+				var z reflect.Value
+				if typ.Kind() == reflect.Ptr {
+					z = reflect.New(typ.Elem())
+				} else {
+					z = reflect.Zero(typ)
+				}
+				return value == z.Interface().(flag.Value).String()
+			}
+			if !isZeroValue(vFlag, vFlag.DefValue) {
+				s += fmt.Sprintf(" (default %v)", vFlag.DefValue)
+			}
+			retStr += s + "\n"
+
+		})
+
+		return retStr
+	}
+
+	fmt.Println("Global parameters:\n " + flagParams(true))
+
 	fmt.Println("The path list:")
+	showParams := func(path string) string {
+		ctx := &Context{}
+		rv, _, _ := App().Router().CreateController(path, ctx)
+		if rv.IsZero() {
+			return ""
+		}
+
+		name := ParamsFlagMethodPrefix + ctx.ActionId()
+		methodV := rv.MethodByName(name)
+		if !methodV.IsValid() {
+			return ""
+		}
+		methodV.Call(nil)
+		return flagParams(false)
+	}
+
 	for uri, _ := range list {
+		if path != "" && path != uri {
+			continue
+		}
 		fmt.Println("  --cmd=" + uri)
+
+		paramsStr:= showParams(uri)
+		if paramsStr != "" {
+			fmt.Println(paramsStr)
+		}
+
+
 	}
 	fmt.Println("")
 	fmt.Println("")

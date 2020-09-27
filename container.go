@@ -137,7 +137,7 @@ func (c *Container) Get(name string, ctx iface.IContext, params ...interface{}) 
 		obj.SetContext(ctx)
 	}
 
-	// call Init()
+	// call Prepare()
 	if item.pmIdx != -1 {
 		if im := rv.Method(item.pmIdx); im.IsValid() {
 			in := make([]reflect.Value, len(params))
