@@ -164,6 +164,8 @@ func cmdList(path string) {
 	fmt.Println("The path list:")
 	showParams := func(path string) string {
 		ctx := &Context{}
+		ctx.setPath(path)
+
 		rv, _, _ := App().Router().CreateController(path, ctx)
 		if !rv.IsValid() {
 			return ""
@@ -178,13 +180,20 @@ func cmdList(path string) {
 		return flagParams(false)
 	}
 
-	for uri, _ := range list {
+	if path != "" {
+		path = util.CleanPath(path)
+	}
+
+	for uri, v := range list {
+		// fmt.Println("path", path,"uri",uri)
+
 		if path != "" && path != uri {
 			continue
 		}
-		fmt.Println("  --cmd=" + uri)
+
 
 		paramsStr:= showParams(uri)
+		fmt.Println("  --cmd=" + uri + " \t" + v.desc)
 		if paramsStr != "" {
 			fmt.Println(paramsStr)
 		}

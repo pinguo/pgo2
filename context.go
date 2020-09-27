@@ -38,6 +38,8 @@ type Context struct {
 	index        int
 	objects      []objectItem
 
+	path string
+
 	accessLogFormat iface.IAccessLogFormat
 
 	queryCache url.Values
@@ -566,6 +568,9 @@ func (c *Context) HeaderAll() map[string]string {
 
 // Path get request path
 func (c *Context) Path() string {
+	if c.path != "" {
+		return c.path
+	}
 	// for web
 	if c.input != nil {
 		return c.input.URL.Path
@@ -577,6 +582,10 @@ func (c *Context) Path() string {
 	}
 
 	return "/"
+}
+
+func (c *Context) setPath(v string){
+	c.path = v
 }
 
 // ClientIp get client ip
