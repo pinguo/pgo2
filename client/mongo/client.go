@@ -17,6 +17,7 @@ import (
 //          connectTimeout: "1s"
 //          readTimeout: "10s"
 //          writeTimeout: "10s"
+//          mode: 1/2
 //
 // see Dial() for query options, default:
 // replicaSet=
@@ -29,6 +30,7 @@ import (
 // j=false
 // wtimeoutMS=10000
 // readPreference=secondaryPreferred
+
 func New(config map[string]interface{}) (interface{}, error) {
 	c := &Client{}
 	c.dsn = defaultDsn
@@ -53,6 +55,7 @@ type Client struct {
 	connectTimeout time.Duration
 	readTimeout    time.Duration
 	writeTimeout   time.Duration
+	mode int
 }
 
 func (c *Client) Init() error {
@@ -84,9 +87,18 @@ func (c *Client) Init() error {
 		return fmt.Errorf(errDialFailed, c.dsn, e.Error())
 	}
 
-	c.session.SetMode(mgo.Monotonic, true)
+	//c.session.SetMode(mgo.Monotonic, true)
+	if c.mode == 0 {
+		c.mode = 1
+	}
+
+	c.session.SetMode(mgo.Mode(c.mode), true)
 
 	return nil
+}
+
+func (c *Client) SetMode(mode int) {
+	c.mode = mode
 }
 
 func (c *Client) SetDsn(dsn string) {
