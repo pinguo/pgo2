@@ -59,7 +59,7 @@ type Handler struct {
 	desc  string
 }
 
-func (h *Handler) SetDesc(v string){
+func (h *Handler) SetDesc(v string) {
 	h.desc = v
 }
 
@@ -85,7 +85,6 @@ func (r *Router) SetHttpStatus(v bool) {
 func (r *Router) SetErrorController(v string) {
 	r.errorController = v
 }
-
 
 // SetRules set rule list, format: `^/api/user/(\d+)$ => /api/user`
 func (r *Router) SetRules(rules []interface{}) {
@@ -254,11 +253,21 @@ func (r *Router) Handler(path string) *Handler {
 		if handler, ok := r.webHandlers[path]; ok {
 			return handler
 		}
-	} else {
-		if handler, ok := r.cmdHandlers[path]; ok {
+
+		return nil
+	}
+
+	if handler, ok := r.cmdHandlers[path]; ok {
+		return handler
+	}
+
+	path = strings.ToLower(path)
+	for kPath, handler := range r.cmdHandlers {
+		if strings.ToLower(kPath) == path {
 			return handler
 		}
 	}
+
 	return nil
 }
 

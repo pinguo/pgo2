@@ -49,7 +49,7 @@ var (
 		"env":  {Name: "env", Usage: "set running env (optional), eg. --env=online"},
 		"cmd":  {Name: "cmd", Usage: "set running cmd (optional), eg. --cmd=/foo/bar"},
 		"base": {Name: "base", Usage: "set base path (optional), eg. --base=/base/path"},
-		"help": {Name: "help", Usage: "Displays a list of CMD controllers used (optional), eg. --help=1"},
+		"help": {Name: "help",DefValue:"1", Usage: "Displays a list of CMD controllers used (optional), eg. --help=1"},
 	}
 )
 
@@ -176,21 +176,21 @@ func cmdList(path string) {
 		if !methodV.IsValid() {
 			return ""
 		}
+
 		methodV.Call(nil)
 		return flagParams(false)
 	}
 
 	if path != "" {
-		path = util.CleanPath(path)
+		path = strings.ToLower(util.CleanPath(path))
 	}
 
 	for uri, v := range list {
 		// fmt.Println("path", path,"uri",uri)
 
-		if path != "" && path != uri {
+		if path != "" && path != strings.ToLower(uri) {
 			continue
 		}
-
 
 		paramsStr:= showParams(uri)
 		fmt.Println("  --cmd=" + uri + " \t" + v.desc)
