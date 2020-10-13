@@ -158,16 +158,16 @@ func changeData(mm map[string]interface{}) {
 
 // 强制转换map为[]string
 // {"1":"ss"} => ["ss"]
-// 转换后的slice顺序不保证
 func MapToSliceString(sI interface{}) []string {
 	s ,ok:=sI.(map[string]interface{})
 	if ok == false{
 		panic(fmt.Sprintf("MapToSliceString: invalid type: %T", sI))
 	}
 
-	sliceData := make([]string, 0, len(s))
-	for _,v:=range s{
-		sliceData = append(sliceData,ToString(v))
+	sliceData := make([]string, len(s))
+	for k,v:=range s{
+		intK := ToInt(k)
+		sliceData[intK] = ToString(v)
 	}
 
 	return sliceData
@@ -175,19 +175,19 @@ func MapToSliceString(sI interface{}) []string {
 
 // 强制转换map为[]int
 // {"1":1} => [1]
-// 转换后的slice顺序不保证
 func MapToSliceInt(sI interface{}) []int {
 	s ,ok:=sI.(map[string]interface{})
 	if ok == false{
 		panic(fmt.Sprintf("MapToSliceString: invalid type: %T", sI))
 	}
 
-	sliceData := make([]int, 0, len(s))
-	for _,v:=range s{
+	sliceData := make([]int, len(s))
+	for k,v:=range s{
 		if vInt,ok:= v.(int);ok == false{
 			panic(fmt.Sprintf("MapToSliceInt: invalid type: %T", v))
 		}else{
-			sliceData = append(sliceData,vInt)
+			intK := ToInt(k)
+			sliceData[intK] = vInt
 		}
 	}
 
