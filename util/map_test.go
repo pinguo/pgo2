@@ -60,12 +60,16 @@ func TestParamsToMapSlice(t *testing.T) {
 			"advs[1][defaultLanguage]":2,
 			"advs[0][appVersionData][0]":"9.0.0",
 			"advs[0][appVersionData][1]":"9.0.1",
-			"aaa":"aaa",
 		}
 
 		ret :=ParamsToMapSlice(data)
-		if _,ok:=ret["advs"].([]interface{});ok==false{
+		if advs,ok:=ret["advs"].([]interface{});ok==false{
 			t.Fatal(`_,ok:=ret["advs"].([]interface{});ok==false`)
+		}else{
+
+			if advsV,ok:=advs[0].(map[string]interface{});ok==false || advsV["advId"]!="advid0"{
+				t.Fatal(`advsV,ok:=advs[0].(map[string]string);ok==false || advsV["advId"]!="advid0"`)
+			}
 		}
 	})
 
