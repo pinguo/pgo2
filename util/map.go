@@ -103,12 +103,8 @@ func MapSet(m map[string]interface{}, key string, val interface{}, dftSplit ...s
 	}
 }
 
-
-
-
 // 转换map为map/slice {"[aaa][0][bbb]":"sss"} => {"aaa":[{"bbb":"sss"}]}
 // 主要是转换map 中key为数字的map 转换为slice
-// 转换后的slice顺序不保证
 func ParamsToMapSlice(m map[string]interface{}) map[string]interface{} {
 	ks := make([]string, 0, len(m))
 	mm := make(map[string]interface{})
@@ -145,9 +141,10 @@ func changeData(mm map[string]interface{}) {
 			continue
 		}
 
-		sliceData := make([]interface{}, 0, len(vv))
-		for _, vvv := range vv {
-			sliceData = append(sliceData, vvv)
+		sliceData := make([]interface{},len(vv))
+		for kkk, vvv := range vv {
+			intKkk := ToInt(kkk)
+			sliceData[intKkk] = vvv
 		}
 		data[k] = sliceData
 		for _, v4 := range sliceData {
