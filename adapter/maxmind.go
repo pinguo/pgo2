@@ -1,11 +1,14 @@
 package adapter
 
 import (
+	"strings"
+
 	"github.com/pinguo/pgo2"
 	"github.com/pinguo/pgo2/client/maxmind"
 	"github.com/pinguo/pgo2/iface"
 )
 
+var ipRe = strings.NewReplacer("[","","]","")
 var MaxMindClass string
 func init() {
 	MaxMindClass = pgo2.App().Container().Bind(&MaxMind{})
@@ -57,6 +60,7 @@ func (m *MaxMind) GeoByIp(ip string, args ...interface{}) *maxmind.Geo {
 	profile := "GeoByIp:" + ip
 	m.Context().ProfileStart(profile)
 	defer m.Context().ProfileStop(profile)
+	ip = ipRe.Replace(ip)
 	geo, err := m.client.GeoByIp(ip, args...)
 
 	if err != nil {

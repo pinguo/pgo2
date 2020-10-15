@@ -468,7 +468,7 @@ func (s *Server) checkListen(addr string) {
 	mapIp := map[string][]string{
 		"127.0.0.1": {"0.0.0.0", "[::1]"},
 		"localhost": {"0.0.0.0", "[::1]"},
-		"[::1]":     {"[::]", "127.0.0.1", "localhost"},
+		"[::1]":     {"[::]", "127.0.0.1"},
 		"0.0.0.0":   {"127.0.0.1", "[::1]"},
 		"":          {"127.0.0.1", "[::1]"},
 		"[::]":      {"[::1]", "127.0.0.1"},
@@ -477,11 +477,12 @@ func (s *Server) checkListen(addr string) {
 
 	newIps := mapIp[oriIp]
 	if len(newIps) == 0 {
-		newIps = []string{"0.0.0.0","[::]", "[::1]", "127.0.0.1", "localhost"}
+		newIps = []string{"[::1]", "127.0.0.1","0.0.0.0","[::]"}
 	}
 
 	for _, newIp := range newIps {
 		checkAddr := fmt.Sprintf("%s:%d", newIp, tcpAddr.Port)
+		fmt.Println("checkAddr",checkAddr)
 		if listener, err := net.Listen(network, checkAddr); err != nil {
 			errMsg := err.Error()
 			errMsg = strings.Replace(errMsg, newIp, oriIp, 1)
