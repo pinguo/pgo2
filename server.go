@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -11,6 +12,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"syscall"
@@ -35,7 +37,6 @@ type ServerConfig struct {
 	enableAccessLog bool
 	pluginNames     []string
 	maxPostBodySize int64 // max post body size
-
 }
 
 // Server the server component, configuration:
@@ -52,6 +53,7 @@ type ServerConfig struct {
 //     enableAccessLog: true
 //     maxPostBodySize: 1048576
 //     debug:true
+//     disableCheckListen: true
 func NewServer(config map[string]interface{}) *Server {
 	server := &Server{
 		maxHeaderBytes:  DefaultHeaderBytes,
@@ -89,8 +91,10 @@ type Server struct {
 	servers         []*http.Server  // http server list
 	pool            sync.Pool       // Context pool
 	maxPostBodySize int64           // max post body size
-	debug           bool            // debug=true not recover panic
+	debug           bool            // debug=true not recover panic ,Output more stack information
 	accessLogFormat iface.IAccessLogFormat
+
+	disableCheckListen bool // Close the check listener port
 }
 
 // SetHttpAddr set http addr, if both httpAddr and httpsAddr
@@ -100,7 +104,7 @@ func (s *Server) SetHttpAddr(addr string) {
 }
 
 // SetAccessLogFormat set accessLogFormat
-func (s *Server) SetAccessLogFormat(v iface.IAccessLogFormat){
+func (s *Server) SetAccessLogFormat(v iface.IAccessLogFormat) {
 	s.accessLogFormat = v
 }
 
@@ -190,6 +194,11 @@ func (s *Server) SetPlugins(v []interface{}) {
 // AddPlugins add plugin
 func (s *Server) AddPlugin(v iface.IPlugin) {
 	s.plugins = append(s.plugins, v)
+}
+
+// SetDisableCheckListen Disable check listen port
+func (s *Server) SetDisableCheckListen(v bool){
+	s.disableCheckListen = v
 }
 
 // ServerStats server stats
@@ -302,7 +311,7 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
 	// get new controller bind to this route
 	rv, action, params := App().Router().CreateController(path, ctx)
 	if !rv.IsValid() {
-		if s.help(rv,action,"") {
+		if s.help(rv, action, "") {
 			return
 		}
 
@@ -321,14 +330,12 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
 		return
 	}
 
-	if s.help(rv,action,ctx.Path()) {
+	if s.help(rv, action, ctx.Path()) {
 		return
 	}
 
 	actionId := ctx.ActionId()
 	controller := rv.Interface().(iface.IController)
-
-
 
 	// fill empty string for missing param
 	numIn := action.Type().NumIn()
@@ -359,7 +366,7 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
 	action.Call(callParams)
 }
 
-func (s *Server) help(rv, action reflect.Value,path string) bool{
+func (s *Server) help(rv, action reflect.Value, path string) bool {
 	if !App().help() {
 		return false
 	}
@@ -368,13 +375,14 @@ func (s *Server) help(rv, action reflect.Value,path string) bool{
 
 	return true
 
-
 }
 
 func (s *Server) handleHttp(wg *sync.WaitGroup) {
 	if s.httpAddr == "" {
 		return
 	}
+
+	s.checkListen(s.httpAddr)
 
 	svr := s.newHttpServer(s.httpAddr)
 	s.servers = append(s.servers, svr)
@@ -396,6 +404,8 @@ func (s *Server) handleHttps(wg *sync.WaitGroup) {
 		panic("https no crtFile or keyFile configured")
 	}
 
+	s.checkListen(s.httpsAddr)
+
 	svr := s.newHttpServer(s.httpsAddr)
 	s.servers = append(s.servers, svr)
 	wg.Add(1)
@@ -413,6 +423,8 @@ func (s *Server) handleDebug(wg *sync.WaitGroup) {
 	if s.debugAddr == "" {
 		return
 	}
+
+	s.checkListen(s.debugAddr)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK"))
@@ -436,6 +448,50 @@ func (s *Server) handleDebug(wg *sync.WaitGroup) {
 			panic("ListenAndServe failed, " + err.Error())
 		}
 	}()
+}
+
+// checkListen check listen port
+func (s *Server) checkListen(addr string) {
+	if s.disableCheckListen{
+		return
+	}
+
+	network := "tcp"
+	tcpAddr, err := net.ResolveTCPAddr(network, addr);
+	if err != nil {
+		panic("ResolveTCPAddr err, " + err.Error())
+	}
+
+	oriIp := strings.Replace(addr, fmt.Sprintf(":%d", tcpAddr.Port), "", 1)
+	oriIp = strings.ToLower(oriIp)
+
+	mapIp := map[string][]string{
+		"127.0.0.1": {"0.0.0.0", "[::1]"},
+		"localhost": {"0.0.0.0", "[::1]"},
+		"[::1]":     {"[::]", "127.0.0.1"},
+		"0.0.0.0":   {"127.0.0.1", "[::1]"},
+		"":          {"127.0.0.1", "[::1]"},
+		"[::]":      {"[::1]", "127.0.0.1"},
+		"[::0]":     {"[::1]", "127.0.0.1"},
+	}
+
+	newIps := mapIp[oriIp]
+	if len(newIps) == 0 {
+		newIps = []string{"[::1]", "127.0.0.1","0.0.0.0","[::]"}
+	}
+
+	for _, newIp := range newIps {
+		checkAddr := fmt.Sprintf("%s:%d", newIp, tcpAddr.Port)
+		fmt.Println("checkAddr",checkAddr)
+		if listener, err := net.Listen(network, checkAddr); err != nil {
+			errMsg := err.Error()
+			errMsg = strings.Replace(errMsg, newIp, oriIp, 1)
+			panic("checkListen,ip " + oriIp + ", map ip " + newIp + ",err:" + errMsg)
+		} else {
+			listener.Close()
+		}
+	}
+
 }
 
 func (s *Server) handleSignal(wg *sync.WaitGroup) {
