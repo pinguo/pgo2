@@ -197,7 +197,7 @@ func (s *Server) AddPlugin(v iface.IPlugin) {
 }
 
 // SetDisableCheckListen Disable check listen port
-func (s *Server) SetDisableCheckListen(v bool){
+func (s *Server) SetDisableCheckListen(v bool) {
 	s.disableCheckListen = v
 }
 
@@ -452,7 +452,7 @@ func (s *Server) handleDebug(wg *sync.WaitGroup) {
 
 // checkListen check listen port
 func (s *Server) checkListen(addr string) {
-	if s.disableCheckListen{
+	if s.disableCheckListen {
 		return
 	}
 
@@ -477,15 +477,18 @@ func (s *Server) checkListen(addr string) {
 
 	newIps := mapIp[oriIp]
 	if len(newIps) == 0 {
-		newIps = []string{"[::1]", "127.0.0.1","0.0.0.0","[::]"}
+		newIps = []string{"[::1]", "127.0.0.1", "0.0.0.0", "[::]"}
 	}
 
 	for _, newIp := range newIps {
 		checkAddr := fmt.Sprintf("%s:%d", newIp, tcpAddr.Port)
 		if listener, err := net.Listen(network, checkAddr); err != nil {
 			errMsg := err.Error()
-			errMsg = strings.Replace(errMsg, newIp, oriIp, 1)
-			panic("checkListen,ip " + oriIp + ", map ip " + newIp + ",err:" + errMsg)
+			if strings.Index(errMsg, "address already in use") > 0 {
+				errMsg = strings.Replace(errMsg, newIp, oriIp, 1)
+				panic("checkListen,ip " + oriIp + ", map ip " + newIp + ",err:" + errMsg)
+			}
+
 		} else {
 			listener.Close()
 		}
