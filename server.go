@@ -482,7 +482,6 @@ func (s *Server) checkListen(addr string) {
 
 	for _, newIp := range newIps {
 		checkAddr := fmt.Sprintf("%s:%d", newIp, tcpAddr.Port)
-		fmt.Println("checkAddr",checkAddr)
 		if listener, err := net.Listen(network, checkAddr); err != nil {
 			errMsg := err.Error()
 			errMsg = strings.Replace(errMsg, newIp, oriIp, 1)
