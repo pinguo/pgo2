@@ -250,8 +250,8 @@ func (c *Controller) Error(status int, message string) {
 	c.Json(EmptyObject, status, message)
 }
 
+// SetActionDesc
+// Deprecated: Delete the next version directly
 func (c *Controller) SetActionDesc(message string) {
-	if handler, has := App().Router().cmdHandlers[c.Context().Path()]; has {
-		handler.SetDesc(message)
-	}
+
 }

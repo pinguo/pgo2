@@ -199,6 +199,11 @@ func (app *Application) Mode() string {
 	return app.mode
 }
 
+// CmdMode
+func (app *Application) CmdMode() bool {
+	return app.mode == ModeCmd
+}
+
 // Env  running env
 func (app *Application) Env() string {
 	return app.env

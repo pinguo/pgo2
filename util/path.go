@@ -5,6 +5,8 @@
 
 package util
 
+import "os"
+
 // CleanPath is the URL version of path.Clean, it returns a canonical URL path
 // for p, eliminating . and .. elements.
 //
@@ -120,4 +122,16 @@ func bufApp(buf *[]byte, s string, w int, c byte) {
 		copy(*buf, s[:w])
 	}
 	(*buf)[w] = c
+}
+
+// Exist
+func Exist(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }

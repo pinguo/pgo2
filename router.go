@@ -56,11 +56,6 @@ type Handler struct {
 	cId   string
 	aName string
 	aId   int
-	desc  string
-}
-
-func (h *Handler) SetDesc(v string) {
-	h.desc = v
 }
 
 type Router struct {
