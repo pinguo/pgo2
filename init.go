@@ -49,7 +49,7 @@ var (
 		"env":  {Name: "env", Usage: "set running env (optional), eg. --env=online"},
 		"cmd":  {Name: "cmd", Usage: "set running cmd (optional), eg. --cmd=/foo/bar"},
 		"base": {Name: "base", Usage: "set base path (optional), eg. --base=/base/path"},
-		"help": {Name: "help",DefValue:"1", Usage: "Displays a list of CMD controllers used (optional), eg. --help=1"},
+		"help": {Name: "help", Usage: "Displays a list of CMD controllers used (optional), eg. --help=1"},
 	}
 )
 
@@ -115,7 +115,23 @@ func GetAlias(alias string) string {
 }
 
 func cmdList(path string) {
+	startTime := float64(time.Now().UnixNano()/1e6)
+	defer GLogger().Info(fmt.Sprintf("exec cmdList cost:%f ms",float64(time.Now().UnixNano()/1e6)-startTime))
 	list := App().Router().CmdHandlers()
+
+	showText:= func(name,nameType,DefValue,usage string ) string{
+		s := fmt.Sprintf("    \t  --%s", name)
+		if len(nameType) > 0 {
+			s += " " + nameType
+			s += "    \t"
+		}
+		s += strings.ReplaceAll(usage, "\n", "\n    \t")
+		if DefValue != "" {
+			s += fmt.Sprintf(" (default %v)", DefValue)
+		}
+
+		return s
+	}
 
 	flagParams := func(global bool) string {
 		retStr := ""
@@ -128,14 +144,9 @@ func cmdList(path string) {
 			if !global && hasGP {
 				return
 			}
-			s := fmt.Sprintf("    \t  --%s", vFlag.Name) // Two spaces before -; see next two comments.
-			name, usage := flag.UnquoteUsage(vFlag)
-			if len(name) > 0 {
-				s += " " + name
-			}
 
-			s += "    \t"
-			s += strings.ReplaceAll(usage, "\n", "\n    \t")
+			nameType, usage := flag.UnquoteUsage(vFlag)
+
 			isZeroValue := func(vFlag *flag.Flag, value string) bool {
 				// Build a zero value of the flag's Value type, and see if the
 				// result of calling its String method equals the value passed in.
@@ -149,9 +160,11 @@ func cmdList(path string) {
 				}
 				return value == z.Interface().(flag.Value).String()
 			}
+			defValue := ""
 			if !isZeroValue(vFlag, vFlag.DefValue) {
-				s += fmt.Sprintf(" (default %v)", vFlag.DefValue)
+				defValue = vFlag.DefValue
 			}
+			s := showText(vFlag.Name,nameType,defValue, usage)
 			retStr += s + "\n"
 
 		})
@@ -161,43 +174,56 @@ func cmdList(path string) {
 
 	fmt.Println("Global parameters:\n " + flagParams(true))
 
-	fmt.Println("The path list:")
-	showParams := func(path string) string {
+	fmt.Println("The --cmd path list:")
+	actionInfo := func(handler *Handler) (actionDesc, paramsMsg string) {
+		defer func() {
+			if err := recover(); err != nil {
+				paramsMsg = path + ":不能解析参数，err:" + util.ToString(err)
+			}
+		}()
 		ctx := &Context{}
 		ctx.setPath(path)
+		rv := App().Container().getNew(GetAlias(handler.cPath))
 
-		rv, _, _ := App().Router().CreateController(path, ctx)
 		if !rv.IsValid() {
-			return ""
+			return
 		}
 
-		name := ParamsFlagMethodPrefix + ctx.ActionId()
-		methodV := rv.MethodByName(name)
-		if !methodV.IsValid() {
-			return ""
+		methodT := rv.Type().Method(handler.aId)
+
+		actionInfo := NewParser().GetActionInfo(rv.Type().Elem().PkgPath(),rv.Type().Elem().Name(),methodT.Name)
+
+		if actionInfo == nil {
+			return
+		}
+		actionDesc = actionInfo.Desc
+		if actionInfo.ParamsDesc == nil {
+			return
 		}
 
-		methodV.Call(nil)
-		return flagParams(false)
+
+		for _,v:= range actionInfo.ParamsDesc{
+			paramsMsg = paramsMsg + showText(v.Name,v.NameType,v.DftValue,v.Usage) + "\n"
+		}
+
+		return
+
 	}
 
 	if path != "" {
 		path = strings.ToLower(util.CleanPath(path))
 	}
 
-	for uri, v := range list {
-		// fmt.Println("path", path,"uri",uri)
-
+	for uri, handler := range list {
 		if path != "" && path != strings.ToLower(uri) {
 			continue
 		}
 
-		paramsStr:= showParams(uri)
-		fmt.Println("  --cmd=" + uri + " \t" + v.desc)
-		if paramsStr != "" {
+		actionDesc,paramsStr := actionInfo(handler)
+		fmt.Println("  --cmd=" + uri + " \t" + actionDesc)
+		if App().CmdMode() && paramsStr != "" {
 			fmt.Println(paramsStr)
 		}
-
 
 	}
 	fmt.Println("")

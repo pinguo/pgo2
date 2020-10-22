@@ -116,6 +116,17 @@ func (c *Container) GetType(name string) reflect.Type {
 	panic("Container: class not found, " + name)
 }
 
+// getNew get new class object
+func  (c *Container) getNew(name string) reflect.Value{
+	item, ok := c.items[name]
+	if !ok {
+		panic("Container: class not found, " + name)
+	}
+
+	// get new object from pool
+	return item.pool.Get().(reflect.Value)
+}
+
 // Get get new class object. name is class name, config is properties map,
 // params is optional construct parameters.
 func (c *Container) Get(name string, ctx iface.IContext, params ...interface{}) reflect.Value {
