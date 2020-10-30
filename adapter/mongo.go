@@ -34,7 +34,22 @@ func NewMongo(db, coll string, componentId ...string) *Mongo {
 
 // NewMongoPool of Mongo Client from pool, add context support.
 // usage: mongo := this.GetObjectPool(adapter.MongoClass, adapter.NewMongoPool,db, coll)).(adapter.IMongo)/(*adapter.Mongo)
+// It is recommended to use : mongo := this.GetObjectBox(adapter.MongoClass,db, coll)).(adapter.IMongo)/(*adapter.Mongo)
 func NewMongoPool(iObj iface.IObject, args ...interface{}) iface.IObject {
+
+	return iObj
+
+}
+
+type Mongo struct {
+	pgo2.Object
+	client *mongo.Client
+	db     string
+	coll   string
+}
+
+//  GetObjPool, GetObjBox fetch is performed automatically
+func (m *Mongo) Prepare(args ...interface{}) {
 	if len(args) < 2 {
 		panic("need db and coll")
 	}
@@ -54,21 +69,11 @@ func NewMongoPool(iObj iface.IObject, args ...interface{}) iface.IObject {
 		panic("db and coll must string")
 	}
 
-	m := iObj.(*Mongo)
 
 	m.client = pgo2.App().Component(id, mongo.New).(*mongo.Client)
 	m.db = db
 	m.coll = coll
 
-	return m
-
-}
-
-type Mongo struct {
-	pgo2.Object
-	client *mongo.Client
-	db     string
-	coll   string
 }
 
 func (m *Mongo) GetClient() *mongo.Client {

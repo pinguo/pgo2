@@ -33,24 +33,28 @@ func NewRedis(componentId ...string) *Redis {
 
 // NewRedisPool of Redis Client from pool, add context support.
 // usage: redis := this.GetObjPool(adapter.RedisClass, adapter.NewRedisPool).(*adapter.Redis)
+// It is recommended to use : redis := this.GetObjBox(adapter.RedisClass).(*adapter.Redis)
 func NewRedisPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
-	id := DefaultRedisId
-	if len(componentId) > 0 {
-		id = componentId[0].(string)
-	}
 
-	c := iObj.(*Redis)
-
-	c.client = pgo2.App().Component(id, redis.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*redis.Client)
-	c.panicRecover = true
-
-	return c
+	return iObj
 }
 
 type Redis struct {
 	pgo2.Object
 	client       *redis.Client
 	panicRecover bool
+}
+
+// GetObjPool, GetObjBox fetch is performed automatically
+func (r *Redis) Prepare(componentId ...interface{}) {
+	id := DefaultRedisId
+	if len(componentId) > 0 {
+		id = componentId[0].(string)
+	}
+
+	r.client = pgo2.App().Component(id, redis.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*redis.Client)
+	r.panicRecover = true
+
 }
 
 func (r *Redis) SetPanicRecover(v bool) {

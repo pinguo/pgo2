@@ -33,23 +33,26 @@ func NewMemCache(componentId ...string) *MemCache {
 
 // NewMemCachePool of MemCache Client from pool, add context support.
 // usage: mc := this.GetObjPool(adapter.MemCacheClass, adapter.NewMemCachePool).(adapter.IMemCache)/(*adapter.MemCache)
+// It is recommended to use :mc := this.GetObjBox(adapter.MemCacheClass).(adapter.IMemCache)/(*adapter.MemCache)
 func NewMemCachePool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
-	id := DefaultMemCacheId
-	if len(componentId) > 0 {
-		id = componentId[0].(string)
-	}
 
-	m := iObj.(*MemCache)
-
-	m.client = pgo2.App().Component(id, memcache.New).(*memcache.Client)
-
-	return m
+	return iObj
 }
 
 type MemCache struct {
 	pgo2.Object
 	client       *memcache.Client
 	panicRecover bool
+}
+
+// GetObjPool, GetObjBox fetch is performed automatically
+func (m *MemCache) Prepare(componentId ...interface{}) {
+	id := DefaultMemCacheId
+	if len(componentId) > 0 {
+		id = componentId[0].(string)
+	}
+
+	m.client = pgo2.App().Component(id, memcache.New).(*memcache.Client)
 }
 
 func (m *MemCache) SetPanicRecover(v bool) {

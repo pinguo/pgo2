@@ -35,24 +35,27 @@ func NewMemory(componentId ...string) *Memory {
 
 // NewMemoryPool of Memory Client from object pool, add context support.
 // usage: memory := this.GetObjPool(adapter.MemoryClass, adapter.NewMemoryPool).(adapter.IMemory)/(*adapter.Memory)
+// It is recommended to use : memory := this.GetObjBox(adapter.MemoryClass).(adapter.IMemory)/(*adapter.Memory)
 func NewMemoryPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
-	id := DefaultMemoryId
-	if len(componentId) > 0 {
-		id = componentId[0].(string)
-	}
 
-	m := iObj.(*Memory)
-
-	m.client = pgo2.App().Component(id, memory.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*memory.Client)
-	m.panicRecover = true
-
-	return m
+	return iObj
 }
 
 type Memory struct {
 	pgo2.Object
 	client       *memory.Client
 	panicRecover bool
+}
+
+// GetObjPool, GetObjBox fetch is performed automatically
+func (m *Memory) Prepare(componentId ...interface{}){
+	id := DefaultMemoryId
+	if len(componentId) > 0 {
+		id = componentId[0].(string)
+	}
+
+	m.client = pgo2.App().Component(id, memory.New, map[string]interface{}{"logger":pgo2.GLogger()}).(*memory.Client)
+	m.panicRecover = true
 }
 
 func (m *Memory) SetPanicRecover(v bool) {
