@@ -50,17 +50,19 @@ func NewDb(componentId ...string) *Db {
 
 // NewDbPool of db Client from pool, add context support.
 // usage: db := this.GetObjPool(adapter.DbClass, adapter.NewDbPool).(adapter.IDb)/(*adapter.Db)
+// It is recommended to use : db := this.GetObjBox(adapter.DbClass).(adapter.IDb)/(*adapter.Db)
 func NewDbPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
+	return iObj
+}
+
+// GetObjPool, GetObjBox fetch is performed automatically
+func (d *Db) Prepare(componentId ...interface{}){
 	id := DefaultDbId
 	if len(componentId) > 0 {
 		id = componentId[0].(string)
 	}
 
-	d := iObj.(*Db)
-
 	d.client = pgo2.App().Component(id, db.New).(*db.Client)
-
-	return d
 }
 
 func (d *Db) SetMaster(v bool) {

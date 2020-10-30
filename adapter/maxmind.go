@@ -31,22 +31,25 @@ func NewMaxMind(componentId ...string) *MaxMind {
 
 // NewMaxMindPool of MaxMind Client from pool, add context support.
 // usage: mmd := this.GetObjPool(adapter.MaxMindClass, adapter.NewMaxMindPool).(adapter.IMaxMind)/(*adapter.MaxMind)
+// It is recommended to use :mmd := this.GetObjBox(adapter.MaxMindClass).(adapter.IMaxMind)/(*adapter.MaxMind)
 func NewMaxMindPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
-	id := DefaultMaxMindId
-	if len(componentId) > 0 {
-		id = componentId[0].(string)
-	}
 
-	m := iObj.(*MaxMind)
-
-	m.client = pgo2.App().Component(id, maxmind.New).(*maxmind.Client)
-
-	return m
+	return iObj
 }
 
 type MaxMind struct {
 	pgo2.Object
 	client *maxmind.Client
+}
+
+// GetObjPool, GetObjBox fetch is performed automatically
+func (m *MaxMind) Prepare(componentId ...interface{}) {
+	id := DefaultMaxMindId
+	if len(componentId) > 0 {
+		id = componentId[0].(string)
+	}
+
+	m.client = pgo2.App().Component(id, maxmind.New).(*maxmind.Client)
 }
 
 func (m *MaxMind) GetClient() *maxmind.Client {

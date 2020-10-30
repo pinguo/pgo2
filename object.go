@@ -52,11 +52,9 @@ func (o *Object) GetObjCtx(ctx iface.IContext, obj iface.IObject) iface.IObject 
 // Recommended: Use GetObjBoxCtx instead.
 func (o *Object) GetObjPoolCtx(ctx iface.IContext, className string, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
 	var obj iface.IObject
+	obj = App().GetObjPool(className, ctx, params...)
 	if funcName != nil {
-		obj = App().GetObjPool(className, ctx)
 		return funcName(obj, params...)
-	}else{
-		obj = App().GetObjPool(className, ctx, params...)
 	}
 	return obj
 }

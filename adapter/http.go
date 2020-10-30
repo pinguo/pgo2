@@ -37,24 +37,27 @@ func NewHttp(componentId ...string) *Http {
 
 // Http of Http Client from pool, add context support.
 // usage: http := this.GetObjPool(adapter.HttpClass, adapter.NewHttpPool).(adapter.IHttp)/(*adapter.Http)
+// It is recommended to use : http := this.GetObjBox(adapter.HttpClass).(adapter.IHttp)/(*adapter.Http)
 func NewHttpPool(iObj iface.IObject, componentId ...interface{}) iface.IObject {
-	id := DefaultHttpId
-	if len(componentId) > 0 {
-		id = componentId[0].(string)
-	}
 
-	h := iObj.(*Http)
-
-	h.client = pgo2.App().Component(id, phttp.New).(*phttp.Client)
-	h.panicRecover = true
-
-	return h
+	return iObj
 }
 
 type Http struct {
 	pgo2.Object
 	client       *phttp.Client
 	panicRecover bool
+}
+
+// GetObjPool, GetObjBox fetch is performed automatically
+func (h *Http) Prepare(componentId ...interface{}) {
+	id := DefaultHttpId
+	if len(componentId) > 0 {
+		id = componentId[0].(string)
+	}
+
+	h.client = pgo2.App().Component(id, phttp.New).(*phttp.Client)
+	h.panicRecover = true
 }
 
 func (h *Http) SetPanicRecover(v bool) {

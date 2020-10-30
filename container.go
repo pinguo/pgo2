@@ -42,7 +42,7 @@ type Container struct {
 
 // Bind bind template object to class,
 // param i must be a pointer of struct.
-func (c *Container) Bind(i interface{}) string{
+func (c *Container) Bind(i interface{}) string {
 	iv := reflect.ValueOf(i)
 	if iv.Kind() != reflect.Ptr {
 		panic("Container: invalid type, need pointer")
@@ -117,7 +117,7 @@ func (c *Container) GetType(name string) reflect.Type {
 }
 
 // getNew get new class object
-func  (c *Container) getNew(name string) reflect.Value{
+func (c *Container) getNew(name string) reflect.Value {
 	item, ok := c.items[name]
 	if !ok {
 		panic("Container: class not found, " + name)
@@ -151,9 +151,12 @@ func (c *Container) Get(name string, ctx iface.IContext, params ...interface{}) 
 	// call Prepare()
 	if item.pmIdx != -1 {
 		if im := rv.Method(item.pmIdx); im.IsValid() {
-			in := make([]reflect.Value, len(params))
-			for k, arg := range params {
-				in[k] = reflect.ValueOf(arg)
+			in := make([]reflect.Value, 0)
+			if im.Type().NumIn() > 0 {
+				in = make([]reflect.Value, len(params))
+				for k, arg := range params {
+					in[k] = reflect.ValueOf(arg)
+				}
 			}
 			im.Call(in)
 		}

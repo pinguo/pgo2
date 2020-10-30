@@ -49,7 +49,14 @@ func NewRabbitMq(dftConfig ...string) *RabbitMq {
 
 // NewRabbitMqPool of RabbitMq Client from pool, add context support.
 // usage: rabbitMq := this.GetObjPool(adapter.RabbitMqClass,adapter.NewRabbitMqPool).(adapter.IRabbitMq)/(*adapter.RabbitMq)
+// It is recommended to use : rabbitMq := this.GetObjBox(adapter.RabbitMqClass).(adapter.IRabbitMq)/(*adapter.RabbitMq)
 func NewRabbitMqPool(iObj iface.IObject, dftConfig ...interface{}) iface.IObject {
+
+	return iObj
+}
+
+//  GetObjPool, GetObjBox fetch is performed automatically
+func (r *RabbitMq) Prepare(dftConfig ...interface{}) {
 
 	id := DefaultRabbitId
 	l := len(dftConfig)
@@ -63,11 +70,9 @@ func NewRabbitMqPool(iObj iface.IObject, dftConfig ...interface{}) iface.IObject
 		op["pass"] = dftConfig[2]
 	}
 
-	r := iObj.(*RabbitMq)
 	r.client = pgo2.App().Component(id, rabbitmq.New, op).(*rabbitmq.Client)
 	r.panicRecover = true
 
-	return r
 }
 
 func (r *RabbitMq) SetPanicRecover(v bool) {
