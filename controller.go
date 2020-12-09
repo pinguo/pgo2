@@ -3,6 +3,7 @@ package pgo2
 import (
 	"net/http"
 	"reflect"
+	"time"
 
 	"github.com/pinguo/pgo2/iface"
 	"github.com/pinguo/pgo2/perror"
@@ -111,20 +112,35 @@ func (c *Controller) Redirect(location string, permanent bool) {
 
 // Json output json response
 func (c *Controller) Json(data interface{}, status int, msg ...string) {
+	out := map[string]interface{}{
+		"data": data,
+	}
+	c.json(out, status, msg...)
+}
+
+// JsonV2 output json response
+func (c *Controller) JsonV2(data interface{}, status int, msg ...string) {
+	out := map[string]interface{}{
+		"data":       data,
+		"serverTime": float64(time.Now().UnixNano()) / 1e9,
+	}
+	c.json(out, status, msg...)
+}
+
+// Json output json response
+func (c *Controller) json(out map[string]interface{}, status int, msg ...string) {
 	ctx := c.Context()
 	message := App().Status().Text(status, ctx.Header("Accept-Language", ""), msg...)
-	r := render.NewJson(map[string]interface{}{
-		"status":  status,
-		"message": message,
-		"data":    data,
-	})
-
+	out["status"] = status
+	out["message"] = message
+	r := render.NewJson(out)
 	ctx.PushLog("status", status)
 	ctx.SetHeader("Content-Type", r.ContentType())
 	httpStatus := r.HttpCode()
 	if ctx.Status() > 0 && ctx.Status() != httpStatus {
 		httpStatus = ctx.Status()
 	}
+
 	ctx.End(httpStatus, r.Content())
 }
 
