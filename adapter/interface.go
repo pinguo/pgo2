@@ -15,6 +15,8 @@ import (
 	"github.com/pinguo/pgo2/iface"
 	"github.com/pinguo/pgo2/value"
 	"github.com/streadway/amqp"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type IMemory interface {
@@ -150,4 +152,74 @@ type IStmt interface {
 	QueryContext(ctx context.Context, args ...interface{}) *sql.Rows
 	Exec(args ...interface{}) sql.Result
 	ExecContext(ctx context.Context, args ...interface{}) sql.Result
+}
+
+type IOrm interface {
+	iface.IObject
+	Assign(attrs ...interface{}) IOrm
+	Attrs(attrs ...interface{}) IOrm
+	Begin(opts ...*sql.TxOptions) IOrm
+	Clauses(conds ...clause.Expression) IOrm
+	Commit() IOrm
+	Count(count *int64) IOrm
+	Create(value interface{}) IOrm
+	CreateInBatches(value interface{}, batchSize int) IOrm
+	Debug() IOrm
+	Delete(value interface{}, conds ...interface{}) IOrm
+	Distinct(args ...interface{}) IOrm
+	Exec(sql string, values ...interface{}) IOrm
+	Find(dest interface{}, conds ...interface{}) IOrm
+	FindInBatches(dest interface{}, batchSize int, fc func(pTx *gorm.DB, batch int) error) IOrm
+	First(dest interface{}, conds ...interface{}) IOrm
+	FirstOrCreate(dest interface{}, conds ...interface{}) IOrm
+	FirstOrInit(dest interface{}, conds ...interface{}) IOrm
+	Group(name string) IOrm
+	Having(query interface{}, args ...interface{}) IOrm
+	Joins(query string, args ...interface{}) IOrm
+	Last(dest string, conds ...interface{}) IOrm
+	Limit(limit int) IOrm
+	Model(value interface{}) IOrm
+	Not(query interface{}, args ...interface{}) IOrm
+	Offset(offset int) IOrm
+	Omit(columns ...string) IOrm
+	Or(query interface{}, args ...interface{}) IOrm
+	Order(value interface{}) IOrm
+	Pluck(column string, dest interface{}) IOrm
+	Preload(query string, args ...interface{}) IOrm
+	Raw(sql string, values ...interface{}) IOrm
+	Rollback() IOrm
+	RollbackTo(name string) IOrm
+	Row() *sql.Row
+	Rows() (*sql.Rows, error)
+	Save(value interface{}) IOrm
+	SavePoint(name string) IOrm
+	Scan(dest interface{}) IOrm
+	Scopes(funcs ...func(*gorm.DB) *gorm.DB) IOrm
+	Select(query interface{}, args ...interface{}) IOrm
+	Session(config *gorm.Session) IOrm
+	InstanceSet(key string, value interface{}) IOrm
+	Set(key string, value interface{}) IOrm
+	Table(name string, args ...interface{}) IOrm
+	Take(dest interface{}, conds ...interface{}) IOrm
+	Unscoped() IOrm
+	Update(column string, value interface{}) IOrm
+	UpdateColumn(column string, value interface{}) IOrm
+	UpdateColumns(values interface{}) IOrm
+	Updates(values interface{}) IOrm
+	Where(query interface{}, args ...interface{}) IOrm
+	WithContext(ctx context.Context) IOrm
+	AddError(err error) error
+	Association(column string) *gorm.Association
+	AutoMigrate(dst ...interface{}) error
+	SqlDB() (*sql.DB, error)
+	Get(key string) (interface{}, bool)
+	InstanceGet(key string) (interface{}, bool)
+	ScanRows(rows *sql.Rows, dest interface{}) error
+	SetupJoinTable(model interface{}, field string, joinTable interface{}) error
+	Transaction(fc func(tx *gorm.DB) error, opts ...*sql.TxOptions) (err error)
+	Use(plugin gorm.Plugin) (err error)
+	GetError() error
+	GetRowsAffected() int64
+	GetStatement() *gorm.Statement
+	GetConfig() *gorm.Config
 }

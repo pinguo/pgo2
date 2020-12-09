@@ -47,6 +47,11 @@ const (
 	DefaultDbId      = "db"
 )
 
+// orm
+const (
+	DefaultOrmId      = "orm"
+)
+
 func baseUrl(addr string) string {
 	u, e := url.Parse(addr)
 	if e != nil {
@@ -61,3 +66,4 @@ func panicErr(err error) {
 		panic(err)
 	}
 }
+
