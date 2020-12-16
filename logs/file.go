@@ -49,6 +49,7 @@ type File struct {
 	maxBufferByte int
 	maxBufferLine int
 	rotate        int
+	formatter     string
 
 	buffer        bytes.Buffer
 	lastRotate    time.Time
@@ -107,6 +108,16 @@ func (f *File) SetRotate(rotate string) {
 		f.rotate = rotateDaily
 	default:
 		panic("File: invalid rotate:" + rotate)
+	}
+}
+
+// SetFormatter set formatter
+// - json for JSON formmater
+func (f *File) SetFormatter(s interface{}) {
+	if sF, ok := s.(string); ok && (sF == "JSON" || sF == "json") {
+		f.Target.SetFormatter(JSONFormatter)
+	} else {
+		f.Target.SetFormatter(s)
 	}
 }
 
