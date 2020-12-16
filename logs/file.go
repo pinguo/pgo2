@@ -110,6 +110,16 @@ func (f *File) SetRotate(rotate string) {
 	}
 }
 
+// SetLogFormatter set formatter
+// - json for JSON formmatter
+func (f *File) SetLogFormatter(s string) {
+	if s == "JSON" || s == "json" {
+		f.Target.SetFormatter(JSONFormatter)
+	} else {
+		panic("File: unexpected logFormatter, got: " + s)
+	}
+}
+
 //  resolve path, eg. @runtime/app.log => /path/to/runtime/app.log
 func (f *File) completePath() string {
 	if strings.Index(f.filePath, "@runtime") >= 0 {
