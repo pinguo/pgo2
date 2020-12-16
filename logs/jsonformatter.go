@@ -20,7 +20,8 @@ type (
 
 	logItem struct {
 		When    string  `json:"time"`
-		ID      string  `json:"id"`
+		ID      string  `json:"logId"`
+		Name    string  `json:"name"`
 		Level   string  `json:"level"`
 		Trace   string  `json:"trace,omitempty"`
 		Message message `json:"message"`
@@ -76,6 +77,7 @@ func createLogItem(i *LogItem) *logItem {
 	return &logItem{
 		When:    i.When.Format("2006/01/02 15:04:05.000"),
 		ID:      i.LogId,
+		Name:    i.Name,
 		Level:   LevelToString(i.Level),
 		Trace:   i.Trace,
 		Message: message(i.Message),

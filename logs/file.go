@@ -49,7 +49,6 @@ type File struct {
 	maxBufferByte int
 	maxBufferLine int
 	rotate        int
-	formatter     string
 
 	buffer        bytes.Buffer
 	lastRotate    time.Time
@@ -111,13 +110,13 @@ func (f *File) SetRotate(rotate string) {
 	}
 }
 
-// SetFormatter set formatter
+// SetLogFormatter set formatter
 // - json for JSON formmater
-func (f *File) SetFormatter(s interface{}) {
-	if sF, ok := s.(string); ok && (sF == "JSON" || sF == "json") {
+func (f *File) SetLogFormatter(s string) {
+	if s == "JSON" || s == "json" {
 		f.Target.SetFormatter(JSONFormatter)
 	} else {
-		f.Target.SetFormatter(s)
+		panic("File: unexpected logFormatter, got: " + s)
 	}
 }
 
