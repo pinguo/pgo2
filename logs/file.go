@@ -111,7 +111,7 @@ func (f *File) SetRotate(rotate string) {
 }
 
 // SetLogFormatter set formatter
-// - json for JSON formmater
+// - json for JSON formmatter
 func (f *File) SetLogFormatter(s string) {
 	if s == "JSON" || s == "json" {
 		f.Target.SetFormatter(JSONFormatter)
