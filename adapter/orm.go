@@ -3,24 +3,32 @@ package adapter
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"path/filepath"
+	"regexp"
+	"runtime"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/pinguo/pgo2"
 	"github.com/pinguo/pgo2/client/orm"
 	"github.com/pinguo/pgo2/iface"
-	"github.com/pinguo/pgo2/logs"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 )
 
 var OrmClass string
-var OrmLogWriterClass string
+var gormSourceDir string
+var customLoggerClass string
 
 func init() {
 	container := pgo2.App().Container()
 	OrmClass = container.Bind(&Orm{})
-	OrmLogWriterClass = container.Bind(&LogWriter{})
+	customLoggerClass = container.Bind(&customLogger{})
+	_, file, _, _ := runtime.Caller(0)
+	gormSourceDir = regexp.MustCompile(`adapter.orm\.go`).ReplaceAllString(file, "")
 }
 
 // NewDb of db Client, add context support.
@@ -61,14 +69,13 @@ func (o *Orm) Prepare(componentId ...interface{}) {
 }
 
 func (o *Orm) defaultLogger(ctr iface.IContext) logger.Interface {
-	return logger.New(
-		o.GetObjBoxCtx(ctr, OrmLogWriterClass).(*LogWriter), // io writer
+	return o.GetObjBoxCtx(ctr,customLoggerClass,
 		logger.Config{
 			SlowThreshold: o.client.SlowLogTime(), // 慢 SQL 阈值
 			LogLevel:      o.client.LogLevel(),    // Log level
 			Colorful:      false,                  // 禁用彩色打印
 		},
-	)
+		).(logger.Interface)
 }
 
 // new session
@@ -399,22 +406,114 @@ func (o *Orm) SqlDB() (*sql.DB, error) {
 	return o.DB.DB()
 }
 
-type LogWriter struct {
+type customLogger struct {
 	pgo2.Object
-	logger logs.ILogger
+	logger.Writer
+	logger.Config
+	infoStr, warnStr, errStr            string
+	traceStr, traceErrStr, traceWarnStr string
 }
 
-func (l *LogWriter) Prepare() {
-	l.logger = l.Context()
-}
+var (
+	infoStr      = "%s[info] "
+	warnStr      = "%s[warn] "
+	errStr       = "%s[error] "
+	traceStr     = "%s[%.3fms] [rows:%v] %s"
+	traceWarnStr = "%s %s[%.3fms] [rows:%v] %s"
+	traceErrStr  = "%s %s[%.3fms] [rows:%v] %s"
+)
 
-func (l *LogWriter) Printf(msg string, data ...interface{}) {
-	if strings.Index(msg, "[warn]") >= 0 {
-		l.logger.Warn(msg, data...)
-	} else if strings.Index(msg, "[error]") >= 0 {
-		l.logger.Error(msg, data...)
-	} else {
-		l.logger.Info(msg, data...)
+
+func (l *customLogger) Prepare(config logger.Config) logger.Interface {
+
+
+	if config.Colorful {
+		infoStr = Green + "%s\n" + Reset + Green + "[info] " + Reset
+		warnStr = BlueBold + "%s\n" + Reset + Magenta + "[warn] " + Reset
+		errStr = Magenta + "%s\n" + Reset + Red + "[error] " + Reset
+		traceStr = Green + "%s\n" + Reset + Yellow + "[%.3fms] " + BlueBold + "[rows:%v]" + Reset + " %s"
+		traceWarnStr = Green + "%s " + Yellow + "%s\n" + Reset + RedBold + "[%.3fms] " + Yellow + "[rows:%v]" + Magenta + " %s" + Reset
+		traceErrStr = RedBold + "%s " + MagentaBold + "%s\n" + Reset + Yellow + "[%.3fms] " + BlueBold + "[rows:%v]" + Reset + " %s"
 	}
 
+	l.Config = config
+	l.infoStr = infoStr
+	l.warnStr = warnStr
+	l.errStr = errStr
+	l.traceStr = traceStr
+	l.traceWarnStr =  traceWarnStr
+	l.traceErrStr =   traceErrStr
+	return l
+}
+
+
+// LogMode log mode
+func (l *customLogger) LogMode(level logger.LogLevel) logger.Interface {
+	newlogger := *l
+	newlogger.LogLevel = level
+	return &newlogger
+}
+
+// Info print info
+func (l customLogger) Info(ctx context.Context, msg string, data ...interface{}) {
+	if l.LogLevel >= logger.Info {
+		l.Context().Info(l.infoStr+msg, append([]interface{}{FileWithLineNum()}, data...)...)
+	}
+}
+
+// Warn print warn messages
+func (l customLogger) Warn(ctx context.Context, msg string, data ...interface{}) {
+	if l.LogLevel >= logger.Warn {
+		l.Context().Warn(l.warnStr+msg, append([]interface{}{FileWithLineNum()}, data...)...)
+	}
+}
+
+// Error print error messages
+func (l customLogger) Error(ctx context.Context, msg string, data ...interface{}) {
+	if l.LogLevel >= logger.Error {
+		l.Context().Error(l.errStr+msg, append([]interface{}{FileWithLineNum()}, data...)...)
+	}
+}
+
+// Trace print sql message
+func (l customLogger) Trace(ctx context.Context, begin time.Time, fc func() (string, int64), err error) {
+	if l.LogLevel > 0 {
+		elapsed := time.Since(begin)
+		switch {
+		case err != nil && l.LogLevel >= logger.Error:
+			sql, rows := fc()
+			if rows == -1 {
+				l.Context().Error(l.traceErrStr, FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			} else {
+				l.Context().Error(l.traceErrStr, FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			}
+		case elapsed > l.SlowThreshold && l.SlowThreshold != 0 && l.LogLevel >= logger.Warn:
+			sql, rows := fc()
+			slowLog := fmt.Sprintf("SLOW SQL >= %v", l.SlowThreshold)
+			if rows == -1 {
+				l.Context().Warn(l.traceWarnStr, FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			} else {
+				l.Context().Warn(l.traceWarnStr, FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			}
+		case l.LogLevel >= logger.Info:
+			sql, rows := fc()
+			if rows == -1 {
+				l.Context().Info(l.traceStr, FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			} else {
+				l.Context().Info(l.traceStr, FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			}
+		}
+	}
+}
+
+func FileWithLineNum() string {
+	for i := 5; i < 15; i++ {
+		_, file, line, ok := runtime.Caller(i)
+
+		if ok && (!strings.HasPrefix(file, gormSourceDir) || strings.HasSuffix(file, "_test.go") ) {
+			// filepath.Base(filepath.Dir(file)) + "/" +
+			return filepath.Base(file) + ":" + strconv.FormatInt(int64(line), 10) + "\n"
+		}
+	}
+	return ""
 }

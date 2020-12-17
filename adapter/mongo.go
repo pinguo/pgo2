@@ -15,7 +15,7 @@ func init() {
 }
 
 // NewMongo of Mongo Client, add context support.
-// usage: mongo := this.GetObject(adapter.NewMongo(db, coll)).(adapter.IMongo)/(*adapter.Mongo)
+// usage: mongo := this.GetObj(adapter.NewMongo(db, coll)).(adapter.IMongo)/(*adapter.Mongo)
 func NewMongo(db, coll string, componentId ...string) *Mongo {
 	id := DefaultMongoId
 	if len(componentId) > 0 {
