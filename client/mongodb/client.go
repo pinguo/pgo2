@@ -25,7 +25,7 @@ import (
 // https://docs.mongodb.com/manual/reference/connection-string/
 // query options, default:
 // replicaSet=
-// connect=replicaSet
+// directConnection=false
 // maxPoolSize=100
 // minPoolSize=1
 // maxIdleTimeMS=300000
