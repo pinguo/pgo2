@@ -31,6 +31,12 @@ const (
 	ErrInvalidOpt  = "mongo: invalid option "
 )
 
+// mongo
+const (
+	DefaultMongodbId = "mongodb"
+	ErrInvalidMongoDbOpt  = "mongodb: invalid option "
+)
+
 // redis
 const (
 	DefaultRedisId = "redis"
