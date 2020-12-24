@@ -17,11 +17,15 @@ import (
 	adapter "github.com/pinguo/pgo2/adapter"
 	maxmind "github.com/pinguo/pgo2/client/maxmind"
 	memcache "github.com/pinguo/pgo2/client/memcache"
+	mongodb "github.com/pinguo/pgo2/client/mongodb"
 	phttp "github.com/pinguo/pgo2/client/phttp"
 	rabbitmq "github.com/pinguo/pgo2/client/rabbitmq"
 	iface "github.com/pinguo/pgo2/iface"
 	value "github.com/pinguo/pgo2/value"
+	qmgo "github.com/qiniu/qmgo"
+	options "github.com/qiniu/qmgo/options"
 	amqp "github.com/streadway/amqp"
+	mongo "go.mongodb.org/mongo-driver/mongo"
 	gorm "gorm.io/gorm"
 	clause "gorm.io/gorm/clause"
 )
@@ -3637,4 +3641,1114 @@ func (m *MockIOrm) GetConfig() *gorm.Config {
 func (mr *MockIOrmMockRecorder) GetConfig() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConfig", reflect.TypeOf((*MockIOrm)(nil).GetConfig))
+}
+
+// MockIMongodb is a mock of IMongodb interface.
+type MockIMongodb struct {
+	ctrl     *gomock.Controller
+	recorder *MockIMongodbMockRecorder
+}
+
+// MockIMongodbMockRecorder is the mock recorder for MockIMongodb.
+type MockIMongodbMockRecorder struct {
+	mock *MockIMongodb
+}
+
+// NewMockIMongodb creates a new mock instance.
+func NewMockIMongodb(ctrl *gomock.Controller) *MockIMongodb {
+	mock := &MockIMongodb{ctrl: ctrl}
+	mock.recorder = &MockIMongodbMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIMongodb) EXPECT() *MockIMongodbMockRecorder {
+	return m.recorder
+}
+
+// SetContext mocks base method.
+func (m *MockIMongodb) SetContext(ctx iface.IContext) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetContext", ctx)
+}
+
+// SetContext indicates an expected call of SetContext.
+func (mr *MockIMongodbMockRecorder) SetContext(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetContext", reflect.TypeOf((*MockIMongodb)(nil).SetContext), ctx)
+}
+
+// Context mocks base method.
+func (m *MockIMongodb) Context() iface.IContext {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Context")
+	ret0, _ := ret[0].(iface.IContext)
+	return ret0
+}
+
+// Context indicates an expected call of Context.
+func (mr *MockIMongodbMockRecorder) Context() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockIMongodb)(nil).Context))
+}
+
+// GetObj mocks base method.
+func (m *MockIMongodb) GetObj(obj iface.IObject) iface.IObject {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetObj", obj)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
+}
+
+// GetObj indicates an expected call of GetObj.
+func (mr *MockIMongodbMockRecorder) GetObj(obj interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObj", reflect.TypeOf((*MockIMongodb)(nil).GetObj), obj)
+}
+
+// GetObjPool mocks base method.
+func (m *MockIMongodb) GetObjPool(className string, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{className, funcName}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetObjPool", varargs...)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
+}
+
+// GetObjPool indicates an expected call of GetObjPool.
+func (mr *MockIMongodbMockRecorder) GetObjPool(className, funcName interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{className, funcName}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPool", reflect.TypeOf((*MockIMongodb)(nil).GetObjPool), varargs...)
+}
+
+// GetObjBox mocks base method.
+func (m *MockIMongodb) GetObjBox(className string, params ...interface{}) iface.IObject {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{className}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetObjBox", varargs...)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
+}
+
+// GetObjBox indicates an expected call of GetObjBox.
+func (mr *MockIMongodbMockRecorder) GetObjBox(className interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{className}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjBox", reflect.TypeOf((*MockIMongodb)(nil).GetObjBox), varargs...)
+}
+
+// GetObjSingle mocks base method.
+func (m *MockIMongodb) GetObjSingle(name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{name, funcName}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetObjSingle", varargs...)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
+}
+
+// GetObjSingle indicates an expected call of GetObjSingle.
+func (mr *MockIMongodbMockRecorder) GetObjSingle(name, funcName interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{name, funcName}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingle", reflect.TypeOf((*MockIMongodb)(nil).GetObjSingle), varargs...)
+}
+
+// GetObjPoolCtx mocks base method.
+func (m *MockIMongodb) GetObjPoolCtx(ctr iface.IContext, className string, funcName iface.IObjPoolFunc, params ...interface{}) iface.IObject {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctr, className, funcName}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetObjPoolCtx", varargs...)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
+}
+
+// GetObjPoolCtx indicates an expected call of GetObjPoolCtx.
+func (mr *MockIMongodbMockRecorder) GetObjPoolCtx(ctr, className, funcName interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctr, className, funcName}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjPoolCtx", reflect.TypeOf((*MockIMongodb)(nil).GetObjPoolCtx), varargs...)
+}
+
+// GetObjBoxCtx mocks base method.
+func (m *MockIMongodb) GetObjBoxCtx(ctx iface.IContext, className string, params ...interface{}) iface.IObject {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, className}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetObjBoxCtx", varargs...)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
+}
+
+// GetObjBoxCtx indicates an expected call of GetObjBoxCtx.
+func (mr *MockIMongodbMockRecorder) GetObjBoxCtx(ctx, className interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, className}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjBoxCtx", reflect.TypeOf((*MockIMongodb)(nil).GetObjBoxCtx), varargs...)
+}
+
+// GetObjCtx mocks base method.
+func (m *MockIMongodb) GetObjCtx(ctx iface.IContext, obj iface.IObject) iface.IObject {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetObjCtx", ctx, obj)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
+}
+
+// GetObjCtx indicates an expected call of GetObjCtx.
+func (mr *MockIMongodbMockRecorder) GetObjCtx(ctx, obj interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjCtx", reflect.TypeOf((*MockIMongodb)(nil).GetObjCtx), ctx, obj)
+}
+
+// GetObjSingleCtx mocks base method.
+func (m *MockIMongodb) GetObjSingleCtx(ctx iface.IContext, name string, funcName iface.IObjSingleFunc, params ...interface{}) iface.IObject {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, name, funcName}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetObjSingleCtx", varargs...)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
+}
+
+// GetObjSingleCtx indicates an expected call of GetObjSingleCtx.
+func (mr *MockIMongodbMockRecorder) GetObjSingleCtx(ctx, name, funcName interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, name, funcName}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjSingleCtx", reflect.TypeOf((*MockIMongodb)(nil).GetObjSingleCtx), varargs...)
+}
+
+// InsertOne mocks base method.
+func (m *MockIMongodb) InsertOne(doc interface{}, opts ...options.InsertOneOptions) (*qmgo.InsertOneResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{doc}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "InsertOne", varargs...)
+	ret0, _ := ret[0].(*qmgo.InsertOneResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InsertOne indicates an expected call of InsertOne.
+func (mr *MockIMongodbMockRecorder) InsertOne(doc interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{doc}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertOne", reflect.TypeOf((*MockIMongodb)(nil).InsertOne), varargs...)
+}
+
+// InsertOneCtx mocks base method.
+func (m *MockIMongodb) InsertOneCtx(ctx context.Context, doc interface{}, opts ...options.InsertOneOptions) (*qmgo.InsertOneResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, doc}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "InsertOneCtx", varargs...)
+	ret0, _ := ret[0].(*qmgo.InsertOneResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InsertOneCtx indicates an expected call of InsertOneCtx.
+func (mr *MockIMongodbMockRecorder) InsertOneCtx(ctx, doc interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, doc}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertOneCtx", reflect.TypeOf((*MockIMongodb)(nil).InsertOneCtx), varargs...)
+}
+
+// InsertMany mocks base method.
+func (m *MockIMongodb) InsertMany(docs interface{}, opts ...options.InsertManyOptions) (*qmgo.InsertManyResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{docs}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "InsertMany", varargs...)
+	ret0, _ := ret[0].(*qmgo.InsertManyResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InsertMany indicates an expected call of InsertMany.
+func (mr *MockIMongodbMockRecorder) InsertMany(docs interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{docs}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertMany", reflect.TypeOf((*MockIMongodb)(nil).InsertMany), varargs...)
+}
+
+// InsertManyCtx mocks base method.
+func (m *MockIMongodb) InsertManyCtx(ctx context.Context, docs interface{}, opts ...options.InsertManyOptions) (*qmgo.InsertManyResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, docs}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "InsertManyCtx", varargs...)
+	ret0, _ := ret[0].(*qmgo.InsertManyResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InsertManyCtx indicates an expected call of InsertManyCtx.
+func (mr *MockIMongodbMockRecorder) InsertManyCtx(ctx, docs interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, docs}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertManyCtx", reflect.TypeOf((*MockIMongodb)(nil).InsertManyCtx), varargs...)
+}
+
+// Upsert mocks base method.
+func (m *MockIMongodb) Upsert(filter, replacement interface{}, opts ...options.UpsertOptions) (*qmgo.UpdateResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{filter, replacement}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Upsert", varargs...)
+	ret0, _ := ret[0].(*qmgo.UpdateResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Upsert indicates an expected call of Upsert.
+func (mr *MockIMongodbMockRecorder) Upsert(filter, replacement interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{filter, replacement}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upsert", reflect.TypeOf((*MockIMongodb)(nil).Upsert), varargs...)
+}
+
+// UpsertCtx mocks base method.
+func (m *MockIMongodb) UpsertCtx(ctx context.Context, filter, replacement interface{}, opts ...options.UpsertOptions) (*qmgo.UpdateResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter, replacement}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpsertCtx", varargs...)
+	ret0, _ := ret[0].(*qmgo.UpdateResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertCtx indicates an expected call of UpsertCtx.
+func (mr *MockIMongodbMockRecorder) UpsertCtx(ctx, filter, replacement interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter, replacement}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertCtx", reflect.TypeOf((*MockIMongodb)(nil).UpsertCtx), varargs...)
+}
+
+// UpsertId mocks base method.
+func (m *MockIMongodb) UpsertId(id, replacement interface{}, opts ...options.UpsertOptions) (*qmgo.UpdateResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{id, replacement}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpsertId", varargs...)
+	ret0, _ := ret[0].(*qmgo.UpdateResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertId indicates an expected call of UpsertId.
+func (mr *MockIMongodbMockRecorder) UpsertId(id, replacement interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{id, replacement}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertId", reflect.TypeOf((*MockIMongodb)(nil).UpsertId), varargs...)
+}
+
+// UpsertIdCtx mocks base method.
+func (m *MockIMongodb) UpsertIdCtx(ctx context.Context, id, replacement interface{}, opts ...options.UpsertOptions) (*qmgo.UpdateResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, id, replacement}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpsertIdCtx", varargs...)
+	ret0, _ := ret[0].(*qmgo.UpdateResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertIdCtx indicates an expected call of UpsertIdCtx.
+func (mr *MockIMongodbMockRecorder) UpsertIdCtx(ctx, id, replacement interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, id, replacement}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertIdCtx", reflect.TypeOf((*MockIMongodb)(nil).UpsertIdCtx), varargs...)
+}
+
+// UpdateOne mocks base method.
+func (m *MockIMongodb) UpdateOne(filter, update interface{}, opts ...options.UpdateOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{filter, update}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateOne", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateOne indicates an expected call of UpdateOne.
+func (mr *MockIMongodbMockRecorder) UpdateOne(filter, update interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{filter, update}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOne", reflect.TypeOf((*MockIMongodb)(nil).UpdateOne), varargs...)
+}
+
+// UpdateOneCtx mocks base method.
+func (m *MockIMongodb) UpdateOneCtx(ctx context.Context, filter, update interface{}, opts ...options.UpdateOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter, update}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateOneCtx", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateOneCtx indicates an expected call of UpdateOneCtx.
+func (mr *MockIMongodbMockRecorder) UpdateOneCtx(ctx, filter, update interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter, update}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOneCtx", reflect.TypeOf((*MockIMongodb)(nil).UpdateOneCtx), varargs...)
+}
+
+// UpdateId mocks base method.
+func (m *MockIMongodb) UpdateId(id, update interface{}, opts ...options.UpdateOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{id, update}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateId", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateId indicates an expected call of UpdateId.
+func (mr *MockIMongodbMockRecorder) UpdateId(id, update interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{id, update}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateId", reflect.TypeOf((*MockIMongodb)(nil).UpdateId), varargs...)
+}
+
+// UpdateIdCtx mocks base method.
+func (m *MockIMongodb) UpdateIdCtx(ctx context.Context, id, update interface{}, opts ...options.UpdateOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, id, update}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateIdCtx", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateIdCtx indicates an expected call of UpdateIdCtx.
+func (mr *MockIMongodbMockRecorder) UpdateIdCtx(ctx, id, update interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, id, update}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateIdCtx", reflect.TypeOf((*MockIMongodb)(nil).UpdateIdCtx), varargs...)
+}
+
+// UpdateAll mocks base method.
+func (m *MockIMongodb) UpdateAll(filter, update interface{}, opts ...options.UpdateOptions) (*qmgo.UpdateResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{filter, update}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateAll", varargs...)
+	ret0, _ := ret[0].(*qmgo.UpdateResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateAll indicates an expected call of UpdateAll.
+func (mr *MockIMongodbMockRecorder) UpdateAll(filter, update interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{filter, update}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAll", reflect.TypeOf((*MockIMongodb)(nil).UpdateAll), varargs...)
+}
+
+// UpdateAllCtx mocks base method.
+func (m *MockIMongodb) UpdateAllCtx(ctx context.Context, filter, update interface{}, opts ...options.UpdateOptions) (*qmgo.UpdateResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter, update}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateAllCtx", varargs...)
+	ret0, _ := ret[0].(*qmgo.UpdateResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateAllCtx indicates an expected call of UpdateAllCtx.
+func (mr *MockIMongodbMockRecorder) UpdateAllCtx(ctx, filter, update interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter, update}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAllCtx", reflect.TypeOf((*MockIMongodb)(nil).UpdateAllCtx), varargs...)
+}
+
+// ReplaceOne mocks base method.
+func (m *MockIMongodb) ReplaceOne(filter, doc interface{}, opts ...options.ReplaceOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{filter, doc}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ReplaceOne", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ReplaceOne indicates an expected call of ReplaceOne.
+func (mr *MockIMongodbMockRecorder) ReplaceOne(filter, doc interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{filter, doc}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReplaceOne", reflect.TypeOf((*MockIMongodb)(nil).ReplaceOne), varargs...)
+}
+
+// ReplaceOneCtx mocks base method.
+func (m *MockIMongodb) ReplaceOneCtx(ctx context.Context, filter, doc interface{}, opts ...options.ReplaceOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter, doc}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ReplaceOneCtx", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ReplaceOneCtx indicates an expected call of ReplaceOneCtx.
+func (mr *MockIMongodbMockRecorder) ReplaceOneCtx(ctx, filter, doc interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter, doc}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReplaceOneCtx", reflect.TypeOf((*MockIMongodb)(nil).ReplaceOneCtx), varargs...)
+}
+
+// Remove mocks base method.
+func (m *MockIMongodb) Remove(filter interface{}, opts ...options.RemoveOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{filter}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Remove", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Remove indicates an expected call of Remove.
+func (mr *MockIMongodbMockRecorder) Remove(filter interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{filter}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockIMongodb)(nil).Remove), varargs...)
+}
+
+// RemoveCtx mocks base method.
+func (m *MockIMongodb) RemoveCtx(ctx context.Context, filter interface{}, opts ...options.RemoveOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RemoveCtx", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveCtx indicates an expected call of RemoveCtx.
+func (mr *MockIMongodbMockRecorder) RemoveCtx(ctx, filter interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveCtx", reflect.TypeOf((*MockIMongodb)(nil).RemoveCtx), varargs...)
+}
+
+// RemoveId mocks base method.
+func (m *MockIMongodb) RemoveId(id interface{}, opts ...options.RemoveOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{id}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RemoveId", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveId indicates an expected call of RemoveId.
+func (mr *MockIMongodbMockRecorder) RemoveId(id interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{id}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveId", reflect.TypeOf((*MockIMongodb)(nil).RemoveId), varargs...)
+}
+
+// RemoveIdCtx mocks base method.
+func (m *MockIMongodb) RemoveIdCtx(ctx context.Context, id interface{}, opts ...options.RemoveOptions) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, id}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RemoveIdCtx", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveIdCtx indicates an expected call of RemoveIdCtx.
+func (mr *MockIMongodbMockRecorder) RemoveIdCtx(ctx, id interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, id}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveIdCtx", reflect.TypeOf((*MockIMongodb)(nil).RemoveIdCtx), varargs...)
+}
+
+// RemoveAll mocks base method.
+func (m *MockIMongodb) RemoveAll(filter interface{}, opts ...options.RemoveOptions) (*qmgo.DeleteResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{filter}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RemoveAll", varargs...)
+	ret0, _ := ret[0].(*qmgo.DeleteResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RemoveAll indicates an expected call of RemoveAll.
+func (mr *MockIMongodbMockRecorder) RemoveAll(filter interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{filter}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveAll", reflect.TypeOf((*MockIMongodb)(nil).RemoveAll), varargs...)
+}
+
+// RemoveAllCtx mocks base method.
+func (m *MockIMongodb) RemoveAllCtx(ctx context.Context, filter interface{}, opts ...options.RemoveOptions) (*qmgo.DeleteResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RemoveAllCtx", varargs...)
+	ret0, _ := ret[0].(*qmgo.DeleteResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RemoveAllCtx indicates an expected call of RemoveAllCtx.
+func (mr *MockIMongodbMockRecorder) RemoveAllCtx(ctx, filter interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveAllCtx", reflect.TypeOf((*MockIMongodb)(nil).RemoveAllCtx), varargs...)
+}
+
+// Aggregate mocks base method.
+func (m *MockIMongodb) Aggregate(pipeline interface{}) qmgo.AggregateI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Aggregate", pipeline)
+	ret0, _ := ret[0].(qmgo.AggregateI)
+	return ret0
+}
+
+// Aggregate indicates an expected call of Aggregate.
+func (mr *MockIMongodbMockRecorder) Aggregate(pipeline interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Aggregate", reflect.TypeOf((*MockIMongodb)(nil).Aggregate), pipeline)
+}
+
+// AggregateCtx mocks base method.
+func (m *MockIMongodb) AggregateCtx(ctx context.Context, pipeline interface{}) qmgo.AggregateI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AggregateCtx", ctx, pipeline)
+	ret0, _ := ret[0].(qmgo.AggregateI)
+	return ret0
+}
+
+// AggregateCtx indicates an expected call of AggregateCtx.
+func (mr *MockIMongodbMockRecorder) AggregateCtx(ctx, pipeline interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateCtx", reflect.TypeOf((*MockIMongodb)(nil).AggregateCtx), ctx, pipeline)
+}
+
+// EnsureIndexes mocks base method.
+func (m *MockIMongodb) EnsureIndexes(uniques, indexes []string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnsureIndexes", uniques, indexes)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// EnsureIndexes indicates an expected call of EnsureIndexes.
+func (mr *MockIMongodbMockRecorder) EnsureIndexes(uniques, indexes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnsureIndexes", reflect.TypeOf((*MockIMongodb)(nil).EnsureIndexes), uniques, indexes)
+}
+
+// EnsureIndexesCtx mocks base method.
+func (m *MockIMongodb) EnsureIndexesCtx(ctx context.Context, uniques, indexes []string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnsureIndexesCtx", ctx, uniques, indexes)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// EnsureIndexesCtx indicates an expected call of EnsureIndexesCtx.
+func (mr *MockIMongodbMockRecorder) EnsureIndexesCtx(ctx, uniques, indexes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnsureIndexesCtx", reflect.TypeOf((*MockIMongodb)(nil).EnsureIndexesCtx), ctx, uniques, indexes)
+}
+
+// CreateIndexes mocks base method.
+func (m *MockIMongodb) CreateIndexes(indexes []options.IndexModel) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateIndexes", indexes)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateIndexes indicates an expected call of CreateIndexes.
+func (mr *MockIMongodbMockRecorder) CreateIndexes(indexes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIndexes", reflect.TypeOf((*MockIMongodb)(nil).CreateIndexes), indexes)
+}
+
+// CreateIndexesCtx mocks base method.
+func (m *MockIMongodb) CreateIndexesCtx(ctx context.Context, indexes []options.IndexModel) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateIndexesCtx", ctx, indexes)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateIndexesCtx indicates an expected call of CreateIndexesCtx.
+func (mr *MockIMongodbMockRecorder) CreateIndexesCtx(ctx, indexes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIndexesCtx", reflect.TypeOf((*MockIMongodb)(nil).CreateIndexesCtx), ctx, indexes)
+}
+
+// CreateOneIndex mocks base method.
+func (m *MockIMongodb) CreateOneIndex(index options.IndexModel) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateOneIndex", index)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateOneIndex indicates an expected call of CreateOneIndex.
+func (mr *MockIMongodbMockRecorder) CreateOneIndex(index interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOneIndex", reflect.TypeOf((*MockIMongodb)(nil).CreateOneIndex), index)
+}
+
+// CreateOneIndexCtx mocks base method.
+func (m *MockIMongodb) CreateOneIndexCtx(ctx context.Context, index options.IndexModel) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateOneIndexCtx", ctx, index)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateOneIndexCtx indicates an expected call of CreateOneIndexCtx.
+func (mr *MockIMongodbMockRecorder) CreateOneIndexCtx(ctx, index interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOneIndexCtx", reflect.TypeOf((*MockIMongodb)(nil).CreateOneIndexCtx), ctx, index)
+}
+
+// DropAllIndexes mocks base method.
+func (m *MockIMongodb) DropAllIndexes() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DropAllIndexes")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DropAllIndexes indicates an expected call of DropAllIndexes.
+func (mr *MockIMongodbMockRecorder) DropAllIndexes() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DropAllIndexes", reflect.TypeOf((*MockIMongodb)(nil).DropAllIndexes))
+}
+
+// DropAllIndexesCtx mocks base method.
+func (m *MockIMongodb) DropAllIndexesCtx(ctx context.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DropAllIndexesCtx", ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DropAllIndexesCtx indicates an expected call of DropAllIndexesCtx.
+func (mr *MockIMongodbMockRecorder) DropAllIndexesCtx(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DropAllIndexesCtx", reflect.TypeOf((*MockIMongodb)(nil).DropAllIndexesCtx), ctx)
+}
+
+// DropIndex mocks base method.
+func (m *MockIMongodb) DropIndex(indexes []string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DropIndex", indexes)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DropIndex indicates an expected call of DropIndex.
+func (mr *MockIMongodbMockRecorder) DropIndex(indexes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DropIndex", reflect.TypeOf((*MockIMongodb)(nil).DropIndex), indexes)
+}
+
+// DropIndexCtx mocks base method.
+func (m *MockIMongodb) DropIndexCtx(ctx context.Context, indexes []string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DropIndexCtx", ctx, indexes)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DropIndexCtx indicates an expected call of DropIndexCtx.
+func (mr *MockIMongodbMockRecorder) DropIndexCtx(ctx, indexes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DropIndexCtx", reflect.TypeOf((*MockIMongodb)(nil).DropIndexCtx), ctx, indexes)
+}
+
+// DropCollection mocks base method.
+func (m *MockIMongodb) DropCollection() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DropCollection")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DropCollection indicates an expected call of DropCollection.
+func (mr *MockIMongodbMockRecorder) DropCollection() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DropCollection", reflect.TypeOf((*MockIMongodb)(nil).DropCollection))
+}
+
+// DropCollectionCtx mocks base method.
+func (m *MockIMongodb) DropCollectionCtx(ctx context.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DropCollectionCtx", ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DropCollectionCtx indicates an expected call of DropCollectionCtx.
+func (mr *MockIMongodbMockRecorder) DropCollectionCtx(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DropCollectionCtx", reflect.TypeOf((*MockIMongodb)(nil).DropCollectionCtx), ctx)
+}
+
+// CloneCollection mocks base method.
+func (m *MockIMongodb) CloneCollection() (*mongo.Collection, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CloneCollection")
+	ret0, _ := ret[0].(*mongo.Collection)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CloneCollection indicates an expected call of CloneCollection.
+func (mr *MockIMongodbMockRecorder) CloneCollection() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CloneCollection", reflect.TypeOf((*MockIMongodb)(nil).CloneCollection))
+}
+
+// GetCollectionName mocks base method.
+func (m *MockIMongodb) GetCollectionName() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCollectionName")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetCollectionName indicates an expected call of GetCollectionName.
+func (mr *MockIMongodbMockRecorder) GetCollectionName() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCollectionName", reflect.TypeOf((*MockIMongodb)(nil).GetCollectionName))
+}
+
+// Find mocks base method.
+func (m *MockIMongodb) Find(filter interface{}, options ...options.FindOptions) adapter.IMongodbQuery {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{filter}
+	for _, a := range options {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Find", varargs...)
+	ret0, _ := ret[0].(adapter.IMongodbQuery)
+	return ret0
+}
+
+// Find indicates an expected call of Find.
+func (mr *MockIMongodbMockRecorder) Find(filter interface{}, options ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{filter}, options...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockIMongodb)(nil).Find), varargs...)
+}
+
+// FindCtx mocks base method.
+func (m *MockIMongodb) FindCtx(ctx context.Context, filter interface{}, options ...options.FindOptions) adapter.IMongodbQuery {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter}
+	for _, a := range options {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindCtx", varargs...)
+	ret0, _ := ret[0].(adapter.IMongodbQuery)
+	return ret0
+}
+
+// FindCtx indicates an expected call of FindCtx.
+func (mr *MockIMongodbMockRecorder) FindCtx(ctx, filter interface{}, options ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter}, options...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindCtx", reflect.TypeOf((*MockIMongodb)(nil).FindCtx), varargs...)
+}
+
+// GetClient mocks base method.
+func (m *MockIMongodb) GetClient() *mongodb.Client {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetClient")
+	ret0, _ := ret[0].(*mongodb.Client)
+	return ret0
+}
+
+// GetClient indicates an expected call of GetClient.
+func (mr *MockIMongodbMockRecorder) GetClient() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClient", reflect.TypeOf((*MockIMongodb)(nil).GetClient))
+}
+
+// Session mocks base method.
+func (m *MockIMongodb) Session() (*qmgo.Session, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Session")
+	ret0, _ := ret[0].(*qmgo.Session)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Session indicates an expected call of Session.
+func (mr *MockIMongodbMockRecorder) Session() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Session", reflect.TypeOf((*MockIMongodb)(nil).Session))
+}
+
+// DoTransaction mocks base method.
+func (m *MockIMongodb) DoTransaction(ctx context.Context, callback func(context.Context) (interface{}, error)) (interface{}, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DoTransaction", ctx, callback)
+	ret0, _ := ret[0].(interface{})
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DoTransaction indicates an expected call of DoTransaction.
+func (mr *MockIMongodbMockRecorder) DoTransaction(ctx, callback interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoTransaction", reflect.TypeOf((*MockIMongodb)(nil).DoTransaction), ctx, callback)
+}
+
+// MockIMongodbQuery is a mock of IMongodbQuery interface.
+type MockIMongodbQuery struct {
+	ctrl     *gomock.Controller
+	recorder *MockIMongodbQueryMockRecorder
+}
+
+// MockIMongodbQueryMockRecorder is the mock recorder for MockIMongodbQuery.
+type MockIMongodbQueryMockRecorder struct {
+	mock *MockIMongodbQuery
+}
+
+// NewMockIMongodbQuery creates a new mock instance.
+func NewMockIMongodbQuery(ctrl *gomock.Controller) *MockIMongodbQuery {
+	mock := &MockIMongodbQuery{ctrl: ctrl}
+	mock.recorder = &MockIMongodbQueryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIMongodbQuery) EXPECT() *MockIMongodbQueryMockRecorder {
+	return m.recorder
+}
+
+// Sort mocks base method.
+func (m *MockIMongodbQuery) Sort(fields ...string) qmgo.QueryI {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Sort", varargs...)
+	ret0, _ := ret[0].(qmgo.QueryI)
+	return ret0
+}
+
+// Sort indicates an expected call of Sort.
+func (mr *MockIMongodbQueryMockRecorder) Sort(fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sort", reflect.TypeOf((*MockIMongodbQuery)(nil).Sort), fields...)
+}
+
+// Select mocks base method.
+func (m *MockIMongodbQuery) Select(selector interface{}) qmgo.QueryI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Select", selector)
+	ret0, _ := ret[0].(qmgo.QueryI)
+	return ret0
+}
+
+// Select indicates an expected call of Select.
+func (mr *MockIMongodbQueryMockRecorder) Select(selector interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Select", reflect.TypeOf((*MockIMongodbQuery)(nil).Select), selector)
+}
+
+// Skip mocks base method.
+func (m *MockIMongodbQuery) Skip(n int64) qmgo.QueryI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Skip", n)
+	ret0, _ := ret[0].(qmgo.QueryI)
+	return ret0
+}
+
+// Skip indicates an expected call of Skip.
+func (mr *MockIMongodbQueryMockRecorder) Skip(n interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Skip", reflect.TypeOf((*MockIMongodbQuery)(nil).Skip), n)
+}
+
+// Limit mocks base method.
+func (m *MockIMongodbQuery) Limit(n int64) qmgo.QueryI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Limit", n)
+	ret0, _ := ret[0].(qmgo.QueryI)
+	return ret0
+}
+
+// Limit indicates an expected call of Limit.
+func (mr *MockIMongodbQueryMockRecorder) Limit(n interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Limit", reflect.TypeOf((*MockIMongodbQuery)(nil).Limit), n)
+}
+
+// One mocks base method.
+func (m *MockIMongodbQuery) One(result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "One", result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// One indicates an expected call of One.
+func (mr *MockIMongodbQueryMockRecorder) One(result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "One", reflect.TypeOf((*MockIMongodbQuery)(nil).One), result)
+}
+
+// All mocks base method.
+func (m *MockIMongodbQuery) All(result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "All", result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// All indicates an expected call of All.
+func (mr *MockIMongodbQueryMockRecorder) All(result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockIMongodbQuery)(nil).All), result)
+}
+
+// Count mocks base method.
+func (m *MockIMongodbQuery) Count() (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count")
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockIMongodbQueryMockRecorder) Count() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockIMongodbQuery)(nil).Count))
+}
+
+// Distinct mocks base method.
+func (m *MockIMongodbQuery) Distinct(key string, result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Distinct", key, result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Distinct indicates an expected call of Distinct.
+func (mr *MockIMongodbQueryMockRecorder) Distinct(key, result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Distinct", reflect.TypeOf((*MockIMongodbQuery)(nil).Distinct), key, result)
+}
+
+// Cursor mocks base method.
+func (m *MockIMongodbQuery) Cursor() qmgo.CursorI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Cursor")
+	ret0, _ := ret[0].(qmgo.CursorI)
+	return ret0
+}
+
+// Cursor indicates an expected call of Cursor.
+func (mr *MockIMongodbQueryMockRecorder) Cursor() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Cursor", reflect.TypeOf((*MockIMongodbQuery)(nil).Cursor))
+}
+
+// Apply mocks base method.
+func (m *MockIMongodbQuery) Apply(change qmgo.Change, result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Apply", change, result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Apply indicates an expected call of Apply.
+func (mr *MockIMongodbQueryMockRecorder) Apply(change, result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Apply", reflect.TypeOf((*MockIMongodbQuery)(nil).Apply), change, result)
+}
+
+// Hint mocks base method.
+func (m *MockIMongodbQuery) Hint(hint interface{}) qmgo.QueryI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Hint", hint)
+	ret0, _ := ret[0].(qmgo.QueryI)
+	return ret0
+}
+
+// Hint indicates an expected call of Hint.
+func (mr *MockIMongodbQueryMockRecorder) Hint(hint interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hint", reflect.TypeOf((*MockIMongodbQuery)(nil).Hint), hint)
 }
