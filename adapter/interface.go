@@ -10,11 +10,15 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/pinguo/pgo2/client/maxmind"
 	"github.com/pinguo/pgo2/client/memcache"
+	"github.com/pinguo/pgo2/client/mongodb"
 	"github.com/pinguo/pgo2/client/phttp"
 	"github.com/pinguo/pgo2/client/rabbitmq"
 	"github.com/pinguo/pgo2/iface"
 	"github.com/pinguo/pgo2/value"
+	"github.com/qiniu/qmgo"
+	opts "github.com/qiniu/qmgo/options"
 	"github.com/streadway/amqp"
+	"go.mongodb.org/mongo-driver/mongo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -222,4 +226,55 @@ type IOrm interface {
 	GetRowsAffected() int64
 	GetStatement() *gorm.Statement
 	GetConfig() *gorm.Config
+}
+
+type IMongodb interface {
+	iface.IObject
+	InsertOne(doc interface{}, opts ...opts.InsertOneOptions) (result *qmgo.InsertOneResult, err error)
+	InsertOneCtx(ctx context.Context, doc interface{}, opts ...opts.InsertOneOptions) (result *qmgo.InsertOneResult, err error)
+	InsertMany(docs interface{}, opts ...opts.InsertManyOptions) (result *qmgo.InsertManyResult, err error)
+	InsertManyCtx(ctx context.Context, docs interface{}, opts ...opts.InsertManyOptions) (result *qmgo.InsertManyResult, err error)
+	Upsert(filter interface{}, replacement interface{}, opts ...opts.UpsertOptions) (result *qmgo.UpdateResult, err error)
+	UpsertCtx(ctx context.Context, filter interface{}, replacement interface{}, opts ...opts.UpsertOptions) (result *qmgo.UpdateResult, err error)
+	UpsertId(id interface{}, replacement interface{}, opts ...opts.UpsertOptions) (result *qmgo.UpdateResult, err error)
+	UpsertIdCtx(ctx context.Context, id interface{}, replacement interface{}, opts ...opts.UpsertOptions) (result *qmgo.UpdateResult, err error)
+	UpdateOne(filter interface{}, update interface{}, opts ...opts.UpdateOptions) (err error)
+	UpdateOneCtx(ctx context.Context, filter interface{}, update interface{}, opts ...opts.UpdateOptions) (err error)
+	UpdateId(id interface{}, update interface{}, opts ...opts.UpdateOptions) (err error)
+	UpdateIdCtx(ctx context.Context, id interface{}, update interface{}, opts ...opts.UpdateOptions) (err error)
+	UpdateAll(filter interface{}, update interface{}, opts ...opts.UpdateOptions) (result *qmgo.UpdateResult, err error)
+	UpdateAllCtx(ctx context.Context, filter interface{}, update interface{}, opts ...opts.UpdateOptions) (result *qmgo.UpdateResult, err error)
+	ReplaceOne(filter interface{}, doc interface{}, opts ...opts.ReplaceOptions) (err error)
+	ReplaceOneCtx(ctx context.Context, filter interface{}, doc interface{}, opts ...opts.ReplaceOptions) (err error)
+	Remove(filter interface{}, opts ...opts.RemoveOptions) (err error)
+	RemoveCtx(ctx context.Context, filter interface{}, opts ...opts.RemoveOptions) (err error)
+	RemoveId(id interface{}, opts ...opts.RemoveOptions) (err error)
+	RemoveIdCtx(ctx context.Context, id interface{}, opts ...opts.RemoveOptions) (err error)
+	RemoveAll(filter interface{}, opts ...opts.RemoveOptions) (result *qmgo.DeleteResult, err error)
+	RemoveAllCtx(ctx context.Context, filter interface{}, opts ...opts.RemoveOptions) (result *qmgo.DeleteResult, err error)
+	Aggregate(pipeline interface{}) qmgo.AggregateI
+	AggregateCtx(ctx context.Context, pipeline interface{}) qmgo.AggregateI
+	EnsureIndexes(uniques []string, indexes []string) (err error)
+	EnsureIndexesCtx(ctx context.Context, uniques []string, indexes []string)(err error)
+	CreateIndexes(indexes []opts.IndexModel) (err error)
+	CreateIndexesCtx(ctx context.Context, indexes []opts.IndexModel) (err error)
+	CreateOneIndex(index opts.IndexModel) error
+	CreateOneIndexCtx(ctx context.Context, index opts.IndexModel) (err error)
+	DropAllIndexes() (err error)
+	DropAllIndexesCtx(ctx context.Context) (err error)
+	DropIndex(indexes []string) error
+	DropIndexCtx(ctx context.Context, indexes []string) error
+	DropCollection() error
+	DropCollectionCtx(ctx context.Context) error
+	CloneCollection() (*mongo.Collection, error)
+	GetCollectionName() string
+	Find(filter interface{}, options ...opts.FindOptions) IMongodbQuery
+	FindCtx(ctx context.Context, filter interface{}, options ...opts.FindOptions) IMongodbQuery
+    GetClient() *mongodb.Client
+	Session() (*qmgo.Session, error)
+	DoTransaction(ctx context.Context, callback func(sessCtx context.Context) (interface{}, error)) (interface{}, error)
+}
+
+type IMongodbQuery interface {
+	qmgo.QueryI
 }
