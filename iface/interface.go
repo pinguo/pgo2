@@ -18,7 +18,7 @@ type IBind interface {
 }
 
 type IObject interface {
-	SetContext(ctx IContext)
+	SetContext(ctx IContext) IObject
 	Context() IContext
 	GetObj(obj IObject) IObject
 	GetObjPool(className string, funcName IObjPoolFunc, params ...interface{}) IObject

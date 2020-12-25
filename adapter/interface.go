@@ -252,8 +252,8 @@ type IMongodb interface {
 	RemoveIdCtx(ctx context.Context, id interface{}, opts ...opts.RemoveOptions) (err error)
 	RemoveAll(filter interface{}, opts ...opts.RemoveOptions) (result *qmgo.DeleteResult, err error)
 	RemoveAllCtx(ctx context.Context, filter interface{}, opts ...opts.RemoveOptions) (result *qmgo.DeleteResult, err error)
-	Aggregate(pipeline interface{}) qmgo.AggregateI
-	AggregateCtx(ctx context.Context, pipeline interface{}) qmgo.AggregateI
+	Aggregate(pipeline interface{}) IMongodbAggregate
+	AggregateCtx(ctx context.Context, pipeline interface{}) IMongodbAggregate
 	EnsureIndexes(uniques []string, indexes []string) (err error)
 	EnsureIndexesCtx(ctx context.Context, uniques []string, indexes []string)(err error)
 	CreateIndexes(indexes []opts.IndexModel) (err error)
@@ -277,4 +277,8 @@ type IMongodb interface {
 
 type IMongodbQuery interface {
 	qmgo.QueryI
+}
+
+type IMongodbAggregate interface {
+	qmgo.AggregateI
 }

@@ -13,11 +13,13 @@ import (
 
 var MongodbClass string
 var MongodbCQueryClass string
+var MongodbCAggregate string
 
 func init() {
 	container := pgo2.App().Container()
 	MongodbClass = container.Bind(&Mongodb{})
 	MongodbCQueryClass = container.Bind(&CQuery{})
+	MongodbCAggregate = container.Bind(&CAggregate{})
 }
 
 // NewMongodb of Mongodb Client, add context support.
@@ -299,20 +301,18 @@ func (m *Mongodb) RemoveAllCtx(ctx context.Context, filter interface{}, opts ...
 }
 
 // Aggregate executes an aggregate command against the collection and returns a AggregateI to get resulting documents.
-func (m *Mongodb) Aggregate(pipeline interface{}) qmgo.AggregateI {
-	//profile := "mongodb.Aggregate"
-	//m.Context().ProfileStart(profile)
-	//defer m.Context().ProfileStop(profile)
+func (m *Mongodb) Aggregate(pipeline interface{}) IMongodbAggregate {
+	ctx,cFunc:=context.WithTimeout(context.Background(),m.client.ReadTimeout())
+	aggregate:=m.client.MClient.Database(m.db).Collection(m.coll).Aggregate(ctx, pipeline)
 
-	return m.client.MClient.Database(m.db).Collection(m.coll).Aggregate(context.Background(), pipeline)
+	return m.GetObjBoxCtx(m.Context(), MongodbCAggregate, aggregate, cFunc).(IMongodbAggregate)
+
 }
 
-func (m *Mongodb) AggregateCtx(ctx context.Context, pipeline interface{}) qmgo.AggregateI {
-	//profile := "mongodb.AggregateCtx"
-	//m.Context().ProfileStart(profile)
-	//defer m.Context().ProfileStop(profile)
+func (m *Mongodb) AggregateCtx(ctx context.Context, pipeline interface{}) IMongodbAggregate {
+	aggregate:=m.client.MClient.Database(m.db).Collection(m.coll).Aggregate(ctx, pipeline)
 
-	return m.client.MClient.Database(m.db).Collection(m.coll).Aggregate(ctx, pipeline)
+	return m.GetObjBoxCtx(m.Context(), MongodbCAggregate, aggregate).(IMongodbAggregate)
 }
 
 // EnsureIndexes Deprecated
@@ -568,4 +568,40 @@ func (c *CQuery) Apply(change qmgo.Change, result interface{}) error {
 	}
 
 	return c.QueryI.Apply(change, result)
+}
+
+type CAggregate struct {
+	pgo2.Object
+	qmgo.AggregateI
+	ctxCancel context.CancelFunc
+}
+
+func (c *CAggregate) Prepare(q qmgo.AggregateI,dftCtxCancel ...context.CancelFunc) {
+	c.AggregateI = q
+	if len(dftCtxCancel) > 0 {
+		c.ctxCancel = dftCtxCancel[0]
+	}
+
+}
+
+func (c *CAggregate) All(results interface{}) error{
+	profile := "mongodb.aggregate.All"
+	c.Context().ProfileStart(profile)
+	defer c.Context().ProfileStop(profile)
+	if c.ctxCancel != nil {
+		defer c.ctxCancel()
+	}
+
+	return c.AggregateI.All(results)
+}
+
+func (c *CAggregate) One(results interface{}) error{
+	profile := "mongodb.aggregate.One"
+	c.Context().ProfileStart(profile)
+	defer c.Context().ProfileStop(profile)
+	if c.ctxCancel != nil {
+		defer c.ctxCancel()
+	}
+
+	return c.AggregateI.One(results)
 }
