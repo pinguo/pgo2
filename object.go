@@ -15,8 +15,9 @@ func (o *Object) Context() iface.IContext {
 }
 
 // SetContext set context of this object
-func (o *Object) SetContext(ctx iface.IContext) {
+func (o *Object) SetContext(ctx iface.IContext) iface.IObject{
 	o.context = ctx
+	return o
 }
 
 // GetObject create new object

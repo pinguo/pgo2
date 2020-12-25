@@ -1542,9 +1542,11 @@ func (m *MockITx) EXPECT() *MockITxMockRecorder {
 }
 
 // SetContext mocks base method.
-func (m *MockITx) SetContext(ctx iface.IContext) {
+func (m *MockITx) SetContext(ctx iface.IContext) iface.IObject {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SetContext", ctx)
+	ret := m.ctrl.Call(m, "SetContext", ctx)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
 }
 
 // SetContext indicates an expected call of SetContext.
@@ -1903,9 +1905,11 @@ func (m *MockIRow) EXPECT() *MockIRowMockRecorder {
 }
 
 // SetContext mocks base method.
-func (m *MockIRow) SetContext(ctx iface.IContext) {
+func (m *MockIRow) SetContext(ctx iface.IContext) iface.IObject {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SetContext", ctx)
+	ret := m.ctrl.Call(m, "SetContext", ctx)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
 }
 
 // SetContext indicates an expected call of SetContext.
@@ -2112,9 +2116,11 @@ func (m *MockIStmt) EXPECT() *MockIStmtMockRecorder {
 }
 
 // SetContext mocks base method.
-func (m *MockIStmt) SetContext(ctx iface.IContext) {
+func (m *MockIStmt) SetContext(ctx iface.IContext) iface.IObject {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SetContext", ctx)
+	ret := m.ctrl.Call(m, "SetContext", ctx)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
 }
 
 // SetContext indicates an expected call of SetContext.
@@ -2426,9 +2432,11 @@ func (m *MockIOrm) EXPECT() *MockIOrmMockRecorder {
 }
 
 // SetContext mocks base method.
-func (m *MockIOrm) SetContext(ctx iface.IContext) {
+func (m *MockIOrm) SetContext(ctx iface.IContext) iface.IObject {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SetContext", ctx)
+	ret := m.ctrl.Call(m, "SetContext", ctx)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
 }
 
 // SetContext indicates an expected call of SetContext.
@@ -3667,9 +3675,11 @@ func (m *MockIMongodb) EXPECT() *MockIMongodbMockRecorder {
 }
 
 // SetContext mocks base method.
-func (m *MockIMongodb) SetContext(ctx iface.IContext) {
+func (m *MockIMongodb) SetContext(ctx iface.IContext) iface.IObject {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SetContext", ctx)
+	ret := m.ctrl.Call(m, "SetContext", ctx)
+	ret0, _ := ret[0].(iface.IObject)
+	return ret0
 }
 
 // SetContext indicates an expected call of SetContext.
@@ -4265,10 +4275,10 @@ func (mr *MockIMongodbMockRecorder) RemoveAllCtx(ctx, filter interface{}, opts .
 }
 
 // Aggregate mocks base method.
-func (m *MockIMongodb) Aggregate(pipeline interface{}) qmgo.AggregateI {
+func (m *MockIMongodb) Aggregate(pipeline interface{}) adapter.IMongodbAggregate {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Aggregate", pipeline)
-	ret0, _ := ret[0].(qmgo.AggregateI)
+	ret0, _ := ret[0].(adapter.IMongodbAggregate)
 	return ret0
 }
 
@@ -4279,10 +4289,10 @@ func (mr *MockIMongodbMockRecorder) Aggregate(pipeline interface{}) *gomock.Call
 }
 
 // AggregateCtx mocks base method.
-func (m *MockIMongodb) AggregateCtx(ctx context.Context, pipeline interface{}) qmgo.AggregateI {
+func (m *MockIMongodb) AggregateCtx(ctx context.Context, pipeline interface{}) adapter.IMongodbAggregate {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AggregateCtx", ctx, pipeline)
-	ret0, _ := ret[0].(qmgo.AggregateI)
+	ret0, _ := ret[0].(adapter.IMongodbAggregate)
 	return ret0
 }
 
@@ -4751,4 +4761,69 @@ func (m *MockIMongodbQuery) Hint(hint interface{}) qmgo.QueryI {
 func (mr *MockIMongodbQueryMockRecorder) Hint(hint interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hint", reflect.TypeOf((*MockIMongodbQuery)(nil).Hint), hint)
+}
+
+// MockIMongodbAggregate is a mock of IMongodbAggregate interface.
+type MockIMongodbAggregate struct {
+	ctrl     *gomock.Controller
+	recorder *MockIMongodbAggregateMockRecorder
+}
+
+// MockIMongodbAggregateMockRecorder is the mock recorder for MockIMongodbAggregate.
+type MockIMongodbAggregateMockRecorder struct {
+	mock *MockIMongodbAggregate
+}
+
+// NewMockIMongodbAggregate creates a new mock instance.
+func NewMockIMongodbAggregate(ctrl *gomock.Controller) *MockIMongodbAggregate {
+	mock := &MockIMongodbAggregate{ctrl: ctrl}
+	mock.recorder = &MockIMongodbAggregateMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIMongodbAggregate) EXPECT() *MockIMongodbAggregateMockRecorder {
+	return m.recorder
+}
+
+// All mocks base method.
+func (m *MockIMongodbAggregate) All(results interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "All", results)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// All indicates an expected call of All.
+func (mr *MockIMongodbAggregateMockRecorder) All(results interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockIMongodbAggregate)(nil).All), results)
+}
+
+// One mocks base method.
+func (m *MockIMongodbAggregate) One(result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "One", result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// One indicates an expected call of One.
+func (mr *MockIMongodbAggregateMockRecorder) One(result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "One", reflect.TypeOf((*MockIMongodbAggregate)(nil).One), result)
+}
+
+// Iter mocks base method.
+func (m *MockIMongodbAggregate) Iter() qmgo.CursorI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Iter")
+	ret0, _ := ret[0].(qmgo.CursorI)
+	return ret0
+}
+
+// Iter indicates an expected call of Iter.
+func (mr *MockIMongodbAggregateMockRecorder) Iter() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Iter", reflect.TypeOf((*MockIMongodbAggregate)(nil).Iter))
 }
