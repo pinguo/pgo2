@@ -102,6 +102,7 @@ func (c *Controller) HandlePanic(v interface{}, debug bool) {
 // Response response values action returned
 func (c *Controller) Response(v interface{}, err error) {
 	if err != nil {
+		errCtl := App().Router().ErrorController(c.Context()).(iface.IErrorController)
 		if pErr, ok := err.(*perror.Error); ok {
 			switch pErr.ErrType() {
 			case perror.ErrTypeError:
@@ -110,11 +111,11 @@ func (c *Controller) Response(v interface{}, err error) {
 				c.Context().Warn(pErr.Error())
 			}
 
-			c.Json(nil, pErr.Status(), pErr.Message())
+			errCtl.Error(pErr.Status(), pErr.Message())
 			return
 		}
 
-		c.Error(http.StatusInternalServerError, err.Error())
+		errCtl.Error(http.StatusInternalServerError, err.Error())
 		return
 	}
 
