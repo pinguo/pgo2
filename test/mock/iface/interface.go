@@ -305,6 +305,18 @@ func (mr *MockIControllerMockRecorder) HandlePanic(v, debug interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HandlePanic", reflect.TypeOf((*MockIController)(nil).HandlePanic), v, debug)
 }
 
+// Response mocks base method.
+func (m *MockIController) Response(v interface{}, err error) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Response", v, err)
+}
+
+// Response indicates an expected call of Response.
+func (mr *MockIControllerMockRecorder) Response(v, err interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Response", reflect.TypeOf((*MockIController)(nil).Response), v, err)
+}
+
 // MockIErrorController is a mock of IErrorController interface.
 type MockIErrorController struct {
 	ctrl     *gomock.Controller
