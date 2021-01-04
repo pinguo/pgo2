@@ -363,7 +363,27 @@ func (s *Server) HandleRequest(ctx iface.IContext) {
 	// before action hook
 	controller.BeforeAction(actionId)
 	// call action method
-	action.Call(callParams)
+	res := action.Call(callParams)
+	if len(res) > 0 {
+		controller.Response(s.parseActionResult(res))
+	}
+}
+
+func (s *Server) parseActionResult(result []reflect.Value) (interface{}, error) {
+	switch len(result) {
+	case 1:
+		v := result[0].Interface()
+		err, isErr := v.(error)
+		if isErr {
+			return nil, err
+		}
+		return v, nil
+	case 2:
+		err, _ := result[1].Interface().(error)
+		return result[0].Interface(), err
+	default:
+		panic("Server: too many values returned by action")
+	}
 }
 
 func (s *Server) help(rv, action reflect.Value, path string) bool {
@@ -457,7 +477,7 @@ func (s *Server) checkListen(addr string) {
 	}
 
 	network := "tcp"
-	tcpAddr, err := net.ResolveTCPAddr(network, addr);
+	tcpAddr, err := net.ResolveTCPAddr(network, addr)
 	if err != nil {
 		panic("ResolveTCPAddr err, " + err.Error())
 	}

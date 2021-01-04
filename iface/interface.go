@@ -34,6 +34,7 @@ type IController interface {
 	BeforeAction(action string)
 	AfterAction(action string)
 	HandlePanic(v interface{}, debug bool)
+	Response(v interface{}, err error)
 }
 
 type IErrorController interface {
