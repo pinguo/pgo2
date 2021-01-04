@@ -99,6 +99,33 @@ func (c *Controller) HandlePanic(v interface{}, debug bool) {
 
 }
 
+// Response response values action returned
+func (c *Controller) Response(v interface{}, err error) {
+	if err != nil {
+		if pErr, ok := err.(*perror.Error); ok {
+			switch pErr.ErrType() {
+			case perror.ErrTypeError:
+				c.Context().Error(pErr.Error())
+			case perror.ErrTypeWarn:
+				c.Context().Warn(pErr.Error())
+			}
+
+			c.Json(nil, pErr.Status(), pErr.Message())
+			return
+		}
+
+		c.Error(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if r, isRender := v.(render.Render); isRender {
+		c.Render(r)
+		return
+	}
+
+	c.Json(v, 200)
+}
+
 // Redirect output redirect response
 func (c *Controller) Redirect(location string, permanent bool) {
 	ctx := c.Context()
