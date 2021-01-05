@@ -1,6 +1,10 @@
 package redis
 
-import "time"
+import (
+	"time"
+
+	"github.com/pinguo/pgo2/value"
+)
 
 const (
 	defaultComponentId = "redis"
@@ -27,6 +31,7 @@ const (
 	errSendFailed  = "redis: send request failed, "
 	errReadFailed  = "redis: read response failed, "
 	errCorrupted   = "redis: corrupted response, "
+	errParamsNum   = "redis: The number of arguments must be greater than or equal to 2 and even "
 
 	PgoMasterSlaveCheckPrefix = "pgo_master_slave_check_"
 
@@ -95,4 +100,16 @@ type IPool interface {
 	startCheck() error
 	check(addr, aType string)
 	getAddrByKey(cmd, key, prevDft string) string
+}
+
+
+// Z represents sorted set member.
+type Z struct {
+	Score  float64
+	Member interface{}
+}
+
+type ZV struct {
+	Score  *value.Value
+	Member *value.Value
 }
