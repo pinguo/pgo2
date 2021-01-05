@@ -230,6 +230,312 @@ func (r *Redis) Do(cmd string, args ...interface{}) interface{} {
 	return res
 }
 
+func (r *Redis) ExpireAt(key string, timestamp int64) bool {
+	profile := "Redis.ExpireAt"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.ExpireAt(key, timestamp)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) Expire(key string, expire time.Duration) bool {
+	profile := "Redis.Expire"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.Expire(key, expire)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) RPush(key string, values ...interface{}) bool {
+	profile := "Redis.RPush"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.RPush(key, values...)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) LPush(key string, values ...interface{}) bool {
+	profile := "Redis.LPush"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.LPush(key, values...)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) RPop(key string) *value.Value {
+	profile := "Redis.RPop"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.RPop(key)
+	r.parseErr(err)
+
+	hit := 0
+	if res != nil && res.Valid() {
+		hit += 1
+	}
+
+	r.Context().Counting(profile, hit, 1)
+
+	return res
+}
+
+func (r *Redis) LPop(key string) *value.Value {
+	profile := "Redis.LPop"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.LPop(key)
+	r.parseErr(err)
+
+	hit := 0
+	if res != nil && res.Valid() {
+		hit += 1
+	}
+
+	r.Context().Counting(profile, hit, 1)
+
+	return res
+}
+
+func (r *Redis) LLen(key string) int {
+	profile := "Redis.LLen"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.LLen(key)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) HDel(key string, fields ...interface{}) int {
+	profile := "Redis.HDel"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.HDel(key,fields...)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) HExists(key, field string) bool {
+	profile := "Redis.HExists"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.HExists(key, field)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) HSet(key string, fv ...interface{}) bool {
+	profile := "Redis.HSet"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.HSet(key,fv...)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) HGet(key,field string) *value.Value {
+	profile := "Redis.HGet"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.HGet(key,field)
+	r.parseErr(err)
+	hit := 0
+	if res != nil && res.Valid() {
+		hit = 1
+	}
+
+	r.Context().Counting(profile, hit, 1)
+	return res
+}
+
+func (r *Redis) HGetAll(key string)map[string]*value.Value {
+	profile := "Redis.HGetAll"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.HGetAll(key)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) HMSet(key string, fv ...interface{}) bool {
+	profile := "Redis.HMSet"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.HMSet(key,fv...)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) HMGet(key string,fields ...interface{}) map[string]*value.Value {
+	profile := "Redis.HMGet"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.HMGet(key,fields...)
+	r.parseErr(err)
+	hit := 0
+	for _, v := range res {
+		if v != nil && v.Valid() {
+			hit += 1
+		}
+	}
+
+	r.Context().Counting(profile, hit, len(fields))
+	return res
+}
+
+func (r *Redis) HIncrBy(key, field string, delta int) int {
+	profile := "Redis.HIncrBy"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.HIncrBy(key,field, delta)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) ZRange(key string, start, end int) []*value.Value {
+	profile := "Redis.ZRange"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.ZRange(key,start, end)
+	r.parseErr(err)
+
+	return res
+}
+
+
+func (r *Redis) ZRevRange(key string, start, end int) []*value.Value {
+	profile := "Redis.ZRevRange"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.ZRevRange(key,start, end)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) ZRangeWithScores(key string, start, end int) []*redis.ZV {
+	profile := "Redis.ZRangeWithScores"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.ZRangeWithScores(key,start, end)
+	r.parseErr(err)
+
+	return res
+}
+
+
+func (r *Redis) ZRevRangeWithScores(key string, start, end int) []*redis.ZV {
+	profile := "Redis.ZRevRangeWithScores"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.ZRevRangeWithScores(key,start, end)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) ZAdd(key string, members ...*redis.Z) int {
+	profile := "Redis.ZAdd"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.ZAdd(key,members...)
+	r.parseErr(err)
+
+	return res
+}
+
+func (r *Redis) ZAddOpt(key string,opts []string, members ...*redis.Z) (int,error) {
+	profile := "Redis.ZAddOpt"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.ZAddOpt(key,opts,members...)
+	r.parseErr(err)
+
+	return res,err
+}
+
+func (r *Redis) ZCard(key string) int {
+	profile := "Redis.ZCard"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.ZCard(key)
+	r.parseErr(err)
+
+	return res
+}
+
+
+func (r *Redis) ZRem(key string,members ...interface{}) int {
+	profile := "Redis.ZRem"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.ZRem(key,members...)
+	r.parseErr(err)
+
+	return res
+}
+
+
 func (r *Redis) parseErr(err error) {
 	if err != nil {
 		panic(err)

@@ -13,6 +13,7 @@ import (
 	"github.com/pinguo/pgo2/client/mongodb"
 	"github.com/pinguo/pgo2/client/phttp"
 	"github.com/pinguo/pgo2/client/rabbitmq"
+	"github.com/pinguo/pgo2/client/redis"
 	"github.com/pinguo/pgo2/iface"
 	"github.com/pinguo/pgo2/value"
 	"github.com/qiniu/qmgo"
@@ -98,6 +99,29 @@ type IRedis interface {
 	Exists(key string) bool
 	Incr(key string, delta int) int
 	Do(cmd string, args ...interface{}) interface{}
+	ExpireAt(key string, timestamp int64) bool
+	Expire(key string, expire time.Duration) bool
+	RPush(key string, values ...interface{}) bool
+	LPush(key string, values ...interface{}) bool
+	RPop(key string) *value.Value
+	LPop(key string) *value.Value
+	LLen(key string) int
+	HDel(key string,fields...interface{}) int
+	HExists(key, field string) bool
+	HSet(key string, fv ...interface{}) bool
+	HGet(key, field string) *value.Value
+	HGetAll(key string) map[string]*value.Value
+	HMSet(key string, fv ...interface{}) bool
+	HMGet(key string, fields ...interface{}) map[string]*value.Value
+	HIncrBy(key, field string, delta int) int
+	ZRange(key string, start, end int) []*value.Value
+	ZRevRange(key string, start, end int) []*value.Value
+	ZRangeWithScores(key string, start, end int) []*redis.ZV
+	ZRevRangeWithScores(key string, start, end int) []*redis.ZV
+	ZAdd(key string, members ...*redis.Z) int
+	ZAddOpt(key string,opts []string, members ...*redis.Z) (int,error)
+	ZCard(key string) int
+	ZRem(key string,members ...interface{}) int
 }
 
 type IRabbitMq interface {
@@ -282,3 +306,4 @@ type IMongodbQuery interface {
 type IMongodbAggregate interface {
 	qmgo.AggregateI
 }
+
