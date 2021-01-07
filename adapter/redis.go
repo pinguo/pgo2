@@ -205,6 +205,18 @@ func (r *Redis) Incr(key string, delta int) int {
 	return res
 }
 
+func (r *Redis) IncrBy(key string, delta int) (int, error) {
+	profile := "Redis.IncrBy"
+	r.Context().ProfileStart(profile)
+	defer r.Context().ProfileStop(profile)
+	defer r.handlePanic()
+
+	res, err := r.client.Incr(key, delta)
+	r.parseErr(err)
+
+	return res,err
+}
+
 // 支持的命令请查阅：Redis.allRedisCmd
 // args = [0:"key"]
 // Example:
@@ -424,7 +436,7 @@ func (r *Redis) HMGet(key string,fields ...interface{}) map[string]*value.Value 
 	return res
 }
 
-func (r *Redis) HIncrBy(key, field string, delta int) int {
+func (r *Redis) HIncrBy(key, field string, delta int) (int,error) {
 	profile := "Redis.HIncrBy"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
@@ -433,7 +445,7 @@ func (r *Redis) HIncrBy(key, field string, delta int) int {
 	res, err := r.client.HIncrBy(key,field, delta)
 	r.parseErr(err)
 
-	return res
+	return res,err
 }
 
 func (r *Redis) ZRange(key string, start, end int) []*value.Value {
