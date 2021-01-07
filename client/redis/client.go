@@ -139,7 +139,7 @@ func (c *Client) Del(key string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	num, ok := ret.(int)
+	num, ok := ret.(int64)
 	return ok && num == 1, nil
 }
 
@@ -159,7 +159,7 @@ func (c *Client) MDel(keys []string) (bool, error) {
 				retErr = err
 			}
 
-			if num, ok := ret.(int); ok && num > 0 {
+			if num, ok := ret.(int64); ok && num > 0 {
 				atomic.AddUint32(&success, uint32(num))
 			}
 		})
@@ -178,11 +178,11 @@ func (c *Client) Exists(key string) (bool, error) {
 
 	defer conn.Close(false)
 	ret, err := conn.Do("EXISTS", newKey)
-	num, ok := ret.(int)
+	num, ok := ret.(int64)
 	return ok && num == 1, err
 }
 
-func (c *Client) Incr(key string, delta int) (int, error) {
+func (c *Client) Incr(key string, delta int64) (int64, error) {
 	newKey := c.BuildKey(key)
 	conn, err := c.GetConnByKey("INCRBY", newKey)
 	if err != nil {
@@ -191,7 +191,7 @@ func (c *Client) Incr(key string, delta int) (int, error) {
 
 	defer conn.Close(false)
 	ret, err := conn.Do("INCRBY", newKey, delta)
-	num, _ := ret.(int)
+	num, _ := ret.(int64)
 	return num, err
 }
 
@@ -278,7 +278,7 @@ func (c *Client) ExpireAt(key string, timestamp int64) (bool, error) {
 		return false, err
 	}
 
-	num, ok := res.(int)
+	num, ok := res.(int64)
 	return ok && num == 1, nil
 }
 
@@ -327,7 +327,7 @@ func (c *Client) Expire(key string, expire time.Duration) (bool, error) {
 		return false, err
 	}
 
-	num, ok := res.(int)
+	num, ok := res.(int64)
 	return ok && num == 1, nil
 }
 
@@ -357,7 +357,7 @@ func (c *Client) listPush(cmd, key string, values ...interface{}) (bool, error) 
 		return false, err
 	}
 
-	num, ok := res.(int)
+	num, ok := res.(int64)
 
 	return ok && num > 0, nil
 }
@@ -399,7 +399,7 @@ func (c *Client) LPop(key string) (*value.Value, error) {
 	return c.listPop("LPOP", key)
 }
 
-func (c *Client) LLen(key string) (int, error) {
+func (c *Client) LLen(key string) (int64, error) {
 	newKey := c.BuildKey(key)
 	conn, errConn := c.GetConnByKey("LLEN", newKey)
 	if errConn != nil {
@@ -413,12 +413,12 @@ func (c *Client) LLen(key string) (int, error) {
 		return 0, err
 	}
 
-	num, _ := res.(int)
+	num, _ := res.(int64)
 
 	return num, nil
 }
 
-func (c *Client) HDel(key string, fields ...interface{}) (int, error) {
+func (c *Client) HDel(key string, fields ...interface{}) (int64, error) {
 	newKey := c.BuildKey(key)
 	conn, errConn := c.GetConnByKey("HDEL", newKey)
 	if errConn != nil {
@@ -434,7 +434,7 @@ func (c *Client) HDel(key string, fields ...interface{}) (int, error) {
 		return 0, err
 	}
 
-	num, _ := res.(int)
+	num, _ := res.(int64)
 
 	return num, nil
 }
@@ -453,7 +453,7 @@ func (c *Client) HExists(key string, field string) (bool, error) {
 		return false, err
 	}
 
-	num, ok := res.(int)
+	num, ok := res.(int64)
 
 	return ok && num > 0, nil
 }
@@ -478,7 +478,7 @@ func (c *Client) HSet(key string, fv ...interface{}) (bool, error) {
 		return false, err
 	}
 
-	num, ok := v.(int)
+	num, ok := v.(int64)
 
 	return ok && num >= 0, nil
 }
@@ -586,7 +586,7 @@ func (c *Client) HMGet(key string, fields ...interface{}) (map[string]*value.Val
 	return res, nil
 }
 
-func (c *Client) HIncrBy(key, field string, delta int) (int, error) {
+func (c *Client) HIncrBy(key, field string, delta int64) (int64, error) {
 	newKey := c.BuildKey(key)
 	conn, err := c.GetConnByKey("HINCRBY", newKey)
 	if err != nil {
@@ -599,7 +599,7 @@ func (c *Client) HIncrBy(key, field string, delta int) (int, error) {
 		return 0, err
 	}
 
-	num, _ := v.(int)
+	num, _ := v.(int64)
 	return num, nil
 }
 
@@ -682,7 +682,7 @@ func (c *Client) ZRangeWithScores(key string, start, end int) ([]*ZV, error) {
 	return c.zRangeFormatWithScores(c.zRange("ZRANGE", key, start, end, "WITHSCORES"))
 }
 
-func (c *Client) zAdd(a []interface{}, n int, members ...*Z) (int, error) {
+func (c *Client) zAdd(a []interface{}, n int, members ...*Z) (int64, error) {
 	newKey := c.BuildKey(a[0].(string))
 	a[0] = newKey
 	conn, err := c.GetConnByKey("ZADD", newKey)
@@ -701,18 +701,18 @@ func (c *Client) zAdd(a []interface{}, n int, members ...*Z) (int, error) {
 		return 0, err
 	}
 
-	num, _ := v.(int)
+	num, _ := v.(int64)
 	return num, nil
 }
 
-func (c *Client) ZAdd(key string, members ...*Z) (int, error) {
+func (c *Client) ZAdd(key string, members ...*Z) (int64, error) {
 	const n = 1
 	a := make([]interface{}, n+2*len(members))
 	a[0] = key
 	return c.zAdd(a, n, members...)
 }
 
-func (c *Client) ZAddOpt(key string, opts []string, members ...*Z) (int, error) {
+func (c *Client) ZAddOpt(key string, opts []string, members ...*Z) (int64, error) {
 	n := 1 + len(opts)
 	a := make([]interface{}, n+2*len(members))
 	a[0] = key
@@ -722,7 +722,7 @@ func (c *Client) ZAddOpt(key string, opts []string, members ...*Z) (int, error) 
 	return c.zAdd(a, n, members...)
 }
 
-func (c *Client) ZCard(key string) (int, error) {
+func (c *Client) ZCard(key string) (int64, error) {
 	newKey := c.BuildKey(key)
 	conn, err := c.GetConnByKey("ZCARD", newKey)
 	if err != nil {
@@ -735,11 +735,11 @@ func (c *Client) ZCard(key string) (int, error) {
 		return 0, err
 	}
 
-	num, _ := v.(int)
+	num, _ := v.(int64)
 	return num, nil
 }
 
-func (c *Client) ZRem(key string, members ...interface{}) (int, error) {
+func (c *Client) ZRem(key string, members ...interface{}) (int64, error) {
 	newKey := c.BuildKey(key)
 	conn, err := c.GetConnByKey("ZREM", newKey)
 	if err != nil {
@@ -754,6 +754,6 @@ func (c *Client) ZRem(key string, members ...interface{}) (int, error) {
 		return 0, err
 	}
 
-	num, _ := v.(int)
+	num, _ := v.(int64)
 	return num, nil
 }
