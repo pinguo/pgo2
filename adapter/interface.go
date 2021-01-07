@@ -98,6 +98,7 @@ type IRedis interface {
 	MDel(keys []string) bool
 	Exists(key string) bool
 	Incr(key string, delta int) int
+	IncrBy(key string, delta int) (int, error)
 	Do(cmd string, args ...interface{}) interface{}
 	ExpireAt(key string, timestamp int64) bool
 	Expire(key string, expire time.Duration) bool
@@ -113,7 +114,7 @@ type IRedis interface {
 	HGetAll(key string) map[string]*value.Value
 	HMSet(key string, fv ...interface{}) bool
 	HMGet(key string, fields ...interface{}) map[string]*value.Value
-	HIncrBy(key, field string, delta int) int
+	HIncrBy(key, field string, delta int) (int,error)
 	ZRange(key string, start, end int) []*value.Value
 	ZRevRange(key string, start, end int) []*value.Value
 	ZRangeWithScores(key string, start, end int) []*redis.ZV

@@ -1099,6 +1099,21 @@ func (mr *MockIRedisMockRecorder) Incr(key, delta interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Incr", reflect.TypeOf((*MockIRedis)(nil).Incr), key, delta)
 }
 
+// IncrBy mocks base method.
+func (m *MockIRedis) IncrBy(key string, delta int) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IncrBy", key, delta)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IncrBy indicates an expected call of IncrBy.
+func (mr *MockIRedisMockRecorder) IncrBy(key, delta interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncrBy", reflect.TypeOf((*MockIRedis)(nil).IncrBy), key, delta)
+}
+
 // Do mocks base method.
 func (m *MockIRedis) Do(cmd string, args ...interface{}) interface{} {
 	m.ctrl.T.Helper()
@@ -1345,11 +1360,12 @@ func (mr *MockIRedisMockRecorder) HMGet(key interface{}, fields ...interface{}) 
 }
 
 // HIncrBy mocks base method.
-func (m *MockIRedis) HIncrBy(key, field string, delta int) int {
+func (m *MockIRedis) HIncrBy(key, field string, delta int) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "HIncrBy", key, field, delta)
 	ret0, _ := ret[0].(int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // HIncrBy indicates an expected call of HIncrBy.
