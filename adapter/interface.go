@@ -86,45 +86,6 @@ type IMongo interface {
 	MapReduce(query interface{}, job *mgo.MapReduce, result interface{}, options ...bson.M) error
 }
 
-type IRedis interface {
-	SetPanicRecover(v bool)
-	Get(key string) *value.Value
-	MGet(keys []string) map[string]*value.Value
-	Set(key string, value interface{}, expire ...time.Duration) bool
-	MSet(items map[string]interface{}, expire ...time.Duration) bool
-	Add(key string, value interface{}, expire ...time.Duration) bool
-	MAdd(items map[string]interface{}, expire ...time.Duration) bool
-	Del(key string) bool
-	MDel(keys []string) bool
-	Exists(key string) bool
-	Incr(key string, delta int) int
-	IncrBy(key string, delta int) (int, error)
-	Do(cmd string, args ...interface{}) interface{}
-	ExpireAt(key string, timestamp int64) bool
-	Expire(key string, expire time.Duration) bool
-	RPush(key string, values ...interface{}) bool
-	LPush(key string, values ...interface{}) bool
-	RPop(key string) *value.Value
-	LPop(key string) *value.Value
-	LLen(key string) int
-	HDel(key string,fields...interface{}) int
-	HExists(key, field string) bool
-	HSet(key string, fv ...interface{}) bool
-	HGet(key, field string) *value.Value
-	HGetAll(key string) map[string]*value.Value
-	HMSet(key string, fv ...interface{}) bool
-	HMGet(key string, fields ...interface{}) map[string]*value.Value
-	HIncrBy(key, field string, delta int) (int,error)
-	ZRange(key string, start, end int) []*value.Value
-	ZRevRange(key string, start, end int) []*value.Value
-	ZRangeWithScores(key string, start, end int) []*redis.ZV
-	ZRevRangeWithScores(key string, start, end int) []*redis.ZV
-	ZAdd(key string, members ...*redis.Z) int
-	ZAddOpt(key string,opts []string, members ...*redis.Z) (int,error)
-	ZCard(key string) int
-	ZRem(key string,members ...interface{}) int
-}
-
 type IRabbitMq interface {
 	SetPanicRecover(v bool)
 	ExchangeDeclare(dftExchange ...*rabbitmq.ExchangeData)
@@ -308,3 +269,41 @@ type IMongodbAggregate interface {
 	qmgo.AggregateI
 }
 
+type IRedis interface {
+	SetPanicRecover(v bool)
+	Get(key string) *value.Value
+	MGet(keys []string) map[string]*value.Value
+	Set(key string, value interface{}, expire ...time.Duration) bool
+	MSet(items map[string]interface{}, expire ...time.Duration) bool
+	Add(key string, value interface{}, expire ...time.Duration) bool
+	MAdd(items map[string]interface{}, expire ...time.Duration) bool
+	Del(key string) bool
+	MDel(keys []string) bool
+	Exists(key string) bool
+	Incr(key string, delta int) int
+	IncrBy(key string, delta int64) (int64, error)
+	Do(cmd string, args ...interface{}) interface{}
+	ExpireAt(key string, timestamp int64) bool
+	Expire(key string, expire time.Duration) bool
+	RPush(key string, values ...interface{}) bool
+	LPush(key string, values ...interface{}) bool
+	RPop(key string) *value.Value
+	LPop(key string) *value.Value
+	LLen(key string) int64
+	HDel(key string, fields ...interface{}) int64
+	HExists(key, field string) bool
+	HSet(key string, fv ...interface{}) bool
+	HGet(key, field string) *value.Value
+	HGetAll(key string) map[string]*value.Value
+	HMSet(key string, fv ...interface{}) bool
+	HMGet(key string, fields ...interface{}) map[string]*value.Value
+	HIncrBy(key, field string, delta int64) (int64, error)
+	ZRange(key string, start, end int) []*value.Value
+	ZRevRange(key string, start, end int) []*value.Value
+	ZRangeWithScores(key string, start, end int) []*redis.ZV
+	ZRevRangeWithScores(key string, start, end int) []*redis.ZV
+	ZAdd(key string, members ...*redis.Z) int64
+	ZAddOpt(key string, opts []string, members ...*redis.Z) (int64, error)
+	ZCard(key string) int64
+	ZRem(key string, members ...interface{}) int64
+}

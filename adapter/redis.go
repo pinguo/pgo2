@@ -199,13 +199,13 @@ func (r *Redis) Incr(key string, delta int) int {
 	defer r.Context().ProfileStop(profile)
 	defer r.handlePanic()
 
-	res, err := r.client.Incr(key, delta)
+	res, err := r.client.Incr(key, int64(delta))
 	r.parseErr(err)
 
-	return res
+	return int(res)
 }
 
-func (r *Redis) IncrBy(key string, delta int) (int, error) {
+func (r *Redis) IncrBy(key string, delta int64) (int64, error) {
 	profile := "Redis.IncrBy"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
@@ -220,14 +220,14 @@ func (r *Redis) IncrBy(key string, delta int) (int, error) {
 // 支持的命令请查阅：Redis.allRedisCmd
 // args = [0:"key"]
 // Example:
-// redis := t.GetObject(Redis.AdapterClass).(*Redis.Adapter)
+// redis := t.GetObjBox(Redis.AdapterClass).(*Redis.Adapter)
 // retI := redis.Do("SADD","myTest", "test1"
-// ret := retI.(int)
+// ret := retI.(int64)
 // fmt.Println(ret) = 1
 // retList :=redis.Do("SMEMBERS","myTest"
 // retListI,_:=ret.([]interface{})
 // for _,v:=range retListI{
-//    vv :=pgo.NewValue(v) // 写入的时候有pgo.Encode(),如果存入的是结构体或slice map 需要decode,其他类型直接断言类型
+//    vv :=value.New(v) // 写入的时候有value.Encode(),如果存入的是结构体或slice map 需要decode,其他类型直接断言类型
 //    fmt.Println(vv.String()) // test1
 // }
 func (r *Redis) Do(cmd string, args ...interface{}) interface{} {
@@ -328,7 +328,7 @@ func (r *Redis) LPop(key string) *value.Value {
 	return res
 }
 
-func (r *Redis) LLen(key string) int {
+func (r *Redis) LLen(key string) int64 {
 	profile := "Redis.LLen"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
@@ -340,7 +340,7 @@ func (r *Redis) LLen(key string) int {
 	return res
 }
 
-func (r *Redis) HDel(key string, fields ...interface{}) int {
+func (r *Redis) HDel(key string, fields ...interface{}) int64 {
 	profile := "Redis.HDel"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
@@ -436,7 +436,7 @@ func (r *Redis) HMGet(key string,fields ...interface{}) map[string]*value.Value 
 	return res
 }
 
-func (r *Redis) HIncrBy(key, field string, delta int) (int,error) {
+func (r *Redis) HIncrBy(key, field string, delta int64) (int64,error) {
 	profile := "Redis.HIncrBy"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
@@ -498,7 +498,7 @@ func (r *Redis) ZRevRangeWithScores(key string, start, end int) []*redis.ZV {
 	return res
 }
 
-func (r *Redis) ZAdd(key string, members ...*redis.Z) int {
+func (r *Redis) ZAdd(key string, members ...*redis.Z) int64 {
 	profile := "Redis.ZAdd"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
@@ -510,7 +510,7 @@ func (r *Redis) ZAdd(key string, members ...*redis.Z) int {
 	return res
 }
 
-func (r *Redis) ZAddOpt(key string,opts []string, members ...*redis.Z) (int,error) {
+func (r *Redis) ZAddOpt(key string,opts []string, members ...*redis.Z) (int64,error) {
 	profile := "Redis.ZAddOpt"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
@@ -522,7 +522,7 @@ func (r *Redis) ZAddOpt(key string,opts []string, members ...*redis.Z) (int,erro
 	return res,err
 }
 
-func (r *Redis) ZCard(key string) int {
+func (r *Redis) ZCard(key string) int64 {
 	profile := "Redis.ZCard"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)
@@ -535,7 +535,7 @@ func (r *Redis) ZCard(key string) int {
 }
 
 
-func (r *Redis) ZRem(key string,members ...interface{}) int {
+func (r *Redis) ZRem(key string,members ...interface{}) int64 {
 	profile := "Redis.ZRem"
 	r.Context().ProfileStart(profile)
 	defer r.Context().ProfileStop(profile)

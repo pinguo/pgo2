@@ -904,604 +904,6 @@ func (mr *MockIMongoMockRecorder) MapReduce(query, job, result interface{}, opti
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MapReduce", reflect.TypeOf((*MockIMongo)(nil).MapReduce), varargs...)
 }
 
-// MockIRedis is a mock of IRedis interface.
-type MockIRedis struct {
-	ctrl     *gomock.Controller
-	recorder *MockIRedisMockRecorder
-}
-
-// MockIRedisMockRecorder is the mock recorder for MockIRedis.
-type MockIRedisMockRecorder struct {
-	mock *MockIRedis
-}
-
-// NewMockIRedis creates a new mock instance.
-func NewMockIRedis(ctrl *gomock.Controller) *MockIRedis {
-	mock := &MockIRedis{ctrl: ctrl}
-	mock.recorder = &MockIRedisMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockIRedis) EXPECT() *MockIRedisMockRecorder {
-	return m.recorder
-}
-
-// SetPanicRecover mocks base method.
-func (m *MockIRedis) SetPanicRecover(v bool) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SetPanicRecover", v)
-}
-
-// SetPanicRecover indicates an expected call of SetPanicRecover.
-func (mr *MockIRedisMockRecorder) SetPanicRecover(v interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetPanicRecover", reflect.TypeOf((*MockIRedis)(nil).SetPanicRecover), v)
-}
-
-// Get mocks base method.
-func (m *MockIRedis) Get(key string) *value.Value {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", key)
-	ret0, _ := ret[0].(*value.Value)
-	return ret0
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockIRedisMockRecorder) Get(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockIRedis)(nil).Get), key)
-}
-
-// MGet mocks base method.
-func (m *MockIRedis) MGet(keys []string) map[string]*value.Value {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MGet", keys)
-	ret0, _ := ret[0].(map[string]*value.Value)
-	return ret0
-}
-
-// MGet indicates an expected call of MGet.
-func (mr *MockIRedisMockRecorder) MGet(keys interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MGet", reflect.TypeOf((*MockIRedis)(nil).MGet), keys)
-}
-
-// Set mocks base method.
-func (m *MockIRedis) Set(key string, value interface{}, expire ...time.Duration) bool {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key, value}
-	for _, a := range expire {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Set", varargs...)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// Set indicates an expected call of Set.
-func (mr *MockIRedisMockRecorder) Set(key, value interface{}, expire ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key, value}, expire...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockIRedis)(nil).Set), varargs...)
-}
-
-// MSet mocks base method.
-func (m *MockIRedis) MSet(items map[string]interface{}, expire ...time.Duration) bool {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{items}
-	for _, a := range expire {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "MSet", varargs...)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// MSet indicates an expected call of MSet.
-func (mr *MockIRedisMockRecorder) MSet(items interface{}, expire ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{items}, expire...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MSet", reflect.TypeOf((*MockIRedis)(nil).MSet), varargs...)
-}
-
-// Add mocks base method.
-func (m *MockIRedis) Add(key string, value interface{}, expire ...time.Duration) bool {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key, value}
-	for _, a := range expire {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Add", varargs...)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// Add indicates an expected call of Add.
-func (mr *MockIRedisMockRecorder) Add(key, value interface{}, expire ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key, value}, expire...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockIRedis)(nil).Add), varargs...)
-}
-
-// MAdd mocks base method.
-func (m *MockIRedis) MAdd(items map[string]interface{}, expire ...time.Duration) bool {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{items}
-	for _, a := range expire {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "MAdd", varargs...)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// MAdd indicates an expected call of MAdd.
-func (mr *MockIRedisMockRecorder) MAdd(items interface{}, expire ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{items}, expire...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MAdd", reflect.TypeOf((*MockIRedis)(nil).MAdd), varargs...)
-}
-
-// Del mocks base method.
-func (m *MockIRedis) Del(key string) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Del", key)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// Del indicates an expected call of Del.
-func (mr *MockIRedisMockRecorder) Del(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Del", reflect.TypeOf((*MockIRedis)(nil).Del), key)
-}
-
-// MDel mocks base method.
-func (m *MockIRedis) MDel(keys []string) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MDel", keys)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// MDel indicates an expected call of MDel.
-func (mr *MockIRedisMockRecorder) MDel(keys interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MDel", reflect.TypeOf((*MockIRedis)(nil).MDel), keys)
-}
-
-// Exists mocks base method.
-func (m *MockIRedis) Exists(key string) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Exists", key)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// Exists indicates an expected call of Exists.
-func (mr *MockIRedisMockRecorder) Exists(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exists", reflect.TypeOf((*MockIRedis)(nil).Exists), key)
-}
-
-// Incr mocks base method.
-func (m *MockIRedis) Incr(key string, delta int) int {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Incr", key, delta)
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// Incr indicates an expected call of Incr.
-func (mr *MockIRedisMockRecorder) Incr(key, delta interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Incr", reflect.TypeOf((*MockIRedis)(nil).Incr), key, delta)
-}
-
-// IncrBy mocks base method.
-func (m *MockIRedis) IncrBy(key string, delta int) (int, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IncrBy", key, delta)
-	ret0, _ := ret[0].(int)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// IncrBy indicates an expected call of IncrBy.
-func (mr *MockIRedisMockRecorder) IncrBy(key, delta interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncrBy", reflect.TypeOf((*MockIRedis)(nil).IncrBy), key, delta)
-}
-
-// Do mocks base method.
-func (m *MockIRedis) Do(cmd string, args ...interface{}) interface{} {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{cmd}
-	for _, a := range args {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Do", varargs...)
-	ret0, _ := ret[0].(interface{})
-	return ret0
-}
-
-// Do indicates an expected call of Do.
-func (mr *MockIRedisMockRecorder) Do(cmd interface{}, args ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{cmd}, args...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Do", reflect.TypeOf((*MockIRedis)(nil).Do), varargs...)
-}
-
-// ExpireAt mocks base method.
-func (m *MockIRedis) ExpireAt(key string, timestamp int64) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ExpireAt", key, timestamp)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// ExpireAt indicates an expected call of ExpireAt.
-func (mr *MockIRedisMockRecorder) ExpireAt(key, timestamp interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExpireAt", reflect.TypeOf((*MockIRedis)(nil).ExpireAt), key, timestamp)
-}
-
-// Expire mocks base method.
-func (m *MockIRedis) Expire(key string, expire time.Duration) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Expire", key, expire)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// Expire indicates an expected call of Expire.
-func (mr *MockIRedisMockRecorder) Expire(key, expire interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Expire", reflect.TypeOf((*MockIRedis)(nil).Expire), key, expire)
-}
-
-// RPush mocks base method.
-func (m *MockIRedis) RPush(key string, values ...interface{}) bool {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key}
-	for _, a := range values {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "RPush", varargs...)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// RPush indicates an expected call of RPush.
-func (mr *MockIRedisMockRecorder) RPush(key interface{}, values ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key}, values...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RPush", reflect.TypeOf((*MockIRedis)(nil).RPush), varargs...)
-}
-
-// LPush mocks base method.
-func (m *MockIRedis) LPush(key string, values ...interface{}) bool {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key}
-	for _, a := range values {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "LPush", varargs...)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// LPush indicates an expected call of LPush.
-func (mr *MockIRedisMockRecorder) LPush(key interface{}, values ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key}, values...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LPush", reflect.TypeOf((*MockIRedis)(nil).LPush), varargs...)
-}
-
-// RPop mocks base method.
-func (m *MockIRedis) RPop(key string) *value.Value {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RPop", key)
-	ret0, _ := ret[0].(*value.Value)
-	return ret0
-}
-
-// RPop indicates an expected call of RPop.
-func (mr *MockIRedisMockRecorder) RPop(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RPop", reflect.TypeOf((*MockIRedis)(nil).RPop), key)
-}
-
-// LPop mocks base method.
-func (m *MockIRedis) LPop(key string) *value.Value {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LPop", key)
-	ret0, _ := ret[0].(*value.Value)
-	return ret0
-}
-
-// LPop indicates an expected call of LPop.
-func (mr *MockIRedisMockRecorder) LPop(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LPop", reflect.TypeOf((*MockIRedis)(nil).LPop), key)
-}
-
-// LLen mocks base method.
-func (m *MockIRedis) LLen(key string) int {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LLen", key)
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// LLen indicates an expected call of LLen.
-func (mr *MockIRedisMockRecorder) LLen(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LLen", reflect.TypeOf((*MockIRedis)(nil).LLen), key)
-}
-
-// HDel mocks base method.
-func (m *MockIRedis) HDel(key string, fields ...interface{}) int {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key}
-	for _, a := range fields {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "HDel", varargs...)
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// HDel indicates an expected call of HDel.
-func (mr *MockIRedisMockRecorder) HDel(key interface{}, fields ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HDel", reflect.TypeOf((*MockIRedis)(nil).HDel), varargs...)
-}
-
-// HExists mocks base method.
-func (m *MockIRedis) HExists(key, field string) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HExists", key, field)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// HExists indicates an expected call of HExists.
-func (mr *MockIRedisMockRecorder) HExists(key, field interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HExists", reflect.TypeOf((*MockIRedis)(nil).HExists), key, field)
-}
-
-// HSet mocks base method.
-func (m *MockIRedis) HSet(key string, fv ...interface{}) bool {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key}
-	for _, a := range fv {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "HSet", varargs...)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// HSet indicates an expected call of HSet.
-func (mr *MockIRedisMockRecorder) HSet(key interface{}, fv ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key}, fv...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSet", reflect.TypeOf((*MockIRedis)(nil).HSet), varargs...)
-}
-
-// HGet mocks base method.
-func (m *MockIRedis) HGet(key, field string) *value.Value {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HGet", key, field)
-	ret0, _ := ret[0].(*value.Value)
-	return ret0
-}
-
-// HGet indicates an expected call of HGet.
-func (mr *MockIRedisMockRecorder) HGet(key, field interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGet", reflect.TypeOf((*MockIRedis)(nil).HGet), key, field)
-}
-
-// HGetAll mocks base method.
-func (m *MockIRedis) HGetAll(key string) map[string]*value.Value {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HGetAll", key)
-	ret0, _ := ret[0].(map[string]*value.Value)
-	return ret0
-}
-
-// HGetAll indicates an expected call of HGetAll.
-func (mr *MockIRedisMockRecorder) HGetAll(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGetAll", reflect.TypeOf((*MockIRedis)(nil).HGetAll), key)
-}
-
-// HMSet mocks base method.
-func (m *MockIRedis) HMSet(key string, fv ...interface{}) bool {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key}
-	for _, a := range fv {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "HMSet", varargs...)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// HMSet indicates an expected call of HMSet.
-func (mr *MockIRedisMockRecorder) HMSet(key interface{}, fv ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key}, fv...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HMSet", reflect.TypeOf((*MockIRedis)(nil).HMSet), varargs...)
-}
-
-// HMGet mocks base method.
-func (m *MockIRedis) HMGet(key string, fields ...interface{}) map[string]*value.Value {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key}
-	for _, a := range fields {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "HMGet", varargs...)
-	ret0, _ := ret[0].(map[string]*value.Value)
-	return ret0
-}
-
-// HMGet indicates an expected call of HMGet.
-func (mr *MockIRedisMockRecorder) HMGet(key interface{}, fields ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HMGet", reflect.TypeOf((*MockIRedis)(nil).HMGet), varargs...)
-}
-
-// HIncrBy mocks base method.
-func (m *MockIRedis) HIncrBy(key, field string, delta int) (int, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HIncrBy", key, field, delta)
-	ret0, _ := ret[0].(int)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// HIncrBy indicates an expected call of HIncrBy.
-func (mr *MockIRedisMockRecorder) HIncrBy(key, field, delta interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HIncrBy", reflect.TypeOf((*MockIRedis)(nil).HIncrBy), key, field, delta)
-}
-
-// ZRange mocks base method.
-func (m *MockIRedis) ZRange(key string, start, end int) []*value.Value {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ZRange", key, start, end)
-	ret0, _ := ret[0].([]*value.Value)
-	return ret0
-}
-
-// ZRange indicates an expected call of ZRange.
-func (mr *MockIRedisMockRecorder) ZRange(key, start, end interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRange", reflect.TypeOf((*MockIRedis)(nil).ZRange), key, start, end)
-}
-
-// ZRevRange mocks base method.
-func (m *MockIRedis) ZRevRange(key string, start, end int) []*value.Value {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ZRevRange", key, start, end)
-	ret0, _ := ret[0].([]*value.Value)
-	return ret0
-}
-
-// ZRevRange indicates an expected call of ZRevRange.
-func (mr *MockIRedisMockRecorder) ZRevRange(key, start, end interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRevRange", reflect.TypeOf((*MockIRedis)(nil).ZRevRange), key, start, end)
-}
-
-// ZRangeWithScores mocks base method.
-func (m *MockIRedis) ZRangeWithScores(key string, start, end int) []*redis.ZV {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ZRangeWithScores", key, start, end)
-	ret0, _ := ret[0].([]*redis.ZV)
-	return ret0
-}
-
-// ZRangeWithScores indicates an expected call of ZRangeWithScores.
-func (mr *MockIRedisMockRecorder) ZRangeWithScores(key, start, end interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRangeWithScores", reflect.TypeOf((*MockIRedis)(nil).ZRangeWithScores), key, start, end)
-}
-
-// ZRevRangeWithScores mocks base method.
-func (m *MockIRedis) ZRevRangeWithScores(key string, start, end int) []*redis.ZV {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ZRevRangeWithScores", key, start, end)
-	ret0, _ := ret[0].([]*redis.ZV)
-	return ret0
-}
-
-// ZRevRangeWithScores indicates an expected call of ZRevRangeWithScores.
-func (mr *MockIRedisMockRecorder) ZRevRangeWithScores(key, start, end interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRevRangeWithScores", reflect.TypeOf((*MockIRedis)(nil).ZRevRangeWithScores), key, start, end)
-}
-
-// ZAdd mocks base method.
-func (m *MockIRedis) ZAdd(key string, members ...*redis.Z) int {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key}
-	for _, a := range members {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "ZAdd", varargs...)
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// ZAdd indicates an expected call of ZAdd.
-func (mr *MockIRedisMockRecorder) ZAdd(key interface{}, members ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key}, members...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZAdd", reflect.TypeOf((*MockIRedis)(nil).ZAdd), varargs...)
-}
-
-// ZAddOpt mocks base method.
-func (m *MockIRedis) ZAddOpt(key string, opts []string, members ...*redis.Z) (int, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key, opts}
-	for _, a := range members {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "ZAddOpt", varargs...)
-	ret0, _ := ret[0].(int)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ZAddOpt indicates an expected call of ZAddOpt.
-func (mr *MockIRedisMockRecorder) ZAddOpt(key, opts interface{}, members ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key, opts}, members...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZAddOpt", reflect.TypeOf((*MockIRedis)(nil).ZAddOpt), varargs...)
-}
-
-// ZCard mocks base method.
-func (m *MockIRedis) ZCard(key string) int {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ZCard", key)
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// ZCard indicates an expected call of ZCard.
-func (mr *MockIRedisMockRecorder) ZCard(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZCard", reflect.TypeOf((*MockIRedis)(nil).ZCard), key)
-}
-
-// ZRem mocks base method.
-func (m *MockIRedis) ZRem(key string, members ...interface{}) int {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{key}
-	for _, a := range members {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "ZRem", varargs...)
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// ZRem indicates an expected call of ZRem.
-func (mr *MockIRedisMockRecorder) ZRem(key interface{}, members ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{key}, members...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRem", reflect.TypeOf((*MockIRedis)(nil).ZRem), varargs...)
-}
-
 // MockIRabbitMq is a mock of IRabbitMq interface.
 type MockIRabbitMq struct {
 	ctrl     *gomock.Controller
@@ -5211,4 +4613,602 @@ func (m *MockIMongodbAggregate) Iter() qmgo.CursorI {
 func (mr *MockIMongodbAggregateMockRecorder) Iter() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Iter", reflect.TypeOf((*MockIMongodbAggregate)(nil).Iter))
+}
+
+// MockIRedis is a mock of IRedis interface.
+type MockIRedis struct {
+	ctrl     *gomock.Controller
+	recorder *MockIRedisMockRecorder
+}
+
+// MockIRedisMockRecorder is the mock recorder for MockIRedis.
+type MockIRedisMockRecorder struct {
+	mock *MockIRedis
+}
+
+// NewMockIRedis creates a new mock instance.
+func NewMockIRedis(ctrl *gomock.Controller) *MockIRedis {
+	mock := &MockIRedis{ctrl: ctrl}
+	mock.recorder = &MockIRedisMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIRedis) EXPECT() *MockIRedisMockRecorder {
+	return m.recorder
+}
+
+// SetPanicRecover mocks base method.
+func (m *MockIRedis) SetPanicRecover(v bool) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetPanicRecover", v)
+}
+
+// SetPanicRecover indicates an expected call of SetPanicRecover.
+func (mr *MockIRedisMockRecorder) SetPanicRecover(v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetPanicRecover", reflect.TypeOf((*MockIRedis)(nil).SetPanicRecover), v)
+}
+
+// Get mocks base method.
+func (m *MockIRedis) Get(key string) *value.Value {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", key)
+	ret0, _ := ret[0].(*value.Value)
+	return ret0
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockIRedisMockRecorder) Get(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockIRedis)(nil).Get), key)
+}
+
+// MGet mocks base method.
+func (m *MockIRedis) MGet(keys []string) map[string]*value.Value {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MGet", keys)
+	ret0, _ := ret[0].(map[string]*value.Value)
+	return ret0
+}
+
+// MGet indicates an expected call of MGet.
+func (mr *MockIRedisMockRecorder) MGet(keys interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MGet", reflect.TypeOf((*MockIRedis)(nil).MGet), keys)
+}
+
+// Set mocks base method.
+func (m *MockIRedis) Set(key string, value interface{}, expire ...time.Duration) bool {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key, value}
+	for _, a := range expire {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Set", varargs...)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Set indicates an expected call of Set.
+func (mr *MockIRedisMockRecorder) Set(key, value interface{}, expire ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key, value}, expire...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockIRedis)(nil).Set), varargs...)
+}
+
+// MSet mocks base method.
+func (m *MockIRedis) MSet(items map[string]interface{}, expire ...time.Duration) bool {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{items}
+	for _, a := range expire {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MSet", varargs...)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// MSet indicates an expected call of MSet.
+func (mr *MockIRedisMockRecorder) MSet(items interface{}, expire ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{items}, expire...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MSet", reflect.TypeOf((*MockIRedis)(nil).MSet), varargs...)
+}
+
+// Add mocks base method.
+func (m *MockIRedis) Add(key string, value interface{}, expire ...time.Duration) bool {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key, value}
+	for _, a := range expire {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Add", varargs...)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Add indicates an expected call of Add.
+func (mr *MockIRedisMockRecorder) Add(key, value interface{}, expire ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key, value}, expire...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockIRedis)(nil).Add), varargs...)
+}
+
+// MAdd mocks base method.
+func (m *MockIRedis) MAdd(items map[string]interface{}, expire ...time.Duration) bool {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{items}
+	for _, a := range expire {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MAdd", varargs...)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// MAdd indicates an expected call of MAdd.
+func (mr *MockIRedisMockRecorder) MAdd(items interface{}, expire ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{items}, expire...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MAdd", reflect.TypeOf((*MockIRedis)(nil).MAdd), varargs...)
+}
+
+// Del mocks base method.
+func (m *MockIRedis) Del(key string) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Del", key)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Del indicates an expected call of Del.
+func (mr *MockIRedisMockRecorder) Del(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Del", reflect.TypeOf((*MockIRedis)(nil).Del), key)
+}
+
+// MDel mocks base method.
+func (m *MockIRedis) MDel(keys []string) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MDel", keys)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// MDel indicates an expected call of MDel.
+func (mr *MockIRedisMockRecorder) MDel(keys interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MDel", reflect.TypeOf((*MockIRedis)(nil).MDel), keys)
+}
+
+// Exists mocks base method.
+func (m *MockIRedis) Exists(key string) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Exists", key)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Exists indicates an expected call of Exists.
+func (mr *MockIRedisMockRecorder) Exists(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exists", reflect.TypeOf((*MockIRedis)(nil).Exists), key)
+}
+
+// Incr mocks base method.
+func (m *MockIRedis) Incr(key string, delta int) int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Incr", key, delta)
+	ret0, _ := ret[0].(int)
+	return ret0
+}
+
+// Incr indicates an expected call of Incr.
+func (mr *MockIRedisMockRecorder) Incr(key, delta interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Incr", reflect.TypeOf((*MockIRedis)(nil).Incr), key, delta)
+}
+
+// IncrBy mocks base method.
+func (m *MockIRedis) IncrBy(key string, delta int64) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IncrBy", key, delta)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IncrBy indicates an expected call of IncrBy.
+func (mr *MockIRedisMockRecorder) IncrBy(key, delta interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncrBy", reflect.TypeOf((*MockIRedis)(nil).IncrBy), key, delta)
+}
+
+// Do mocks base method.
+func (m *MockIRedis) Do(cmd string, args ...interface{}) interface{} {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{cmd}
+	for _, a := range args {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Do", varargs...)
+	ret0, _ := ret[0].(interface{})
+	return ret0
+}
+
+// Do indicates an expected call of Do.
+func (mr *MockIRedisMockRecorder) Do(cmd interface{}, args ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{cmd}, args...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Do", reflect.TypeOf((*MockIRedis)(nil).Do), varargs...)
+}
+
+// ExpireAt mocks base method.
+func (m *MockIRedis) ExpireAt(key string, timestamp int64) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExpireAt", key, timestamp)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// ExpireAt indicates an expected call of ExpireAt.
+func (mr *MockIRedisMockRecorder) ExpireAt(key, timestamp interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExpireAt", reflect.TypeOf((*MockIRedis)(nil).ExpireAt), key, timestamp)
+}
+
+// Expire mocks base method.
+func (m *MockIRedis) Expire(key string, expire time.Duration) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Expire", key, expire)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Expire indicates an expected call of Expire.
+func (mr *MockIRedisMockRecorder) Expire(key, expire interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Expire", reflect.TypeOf((*MockIRedis)(nil).Expire), key, expire)
+}
+
+// RPush mocks base method.
+func (m *MockIRedis) RPush(key string, values ...interface{}) bool {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key}
+	for _, a := range values {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RPush", varargs...)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// RPush indicates an expected call of RPush.
+func (mr *MockIRedisMockRecorder) RPush(key interface{}, values ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key}, values...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RPush", reflect.TypeOf((*MockIRedis)(nil).RPush), varargs...)
+}
+
+// LPush mocks base method.
+func (m *MockIRedis) LPush(key string, values ...interface{}) bool {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key}
+	for _, a := range values {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "LPush", varargs...)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// LPush indicates an expected call of LPush.
+func (mr *MockIRedisMockRecorder) LPush(key interface{}, values ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key}, values...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LPush", reflect.TypeOf((*MockIRedis)(nil).LPush), varargs...)
+}
+
+// RPop mocks base method.
+func (m *MockIRedis) RPop(key string) *value.Value {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RPop", key)
+	ret0, _ := ret[0].(*value.Value)
+	return ret0
+}
+
+// RPop indicates an expected call of RPop.
+func (mr *MockIRedisMockRecorder) RPop(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RPop", reflect.TypeOf((*MockIRedis)(nil).RPop), key)
+}
+
+// LPop mocks base method.
+func (m *MockIRedis) LPop(key string) *value.Value {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LPop", key)
+	ret0, _ := ret[0].(*value.Value)
+	return ret0
+}
+
+// LPop indicates an expected call of LPop.
+func (mr *MockIRedisMockRecorder) LPop(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LPop", reflect.TypeOf((*MockIRedis)(nil).LPop), key)
+}
+
+// LLen mocks base method.
+func (m *MockIRedis) LLen(key string) int64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LLen", key)
+	ret0, _ := ret[0].(int64)
+	return ret0
+}
+
+// LLen indicates an expected call of LLen.
+func (mr *MockIRedisMockRecorder) LLen(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LLen", reflect.TypeOf((*MockIRedis)(nil).LLen), key)
+}
+
+// HDel mocks base method.
+func (m *MockIRedis) HDel(key string, fields ...interface{}) int64 {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HDel", varargs...)
+	ret0, _ := ret[0].(int64)
+	return ret0
+}
+
+// HDel indicates an expected call of HDel.
+func (mr *MockIRedisMockRecorder) HDel(key interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HDel", reflect.TypeOf((*MockIRedis)(nil).HDel), varargs...)
+}
+
+// HExists mocks base method.
+func (m *MockIRedis) HExists(key, field string) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HExists", key, field)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// HExists indicates an expected call of HExists.
+func (mr *MockIRedisMockRecorder) HExists(key, field interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HExists", reflect.TypeOf((*MockIRedis)(nil).HExists), key, field)
+}
+
+// HSet mocks base method.
+func (m *MockIRedis) HSet(key string, fv ...interface{}) bool {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key}
+	for _, a := range fv {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HSet", varargs...)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// HSet indicates an expected call of HSet.
+func (mr *MockIRedisMockRecorder) HSet(key interface{}, fv ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key}, fv...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSet", reflect.TypeOf((*MockIRedis)(nil).HSet), varargs...)
+}
+
+// HGet mocks base method.
+func (m *MockIRedis) HGet(key, field string) *value.Value {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HGet", key, field)
+	ret0, _ := ret[0].(*value.Value)
+	return ret0
+}
+
+// HGet indicates an expected call of HGet.
+func (mr *MockIRedisMockRecorder) HGet(key, field interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGet", reflect.TypeOf((*MockIRedis)(nil).HGet), key, field)
+}
+
+// HGetAll mocks base method.
+func (m *MockIRedis) HGetAll(key string) map[string]*value.Value {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HGetAll", key)
+	ret0, _ := ret[0].(map[string]*value.Value)
+	return ret0
+}
+
+// HGetAll indicates an expected call of HGetAll.
+func (mr *MockIRedisMockRecorder) HGetAll(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGetAll", reflect.TypeOf((*MockIRedis)(nil).HGetAll), key)
+}
+
+// HMSet mocks base method.
+func (m *MockIRedis) HMSet(key string, fv ...interface{}) bool {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key}
+	for _, a := range fv {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HMSet", varargs...)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// HMSet indicates an expected call of HMSet.
+func (mr *MockIRedisMockRecorder) HMSet(key interface{}, fv ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key}, fv...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HMSet", reflect.TypeOf((*MockIRedis)(nil).HMSet), varargs...)
+}
+
+// HMGet mocks base method.
+func (m *MockIRedis) HMGet(key string, fields ...interface{}) map[string]*value.Value {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HMGet", varargs...)
+	ret0, _ := ret[0].(map[string]*value.Value)
+	return ret0
+}
+
+// HMGet indicates an expected call of HMGet.
+func (mr *MockIRedisMockRecorder) HMGet(key interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HMGet", reflect.TypeOf((*MockIRedis)(nil).HMGet), varargs...)
+}
+
+// HIncrBy mocks base method.
+func (m *MockIRedis) HIncrBy(key, field string, delta int64) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HIncrBy", key, field, delta)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// HIncrBy indicates an expected call of HIncrBy.
+func (mr *MockIRedisMockRecorder) HIncrBy(key, field, delta interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HIncrBy", reflect.TypeOf((*MockIRedis)(nil).HIncrBy), key, field, delta)
+}
+
+// ZRange mocks base method.
+func (m *MockIRedis) ZRange(key string, start, end int) []*value.Value {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ZRange", key, start, end)
+	ret0, _ := ret[0].([]*value.Value)
+	return ret0
+}
+
+// ZRange indicates an expected call of ZRange.
+func (mr *MockIRedisMockRecorder) ZRange(key, start, end interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRange", reflect.TypeOf((*MockIRedis)(nil).ZRange), key, start, end)
+}
+
+// ZRevRange mocks base method.
+func (m *MockIRedis) ZRevRange(key string, start, end int) []*value.Value {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ZRevRange", key, start, end)
+	ret0, _ := ret[0].([]*value.Value)
+	return ret0
+}
+
+// ZRevRange indicates an expected call of ZRevRange.
+func (mr *MockIRedisMockRecorder) ZRevRange(key, start, end interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRevRange", reflect.TypeOf((*MockIRedis)(nil).ZRevRange), key, start, end)
+}
+
+// ZRangeWithScores mocks base method.
+func (m *MockIRedis) ZRangeWithScores(key string, start, end int) []*redis.ZV {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ZRangeWithScores", key, start, end)
+	ret0, _ := ret[0].([]*redis.ZV)
+	return ret0
+}
+
+// ZRangeWithScores indicates an expected call of ZRangeWithScores.
+func (mr *MockIRedisMockRecorder) ZRangeWithScores(key, start, end interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRangeWithScores", reflect.TypeOf((*MockIRedis)(nil).ZRangeWithScores), key, start, end)
+}
+
+// ZRevRangeWithScores mocks base method.
+func (m *MockIRedis) ZRevRangeWithScores(key string, start, end int) []*redis.ZV {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ZRevRangeWithScores", key, start, end)
+	ret0, _ := ret[0].([]*redis.ZV)
+	return ret0
+}
+
+// ZRevRangeWithScores indicates an expected call of ZRevRangeWithScores.
+func (mr *MockIRedisMockRecorder) ZRevRangeWithScores(key, start, end interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRevRangeWithScores", reflect.TypeOf((*MockIRedis)(nil).ZRevRangeWithScores), key, start, end)
+}
+
+// ZAdd mocks base method.
+func (m *MockIRedis) ZAdd(key string, members ...*redis.Z) int64 {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key}
+	for _, a := range members {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ZAdd", varargs...)
+	ret0, _ := ret[0].(int64)
+	return ret0
+}
+
+// ZAdd indicates an expected call of ZAdd.
+func (mr *MockIRedisMockRecorder) ZAdd(key interface{}, members ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key}, members...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZAdd", reflect.TypeOf((*MockIRedis)(nil).ZAdd), varargs...)
+}
+
+// ZAddOpt mocks base method.
+func (m *MockIRedis) ZAddOpt(key string, opts []string, members ...*redis.Z) (int64, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key, opts}
+	for _, a := range members {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ZAddOpt", varargs...)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ZAddOpt indicates an expected call of ZAddOpt.
+func (mr *MockIRedisMockRecorder) ZAddOpt(key, opts interface{}, members ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key, opts}, members...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZAddOpt", reflect.TypeOf((*MockIRedis)(nil).ZAddOpt), varargs...)
+}
+
+// ZCard mocks base method.
+func (m *MockIRedis) ZCard(key string) int64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ZCard", key)
+	ret0, _ := ret[0].(int64)
+	return ret0
+}
+
+// ZCard indicates an expected call of ZCard.
+func (mr *MockIRedisMockRecorder) ZCard(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZCard", reflect.TypeOf((*MockIRedis)(nil).ZCard), key)
+}
+
+// ZRem mocks base method.
+func (m *MockIRedis) ZRem(key string, members ...interface{}) int64 {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{key}
+	for _, a := range members {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ZRem", varargs...)
+	ret0, _ := ret[0].(int64)
+	return ret0
+}
+
+// ZRem indicates an expected call of ZRem.
+func (mr *MockIRedisMockRecorder) ZRem(key interface{}, members ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{key}, members...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRem", reflect.TypeOf((*MockIRedis)(nil).ZRem), varargs...)
 }

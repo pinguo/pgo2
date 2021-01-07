@@ -122,7 +122,7 @@ func (c *Conn) ReadReply() (interface{}, error) {
 
 	case ':':
 		// integer response: :<integer>\r\n, eg. :99\r\n
-		if n, e := strconv.Atoi(string(payload)); e != nil {
+		if n, e := strconv.ParseInt(string(payload),10,16); e != nil {
 			return nil, c.parseError(errCorrupted+e.Error(), true)
 		} else {
 			return n, nil
