@@ -220,14 +220,14 @@ func (r *Redis) IncrBy(key string, delta int64) (int64, error) {
 // 支持的命令请查阅：Redis.allRedisCmd
 // args = [0:"key"]
 // Example:
-// redis := t.GetObject(Redis.AdapterClass).(*Redis.Adapter)
+// redis := t.GetObjBox(Redis.AdapterClass).(*Redis.Adapter)
 // retI := redis.Do("SADD","myTest", "test1"
-// ret := retI.(int)
+// ret := retI.(int64)
 // fmt.Println(ret) = 1
 // retList :=redis.Do("SMEMBERS","myTest"
 // retListI,_:=ret.([]interface{})
 // for _,v:=range retListI{
-//    vv :=pgo.NewValue(v) // 写入的时候有pgo.Encode(),如果存入的是结构体或slice map 需要decode,其他类型直接断言类型
+//    vv :=value.New(v) // 写入的时候有value.Encode(),如果存入的是结构体或slice map 需要decode,其他类型直接断言类型
 //    fmt.Println(vv.String()) // test1
 // }
 func (r *Redis) Do(cmd string, args ...interface{}) interface{} {
