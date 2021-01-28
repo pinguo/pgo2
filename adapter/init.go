@@ -89,3 +89,7 @@ func panicErr(err error) {
 	}
 }
 
+
+const (
+	defaultEsId = "es"
+)

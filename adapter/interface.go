@@ -8,6 +8,7 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/pinguo/pgo2/client/es"
 	"github.com/pinguo/pgo2/client/maxmind"
 	"github.com/pinguo/pgo2/client/memcache"
 	"github.com/pinguo/pgo2/client/mongodb"
@@ -306,4 +307,10 @@ type IRedis interface {
 	ZAddOpt(key string, opts []string, members ...*redis.Z) (int64, error)
 	ZCard(key string) int64
 	ZRem(key string, members ...interface{}) int64
+}
+
+type IEs interface {
+	GetClient() *es.Client
+	Single(method, uri string, body []byte, timeout time.Duration) ([]byte, error)
+	Batch(action, head, body string) error
 }

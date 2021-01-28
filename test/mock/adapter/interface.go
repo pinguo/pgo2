@@ -15,6 +15,7 @@ import (
 	bson "github.com/globalsign/mgo/bson"
 	gomock "github.com/golang/mock/gomock"
 	adapter "github.com/pinguo/pgo2/adapter"
+	es "github.com/pinguo/pgo2/client/es"
 	maxmind "github.com/pinguo/pgo2/client/maxmind"
 	memcache "github.com/pinguo/pgo2/client/memcache"
 	mongodb "github.com/pinguo/pgo2/client/mongodb"
@@ -5211,4 +5212,70 @@ func (mr *MockIRedisMockRecorder) ZRem(key interface{}, members ...interface{}) 
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{key}, members...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRem", reflect.TypeOf((*MockIRedis)(nil).ZRem), varargs...)
+}
+
+// MockIEs is a mock of IEs interface.
+type MockIEs struct {
+	ctrl     *gomock.Controller
+	recorder *MockIEsMockRecorder
+}
+
+// MockIEsMockRecorder is the mock recorder for MockIEs.
+type MockIEsMockRecorder struct {
+	mock *MockIEs
+}
+
+// NewMockIEs creates a new mock instance.
+func NewMockIEs(ctrl *gomock.Controller) *MockIEs {
+	mock := &MockIEs{ctrl: ctrl}
+	mock.recorder = &MockIEsMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIEs) EXPECT() *MockIEsMockRecorder {
+	return m.recorder
+}
+
+// GetClient mocks base method.
+func (m *MockIEs) GetClient() *es.Client {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetClient")
+	ret0, _ := ret[0].(*es.Client)
+	return ret0
+}
+
+// GetClient indicates an expected call of GetClient.
+func (mr *MockIEsMockRecorder) GetClient() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClient", reflect.TypeOf((*MockIEs)(nil).GetClient))
+}
+
+// Single mocks base method.
+func (m *MockIEs) Single(method, uri string, body []byte, timeout time.Duration) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Single", method, uri, body, timeout)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Single indicates an expected call of Single.
+func (mr *MockIEsMockRecorder) Single(method, uri, body, timeout interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Single", reflect.TypeOf((*MockIEs)(nil).Single), method, uri, body, timeout)
+}
+
+// Batch mocks base method.
+func (m *MockIEs) Batch(action, head, body string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Batch", action, head, body)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Batch indicates an expected call of Batch.
+func (mr *MockIEsMockRecorder) Batch(action, head, body interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Batch", reflect.TypeOf((*MockIEs)(nil).Batch), action, head, body)
 }
