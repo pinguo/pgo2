@@ -288,7 +288,7 @@ func (m *Mongodb) PipeAll(query interface{}, doc interface{}) error {
 
 // FindAll query all doc
 func (m *Mongodb) FindAll(filter interface{}, doc interface{}, options ...bson.M) (err error) {
-	profile := "mongodb.FindOne"
+	profile := "mongodb.FindAll"
 	m.Context().ProfileStart(profile)
 	defer m.Context().ProfileStop(profile)
 	ctx, cFunc := context.WithTimeout(context.Background(), m.client.WriteTimeout())
