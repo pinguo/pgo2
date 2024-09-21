@@ -8,6 +8,13 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/qiniu/qmgo"
+	opts "github.com/qiniu/qmgo/options"
+	"github.com/streadway/amqp"
+	"go.mongodb.org/mongo-driver/mongo"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+
 	"github.com/pinguo/pgo2/client/es"
 	"github.com/pinguo/pgo2/client/maxmind"
 	"github.com/pinguo/pgo2/client/memcache"
@@ -17,12 +24,6 @@ import (
 	"github.com/pinguo/pgo2/client/redis"
 	"github.com/pinguo/pgo2/iface"
 	"github.com/pinguo/pgo2/value"
-	"github.com/qiniu/qmgo"
-	opts "github.com/qiniu/qmgo/options"
-	"github.com/streadway/amqp"
-	"go.mongodb.org/mongo-driver/mongo"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type IMemory interface {
@@ -217,6 +218,14 @@ type IOrm interface {
 
 type IMongodb interface {
 	iface.IObject
+	Count(query interface{}) (int, error)
+	DeleteAll(query interface{}) error
+	DeleteOne(query interface{}) error
+	InsertAll(docs interface{}) error
+	PipeAll(query interface{}, desc interface{}) error
+	UpdateOrInsert(query interface{}, doc interface{}) error
+	FindOne(query interface{}, doc interface{}, options ...bson.M) error
+	FindAll(query interface{}, doc interface{}, options ...bson.M) error
 	InsertOne(doc interface{}, opts ...opts.InsertOneOptions) (result *qmgo.InsertOneResult, err error)
 	InsertOneCtx(ctx context.Context, doc interface{}, opts ...opts.InsertOneOptions) (result *qmgo.InsertOneResult, err error)
 	InsertMany(docs interface{}, opts ...opts.InsertManyOptions) (result *qmgo.InsertManyResult, err error)
@@ -242,7 +251,7 @@ type IMongodb interface {
 	Aggregate(pipeline interface{}) IMongodbAggregate
 	AggregateCtx(ctx context.Context, pipeline interface{}) IMongodbAggregate
 	EnsureIndexes(uniques []string, indexes []string) (err error)
-	EnsureIndexesCtx(ctx context.Context, uniques []string, indexes []string)(err error)
+	EnsureIndexesCtx(ctx context.Context, uniques []string, indexes []string) (err error)
 	CreateIndexes(indexes []opts.IndexModel) (err error)
 	CreateIndexesCtx(ctx context.Context, indexes []opts.IndexModel) (err error)
 	CreateOneIndex(index opts.IndexModel) error
@@ -257,7 +266,7 @@ type IMongodb interface {
 	GetCollectionName() string
 	Find(filter interface{}, options ...opts.FindOptions) IMongodbQuery
 	FindCtx(ctx context.Context, filter interface{}, options ...opts.FindOptions) IMongodbQuery
-    GetClient() *mongodb.Client
+	GetClient() *mongodb.Client
 	Session() (*qmgo.Session, error)
 	DoTransaction(ctx context.Context, callback func(sessCtx context.Context) (interface{}, error)) (interface{}, error)
 }
