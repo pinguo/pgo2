@@ -184,7 +184,7 @@ func (m *Mongodb) UpsertIdCtx(ctx context.Context, id interface{}, replacement i
 func handleOptions(query qmgo.QueryI, options ...bson.M) (qmgo.QueryI, error) {
 	opts := make(map[string]interface{})
 	for _, opt := range options {
-		if opt == nil {
+		if opt == nil || len(opt) == 0 {
 			continue
 		}
 		for k, v := range opt {
