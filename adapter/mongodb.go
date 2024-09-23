@@ -3,6 +3,7 @@ package adapter
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
@@ -184,7 +185,7 @@ func (m *Mongodb) UpsertIdCtx(ctx context.Context, id interface{}, replacement i
 func handleOptions(query qmgo.QueryI, options ...bson.M) (qmgo.QueryI, error) {
 	opts := make(map[string]interface{})
 	for _, opt := range options {
-		if opt == nil || len(opt) == 0 {
+		if len(opt) == 0 {
 			continue
 		}
 		for k, v := range opt {
@@ -198,7 +199,7 @@ func handleOptions(query qmgo.QueryI, options ...bson.M) (qmgo.QueryI, error) {
 		case []string:
 			query.Sort(sort.([]string)...)
 		default:
-			return nil, fmt.Errorf("invalid mongo sort:%#v", sort)
+			log.Println(fmt.Errorf("invalid mongo sort:%#v", sort))
 		}
 	}
 	number := func(name string) (int64, error) {
