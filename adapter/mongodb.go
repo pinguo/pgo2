@@ -76,6 +76,22 @@ func (m *Mongodb) GetClient() *mongodb.Client {
 	return m.client
 }
 
+// FindAndModify execute findAndModify command, which allows atomically update or remove one document,
+// param change specify the change operation, eg. mgo.Change{Update:bson.M{"$inc": bson.M{"n":1}}, ReturnNew:true},
+// other params see FindOne()
+func (m *Mongodb) FindAndModify(query interface{}, change qmgo.Change, result interface{}, options ...bson.M) error {
+	profile := "Mongo.FindAndModify"
+	m.Context().ProfileStart(profile)
+	defer m.Context().ProfileStop(profile)
+	ctx := context.Background()
+	q := m.Collection.Find(ctx, query)
+	q, err := handleOptions(q, options...)
+	if err != nil {
+		return err
+	}
+	return q.Apply(change, result)
+}
+
 // InsertOne insert one document into the collection
 // If InsertHook in opts is set, hook works on it, otherwise hook try the doc as hook
 // Reference: https://docs.mongodb.com/manual/reference/command/insert/
