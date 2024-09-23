@@ -192,12 +192,35 @@ func handleOptions(query qmgo.QueryI, options ...bson.M) (qmgo.QueryI, error) {
 			opts[k] = v
 		}
 	}
+	sortDir := func(v interface{}) int {
+		switch rv := v.(type) {
+		case int32:
+			return int(rv)
+		case int:
+			return int(rv)
+		case int64:
+			return int(rv)
+		}
+		return 1
+	}
 	if sort, ok := opts["sort"]; ok {
 		switch sort.(type) {
 		case string:
 			query.Sort(sort.(string))
 		case []string:
 			query.Sort(sort.([]string)...)
+		case bson.M:
+			fmt.Println(sort)
+			sortFields := []string{}
+			for k, v := range sort.(bson.M) {
+				if sortDir(v) < 0 {
+					k = "-" + k
+				}
+				sortFields = append(sortFields, k)
+			}
+			if len(sortFields) > 0 {
+				query.Sort(sortFields...)
+			}
 		default:
 			log.Println(fmt.Errorf("invalid mongo sort:%#v", sort))
 		}
