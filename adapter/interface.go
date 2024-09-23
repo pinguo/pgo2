@@ -219,6 +219,7 @@ type IOrm interface {
 type IMongodb interface {
 	iface.IObject
 	Count(query interface{}) (int, error)
+	FindAndModify(query interface{}, change qmgo.Change, result interface{}, options ...bson.M) error
 	DeleteAll(query interface{}) error
 	DeleteOne(query interface{}) error
 	InsertAll(docs interface{}) error
