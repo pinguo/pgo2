@@ -224,6 +224,7 @@ type IMongodb interface {
 	DeleteOne(query interface{}) error
 	InsertAll(docs interface{}) error
 	PipeAll(query interface{}, desc interface{}) error
+	PipeOne(pipeline interface{}, result interface{}) error
 	UpdateOrInsert(query interface{}, doc interface{}) error
 	FindOne(query interface{}, doc interface{}, options ...bson.M) error
 	FindAll(query interface{}, doc interface{}, options ...bson.M) error
