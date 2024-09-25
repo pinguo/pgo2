@@ -86,7 +86,8 @@ func (m *Mongodb) FindAndModify(query interface{}, change qmgo.Change, result in
 	m.Context().ProfileStart(profile)
 	defer m.Context().ProfileStop(profile)
 	ctx := context.Background()
-	q := m.Collection.Find(ctx, query)
+	col := m.client.MClient.Database(m.db).Collection(m.coll)
+	q := col.Find(ctx, query)
 	q, err := handleOptions(q, options...)
 	if err != nil {
 		return err
